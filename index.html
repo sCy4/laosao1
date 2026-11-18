@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>交換時間</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* 交換時間：宿舍綠為主色、時間暖黃標示金額與待辦；單欄手機版，頂部帳號列＋底部分頁 */
+  --bg:#edf2f0; --surface:#ffffff; --ink:#15302a; --muted:#5a6d67; --line:#d5dfdb;
+  --accent:#0d7765; --accent-ink:#ffffff; --accent-soft:#d6eee7;
+  --sun:#e3a21a; --sun-soft:#fbeecf; --warn:#8a5703;
+  --good:#24804a; --good-soft:#dcf0e3; --bad:#b9382a; --bad-soft:#f7e0db; --info:#2a63a8; --info-soft:#dce8f6;
+  --line-green:#06c755;
+  --font-display:"LXGW WenKai TC","Noto Sans TC","PingFang TC",serif;
+  --font-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  --font-mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1614; --surface:#16211e; --ink:#e2ebe8; --muted:#95a8a2; --line:#2a3834;
+    --accent:#3db59d; --accent-ink:#04201a; --accent-soft:#163a33;
+    --sun:#f0bd45; --sun-soft:#3a2e12; --warn:#f0c463;
+    --good:#5cc27f; --good-soft:#163222; --bad:#ef7d69; --bad-soft:#3b1b16; --info:#82b2ec; --info-soft:#17283c;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e1614; --surface:#16211e; --ink:#e2ebe8; --muted:#95a8a2; --line:#2a3834;
+  --accent:#3db59d; --accent-ink:#04201a; --accent-soft:#163a33;
+  --sun:#f0bd45; --sun-soft:#3a2e12; --warn:#f0c463;
+  --good:#5cc27f; --good-soft:#163222; --bad:#ef7d69; --bad-soft:#3b1b16; --info:#82b2ec; --info-soft:#17283c;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:15px;line-height:1.55;-webkit-text-size-adjust:100%}
+#app{max-width:480px;margin:0 auto;min-height:100%;display:flex;flex-direction:column}
+h1,h2,h3{margin:0;text-wrap:balance}
+h1{font-size:22px;font-weight:700}
+h2{font-size:16px;font-weight:700}
+h3{font-size:14px;font-weight:700;color:var(--muted);margin-top:8px}
+p{margin:0}
+.small{font-size:13px}
+.ink{color:var(--ink)}
+.muted{color:var(--muted)}
+.mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.center{text-align:center}
+.grow{flex:1;min-width:0}
+.row{display:flex;align-items:center;gap:8px}
+.row.between{justify-content:space-between}
+.row.end{justify-content:flex-end}
+.row.wrap{flex-wrap:wrap}
+.stack{display:flex;flex-direction:column;gap:12px}
+.stack-s{display:flex;flex-direction:column;gap:8px}
+.vh{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0)}
+
+header.top{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--line)}
+.brand{font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--accent);letter-spacing:.06em;line-height:1.2}
+.brand.big{font-size:44px}
+.clock{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+.acct{display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:4px 12px 4px 4px;font:inherit;font-size:14px;color:var(--ink);cursor:pointer;min-height:40px}
+
+main{flex:1;padding:16px 16px 104px;display:flex;flex-direction:column;gap:12px}
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+
+nav.tabs{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;display:grid;background:var(--surface);border-top:1px solid var(--line);z-index:6}
+nav.tabs.n4{grid-template-columns:repeat(4,1fr)}
+nav.tabs.n2{grid-template-columns:repeat(2,1fr)}
+nav.tabs button{position:relative;appearance:none;background:none;border:0;font:inherit;font-size:12px;color:var(--muted);padding:9px 0 12px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;min-height:56px}
+nav.tabs button.on{color:var(--accent);font-weight:700}
+nav.tabs button.on::before{content:"";position:absolute;top:0;left:30%;right:30%;height:3px;border-radius:0 0 3px 3px;background:var(--accent)}
+.badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--sun);color:#2b1d00;font-size:11px;font-weight:700;font-variant-numeric:tabular-nums}
+nav.tabs .badge{position:absolute;top:4px;left:calc(50% + 8px)}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.card.task{appearance:none;text-align:left;width:100%;font:inherit;color:inherit;cursor:pointer;gap:4px}
+.card.task{padding:0;gap:0;overflow:visible;position:relative}
+.nbadge{position:absolute;top:-8px;right:-8px;z-index:3;min-width:22px;height:22px;padding:0 6px;border-radius:11px;background:#f05a28;color:#fff;font-size:12px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;border:2px solid var(--bg);font-variant-numeric:tabular-nums;pointer-events:none}
+.tc-open{position:absolute;inset:0;z-index:1;width:100%;border:0;background:transparent;cursor:pointer;border-radius:14px;padding:0}
+.tc-open:focus-visible{outline:3px solid var(--sun);outline-offset:-3px}
+.tc-body{display:flex;flex-direction:column;gap:4px;padding:14px}
+.tc-row{display:flex;gap:12px;align-items:flex-end}
+.tc-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.tc-g{display:flex;align-items:center;min-height:22px}
+.tc-note{display:flex;align-items:flex-start;gap:6px;margin-top:4px;font-size:14px;color:var(--muted)}
+.tc-note-txt{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tc-note.open .tc-note-txt{white-space:normal;overflow:visible}
+.tc-more{position:relative;z-index:2;flex:none;appearance:none;border:0;background:none;color:var(--accent);font:inherit;font-size:13px;font-weight:700;padding:0 2px;cursor:pointer;min-height:24px}
+.tc-side{flex:none;display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between;gap:8px;text-align:right}
+.tc-bottom{margin-top:auto;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.tc-bar{border-radius:13px 13px 0 0}
+.tc-bar.bottom{border-radius:0 0 13px 13px}
+.tc-bar.own-bar{background:var(--accent-soft);color:var(--accent)}
+.bar-role{margin-left:auto;font-weight:700;opacity:.85}
+.tc-date{font-size:17px;font-weight:700;padding-right:36px;display:flex;flex-wrap:wrap;column-gap:12px;row-gap:2px;align-items:baseline}
+.tc-date .tc-time{font-size:16px;font-weight:700}
+.gtxt{display:inline-flex;align-items:center;font-size:13px;font-weight:700;border-radius:6px;padding:1px 8px}
+.gtxt.male{color:#2563c9;background:#e1ebfb}
+.gtxt.female{color:#d0384f;background:#fbe3e7}
+.me-card .me-name{font-size:18px}
+.idblock{display:flex;flex-direction:column;gap:2px;min-width:0}
+.id-name{font-size:16px}
+.idblock.big .id-name{font-size:20px}
+.idline{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:14px;color:var(--muted)}
+.idblock.big .idline{font-size:15px}
+#m-cls{text-transform:uppercase}
+.tc-time{font-size:15px;font-variant-numeric:tabular-nums}
+.tc-place{font-size:15px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.favbtn{position:absolute;top:8px;right:8px;z-index:2;appearance:none;border:0;background:transparent;color:var(--muted);width:40px;height:40px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+.favbtn:hover{background:var(--bg)}
+.favbtn.on{color:var(--sun)}
+.favbtn.on svg path{fill:currentColor}
+.favbtn.txt{position:static;width:auto;height:36px;border-radius:999px;padding:0 12px;gap:6px;border:1px solid var(--line);background:var(--surface);font:inherit;font-size:14px;font-weight:700}
+.favbtn.txt.on{border-color:var(--sun);background:var(--sun-soft);color:var(--warn)}
+.gsym{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%}
+.gsym.male{color:#2563c9;background:#e1ebfb}
+.gsym.female{color:#d0384f;background:#fbe3e7}
+.checks label.gm{color:#2563c9}
+.checks label.gf{color:#d0384f}
+.checks label svg{display:block}
+.when{font-size:17px;font-weight:700;font-variant-numeric:tabular-nums}
+.cal{border:1px solid var(--line);border-radius:12px;padding:10px}
+.cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.cal-nav{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);width:36px;height:36px;border-radius:10px;font-size:20px;cursor:pointer}
+.cal-nav:disabled{opacity:.35;cursor:not-allowed}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+.cal-wd{font-size:12px;color:var(--muted);padding:2px 0}
+.cal-day{appearance:none;border:0;background:transparent;color:var(--ink);font:inherit;font-variant-numeric:tabular-nums;height:40px;border-radius:50%;cursor:pointer;position:relative}
+.cal-day:hover:not(:disabled){background:var(--accent-soft)}
+.cal-day:disabled{color:var(--line);cursor:not-allowed}
+.cal-day.today::after{content:"";position:absolute;bottom:5px;left:50%;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:var(--sun)}
+.cal-day.on,.cal-day.on:hover:not(:disabled){background:var(--accent);color:var(--accent-ink);font-weight:700}
+.seg-sm button{min-height:34px;font-size:13px}
+.slots{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.slot{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:14px;font-variant-numeric:tabular-nums;border-radius:10px;padding:8px 0;cursor:pointer;display:flex;flex-direction:column;align-items:center;line-height:1.2;min-height:40px;justify-content:center}
+.slot small{font-size:11px;color:var(--muted)}
+.slot.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.slot.on small{color:var(--accent-ink)}
+.slot:disabled{opacity:.35;cursor:not-allowed}
+.tagwrap{position:relative;display:inline-flex}
+.tagbtn{appearance:none;display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line);background:var(--surface);color:var(--muted);border-radius:999px;padding:4px 8px;min-height:34px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;max-width:180px}
+.tagbtn .tg-lbl{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tagbtn.tg-trust{color:var(--good);border-color:var(--good);background:var(--good-soft)}
+.tagbtn.tg-black{color:var(--bad);border-color:var(--bad);background:var(--bad-soft)}
+.tagbtn.tg-custom{color:var(--info);border-color:var(--info);background:var(--info-soft)}
+.tagbtn:not(.tg-none) svg path{fill:currentColor}
+.tagmenu{position:absolute;right:0;top:calc(100% + 6px);z-index:8;min-width:200px;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.18);padding:6px;display:flex;flex-direction:column}
+.tagmenu>button{appearance:none;border:0;background:none;color:var(--ink);font:inherit;font-size:14px;text-align:left;padding:10px;border-radius:8px;display:flex;align-items:center;gap:8px;cursor:pointer}
+.tagmenu>button:hover{background:var(--bg)}
+.tm-dot{width:10px;height:10px;border-radius:50%;flex:none}
+.tm-dot.trust{background:var(--good)}.tm-dot.black{background:var(--bad)}.tm-dot.custom{background:var(--info)}
+.tm-check{margin-left:auto;color:var(--accent);font-weight:700}
+.tm-remove{color:var(--bad)!important;border-top:1px solid var(--line)!important;border-radius:0 0 8px 8px!important}
+.tm-custom{display:flex;gap:6px;padding:6px}
+.tm-custom input{min-height:36px;padding:6px 10px}
+.card.mini{overflow:visible}
+.tc-title{font-size:17px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tc-sub{font-size:15px;color:var(--muted);font-variant-numeric:tabular-nums}
+.tc-side .price{font-size:21px;line-height:1.2}
+.pc-row{font-size:15px}
+.pc-row .price{font-size:16px}
+.pc-center{display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 0}
+.pc-big{font-size:30px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.2}
+.pc-div{border:0;border-top:1px solid var(--line);margin:4px 0;opacity:.7}
+.pc-label{text-align:center;font-size:13px;color:var(--muted)}
+.pc-input{display:flex;align-items:center;justify-content:center;gap:8px;font-size:22px;font-weight:700;color:var(--muted)}
+.pc-input input{width:150px;text-align:center;font-size:26px;font-weight:700;font-variant-numeric:tabular-nums;padding:8px 10px;min-height:52px}
+.banner.center{text-align:center}
+.tpick{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tblock{border:1px solid var(--line);border-radius:12px;padding:8px;display:flex;flex-direction:column;gap:6px}
+.tb-head{display:flex;align-items:baseline;justify-content:space-between;padding:0 4px}
+.tb-input{width:84px;min-height:38px;padding:4px 6px;text-align:center;font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}
+.tb3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tb3 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.daychip{display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--accent-soft);color:var(--accent);border-radius:12px;padding:6px 6px 6px 12px;font-weight:700;font-size:14px}
+.optlist{display:flex;flex-direction:column;gap:6px}
+.opt-row{appearance:none;display:flex;align-items:center;justify-content:space-between;gap:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:15px;text-align:left;padding:12px 14px;border-radius:12px;cursor:pointer;min-height:48px}
+.opt-row.on{border-color:var(--accent);background:var(--accent-soft);font-weight:700}
+.bcal .cal-grid{gap:3px}
+.bc-day{appearance:none;border:1px solid transparent;background:transparent;color:var(--ink);font:inherit;min-height:54px;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:2px;padding:5px 0;cursor:pointer;position:relative}
+.bc-day .bc-n{font-size:15px;font-variant-numeric:tabular-nums}
+.bc-day .bc-cnt{font-size:11px;font-weight:700;color:var(--accent-ink);background:var(--accent);border-radius:6px;padding:0 5px}
+.bc-day:not(.has):not(:disabled) .bc-n{color:var(--muted)}
+.bc-day:hover:not(:disabled){background:var(--accent-soft)}
+.bc-day.today{border-color:var(--sun)}
+.bc-day.on,.bc-day.on:hover:not(:disabled){background:var(--accent-soft);border-color:var(--accent)}
+.bc-day:disabled{color:var(--line);cursor:not-allowed}
+.tcols{display:flex;align-items:center;gap:2px}
+.tsep{font-weight:700;color:var(--muted)}
+.tcol{position:relative;flex:1;height:176px;overflow-y:auto;scroll-snap-type:y proximity;display:flex;flex-direction:column;gap:2px;padding:2px;border-radius:8px;background:var(--bg);scrollbar-width:none}
+.tcol::-webkit-scrollbar{display:none}
+.tcell{appearance:none;border:0;background:transparent;color:var(--ink);font:inherit;font-size:16px;font-variant-numeric:tabular-nums;min-height:36px;border-radius:8px;cursor:pointer;scroll-snap-align:center;flex:none}
+.tcell:hover:not(:disabled){background:var(--accent-soft)}
+.tcell.on,.tcell.on:hover:not(:disabled){background:var(--accent);color:var(--accent-ink);font-weight:700}
+.tcell:disabled{color:var(--line);cursor:not-allowed}
+.tc-tags{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:4px}
+.tc-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 14px;font-size:13px;font-weight:700;border:0;border-radius:0}
+.tc-bar.s-off{border:0;border-top:1px solid var(--line)}
+.segs{display:flex;gap:3px;flex:none}
+.segs i{display:block;width:14px;height:5px;border-radius:3px;background:currentColor;opacity:.22}
+.segs i.on{opacity:1}
+.card.mini{padding:12px 14px;gap:4px}
+.mini-role{font-size:12px;font-weight:700;color:var(--accent)}
+.mini-name{font-size:16px}
+.people{display:flex;flex-direction:column;gap:8px}
+.range{display:flex;align-items:center;gap:8px}
+.range input{flex:1;min-width:0}
+.range span{color:var(--muted);font-size:14px}
+.card.task:hover{border-color:var(--accent)}
+.date-tile{flex:none;width:58px;padding:6px 0;border-radius:10px;background:var(--accent-soft);color:var(--accent);display:flex;flex-direction:column;align-items:center;line-height:1.2}
+.date-tile .dm{font-size:18px;font-weight:700;font-variant-numeric:tabular-nums}
+.date-tile .wd{font-size:12px}
+.card.task .grow{display:flex;flex-direction:column;gap:2px}
+.card.task .time{font-size:17px;font-weight:700;font-variant-numeric:tabular-nums}
+.card.task .place{font-size:14px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chev{flex:none;font-size:22px;color:var(--muted)}
+.side{flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:5px;text-align:right}
+.side .price{font-size:15px}
+.idline .dot{color:var(--line);font-weight:700}
+.dt-btn{appearance:none;display:flex;align-items:center;gap:10px;width:100%;min-height:48px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:17px;font-weight:700;font-variant-numeric:tabular-nums;border-radius:10px;padding:8px 12px;cursor:pointer;text-align:left}
+.dt-btn svg{color:var(--accent);flex:none}
+.dt-btn:hover{border-color:var(--accent)}
+.scrim.center{align-items:center;padding:16px}
+.sheet.dlg{max-width:360px;border-radius:24px;padding:20px 18px 14px;gap:10px}
+.dlg-title{font-size:13px;color:var(--muted)}
+.dlg-big{font-size:28px;font-weight:500;font-variant-numeric:tabular-nums}
+.dlg-month{font-size:14px}
+.icon-btn{appearance:none;border:0;background:transparent;color:var(--ink);width:40px;height:40px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer}
+.icon-btn:hover:not(:disabled){background:var(--bg)}
+.icon-btn:disabled{opacity:.3;cursor:not-allowed}
+.dd-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center}
+.dd-wd{font-size:13px;color:var(--muted);padding:6px 0}
+.dd{appearance:none;border:1px solid transparent;background:transparent;color:var(--ink);font:inherit;font-size:15px;font-variant-numeric:tabular-nums;width:40px;height:40px;margin:0 auto;border-radius:50%;cursor:pointer}
+.dd:hover:not(:disabled){background:var(--bg)}
+.dd.today{border-color:var(--accent);color:var(--accent)}
+.dd.on,.dd.on:hover:not(:disabled){background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700}
+.dd:disabled{color:var(--line);cursor:not-allowed}
+.dlg-input{font-size:20px;text-align:center;font-variant-numeric:tabular-nums}
+.dlg-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;margin-top:4px}
+.tbig{display:flex;align-items:center;gap:8px}
+.tbox{appearance:none;border:0;width:88px;height:72px;border-radius:12px;background:var(--bg);color:var(--ink);font:inherit;font-size:44px;font-variant-numeric:tabular-nums;cursor:pointer}
+.tbox.on{background:var(--accent-soft);color:var(--accent)}
+.tcolon{font-size:40px;font-weight:700}
+.tbig-in{display:flex;flex-direction:column;align-items:center;gap:2px}
+.tbig-in input{width:88px;height:72px;font-size:40px;text-align:center;font-variant-numeric:tabular-nums;border-radius:12px}
+.ampm{display:flex;flex-direction:column;margin-left:auto;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.ampm button{appearance:none;border:0;background:transparent;color:var(--muted);font:inherit;font-size:14px;font-weight:700;padding:8px 12px;cursor:pointer;min-height:36px}
+.ampm button+button{border-top:1px solid var(--line)}
+.ampm button.on{background:var(--sun-soft);color:var(--warn)}
+.dial{position:relative;width:240px;height:240px;border-radius:50%;background:var(--bg);margin:8px auto 0;touch-action:none;cursor:pointer;user-select:none;-webkit-user-select:none}
+.dial-n{position:absolute;transform:translate(-50%,-50%);font-size:15px;font-variant-numeric:tabular-nums;pointer-events:none;color:var(--ink)}
+.dial-n.on{visibility:hidden}
+.dial-hand{position:absolute;left:119px;top:28px;width:2px;height:92px;background:var(--accent);transform-origin:50% 100%;pointer-events:none}
+.dial-knob{position:absolute;transform:translate(-50%,-50%);width:40px;height:40px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;pointer-events:none}
+.dial-c{position:absolute;left:116px;top:116px;width:8px;height:8px;border-radius:50%;background:var(--accent);pointer-events:none}
+.chosen{display:flex;flex-direction:column;gap:8px;background:var(--bg);border-radius:12px;padding:12px}
+.bell{position:relative;flex:none}
+.nbadge.hdr{top:-2px;right:-4px;border-color:var(--surface)}
+.notes{display:flex;flex-direction:column;gap:6px}
+.note{appearance:none;display:flex;flex-direction:column;gap:2px;text-align:left;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;border-radius:12px;padding:10px 12px;cursor:pointer}
+.note.new{border-color:var(--sun);background:var(--sun-soft)}
+.note-txt{font-size:14px}
+.note-time{font-size:12px;color:var(--muted)}
+.paysteps{display:flex;flex-direction:column;gap:2px;margin-top:4px;font-size:14px}
+.paysteps .ok{color:var(--good);font-weight:700}
+.pill.s-ownt{background:var(--accent-soft);color:var(--accent)}
+.cmts{display:flex;flex-direction:column;gap:8px;max-height:320px;overflow-y:auto;padding:2px}
+.cmt{max-width:85%;align-self:flex-start;background:var(--bg);border-radius:12px 12px 12px 4px;padding:8px 12px}
+.cmt.mine{align-self:flex-end;background:var(--accent-soft);border-radius:12px 12px 4px 12px}
+.cmt-meta{font-size:11px;color:var(--muted)}
+.cmt-txt{font-size:14px;white-space:pre-wrap;overflow-wrap:anywhere}
+.cmt-form{display:flex;gap:8px;align-items:flex-end}
+.cmt-form textarea{flex:1;min-height:44px}
+#m-sid{text-transform:uppercase}
+.pill.s-bid{background:var(--sun);color:#2b1d00}
+.gtag.own{color:var(--accent);background:var(--accent-soft)}
+.segrow{display:flex;flex-direction:column;gap:4px}
+.segcap{font-size:12px;font-weight:700;color:var(--muted);padding-left:4px}
+.card.linkrow{appearance:none;font:inherit;color:inherit;text-align:left;width:100%;flex-direction:row;align-items:center;cursor:pointer}
+.card.linkrow .grow{display:flex;flex-direction:column;gap:2px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.gtag.any{color:var(--muted);background:var(--bg)}
+.card.todo{border-left:4px solid var(--sun)}
+.task-title{font-size:17px;font-weight:700}
+.excerpt{font-size:14px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gtag{display:inline-flex;align-items:center;font-size:12px;font-weight:700;color:var(--info);background:var(--info-soft);border-radius:6px;padding:1px 7px}
+.meta{font-size:14px}
+.todo-line{margin-top:6px;font-size:13px;font-weight:700;color:var(--warn);background:var(--sun-soft);border-radius:8px;padding:4px 10px;align-self:flex-start}
+.price{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+
+.pill{display:inline-flex;align-items:center;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:700;white-space:nowrap}
+.s-open{background:var(--accent-soft);color:var(--accent)}
+.s-assigned{background:var(--info-soft);color:var(--info)}
+.s-wait{background:var(--sun-soft);color:var(--warn)}
+.s-good{background:var(--good-soft);color:var(--good)}
+.s-off{background:var(--bg);color:var(--muted);border:1px solid var(--line)}
+.s-bad{background:var(--bad-soft);color:var(--bad)}
+
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips.scroll{flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+.chip{appearance:none;font:inherit;font-size:13px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:5px 12px;white-space:nowrap;cursor:pointer}
+.chip.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.chip.static{cursor:default;background:var(--bg)}
+
+.btn{appearance:none;border:1px solid transparent;border-radius:10px;padding:10px 16px;font:inherit;font-weight:700;cursor:pointer;background:var(--accent);color:var(--accent-ink);min-height:44px}
+.btn.sm{min-height:36px;padding:6px 12px;font-size:14px}
+.btn.block{width:100%}
+.btn.ghost{background:transparent;color:var(--accent);border-color:var(--line)}
+.btn.danger{background:transparent;color:var(--bad);border-color:var(--line)}
+.btn.danger-solid{background:var(--bad);color:#fff}
+.btn.line{background:var(--line-green);color:#fff;font-size:16px}
+.btn:disabled{opacity:.42;cursor:not-allowed}
+:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+
+.field{display:flex;flex-direction:column;gap:6px}
+.field label,.field .lbl{font-size:13px;color:var(--muted);font-weight:500}
+input,select,textarea{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%;min-height:44px}
+textarea{resize:vertical}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.checks{display:flex;flex-wrap:wrap;gap:6px}
+.checks label{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:14px;cursor:pointer;color:var(--ink)}
+.checks input{width:auto;min-height:0;accent-color:var(--accent)}
+.checks label:has(input:checked){background:var(--accent-soft);border-color:var(--accent)}
+
+.banner{border-radius:12px;padding:10px 12px;font-size:14px;background:var(--bg);border:1px solid var(--line)}
+.banner.info{background:var(--info-soft);color:var(--info);border-color:transparent}
+.banner.bad{background:var(--bad-soft);color:var(--bad);border-color:transparent}
+.banner.warn{background:var(--sun-soft);color:var(--warn);border-color:transparent}
+
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,1fr);gap:2px}
+.steps li{display:flex;flex-direction:column;align-items:center;gap:4px;position:relative;font-size:11px;color:var(--muted);text-align:center}
+.steps li::before{content:"";position:absolute;top:5px;left:-50%;width:100%;height:2px;background:var(--line);z-index:0}
+.steps li:first-child::before{display:none}
+.steps .dot{width:12px;height:12px;border-radius:50%;background:var(--surface);border:2px solid var(--line);z-index:1}
+.steps li.past .dot{background:var(--accent);border-color:var(--accent)}
+.steps li.past::before,.steps li.cur::before{background:var(--accent)}
+.steps li.cur .dot{background:var(--sun);border-color:var(--sun);box-shadow:0 0 0 4px var(--sun-soft)}
+.steps li.cur{color:var(--ink);font-weight:700}
+
+.facts{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:0;font-size:14px}
+.facts dt{color:var(--muted)}
+.facts dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.note{font-size:14px;background:var(--bg);border-radius:10px;padding:8px 12px}
+
+.person{display:flex;gap:12px;align-items:flex-start}
+.person .facts{grid-template-columns:auto 1fr}
+.person-mini{display:flex;gap:10px;align-items:center;min-width:0}
+.av{flex:none;width:40px;height:40px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;color:#15302a}
+.av.sm{width:30px;height:30px;font-size:13px}
+.offer{display:flex;flex-direction:column;gap:8px;padding:12px 0;border-top:1px solid var(--line)}
+.offer:first-of-type{border-top:0;padding-top:0}
+.offer .btn{align-self:flex-start}
+
+.photos{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.ph{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;background:var(--bg)}
+.ph img{width:100%;height:100%;object-fit:cover;display:block;cursor:zoom-in}
+.ph-time{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.55);color:#fff;font-size:10px;padding:2px 6px;font-variant-numeric:tabular-nums}
+.ph-x{position:absolute;top:4px;right:4px;width:28px;height:28px;border-radius:50%;border:0;background:rgba(0,0,0,.6);color:#fff;font-size:16px;cursor:pointer}
+.ph.add{display:flex;align-items:center;justify-content:center;border:2px dashed var(--line);color:var(--accent);font-weight:700;font-size:14px;cursor:pointer;background:transparent}
+.big-photo{width:100%;border-radius:12px;display:block}
+
+.bank{display:grid;grid-template-columns:1fr 1fr;gap:10px;background:var(--bg);border-radius:12px;padding:12px}
+.bank div{display:flex;flex-direction:column;min-width:0;word-break:break-all}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.stats.n3{grid-template-columns:repeat(3,1fr)}
+.stats.n2{grid-template-columns:repeat(2,1fr)}
+.tagrow{margin-top:6px;padding-top:8px;border-top:1px solid var(--line)}
+.profile-form{border-top:1px solid var(--line);padding-top:12px}
+.req,.opt{font-size:11px;font-weight:700;border-radius:4px;padding:0 4px;margin-left:2px}
+.req{color:var(--bad);background:var(--bad-soft)}
+.opt{color:var(--muted);background:var(--bg)}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:2px}
+.stat .num{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}
+.stat .lbl{font-size:12px;color:var(--muted)}
+.stat.alert .num{color:var(--warn)}
+
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:4px;gap:4px}
+.seg button{appearance:none;border:0;background:transparent;font:inherit;font-size:14px;color:var(--muted);border-radius:9px;padding:8px 4px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:40px}
+.seg button.on{background:var(--accent-soft);color:var(--accent);font-weight:700}
+
+.stars{display:flex;flex-direction:row-reverse;justify-content:flex-end;gap:2px}
+.stars label{font-size:32px;line-height:1;color:var(--line);cursor:pointer;padding:2px}
+.stars input:checked ~ label,.stars label:hover,.stars label:hover ~ label{color:var(--sun)}
+.stars input:focus-visible + label{outline:3px solid var(--sun);border-radius:6px}
+.stars-ro{color:var(--sun);letter-spacing:2px}
+.stars-ro .dim{color:var(--line)}
+.rating{display:flex;flex-direction:column;gap:2px;padding:8px 0;border-top:1px solid var(--line)}
+.rating:first-of-type{border-top:0}
+
+.empty{text-align:center;padding:32px 16px;display:flex;flex-direction:column;gap:6px;color:var(--muted)}
+.empty b{color:var(--ink)}
+
+.list-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.list-row:first-child{border-top:0}
+
+.login{flex:1;display:flex;flex-direction:column;justify-content:center;gap:24px;padding:40px 24px}
+.login-hero{display:flex;flex-direction:column;gap:8px}
+.lead{font-size:18px}
+.how{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px;counter-reset:s}
+.how li{counter-increment:s;display:grid;grid-template-columns:32px 1fr;column-gap:12px;font-size:14px;color:var(--muted)}
+.how li::before{content:counter(s);grid-row:span 2;width:32px;height:32px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-weight:700;display:flex;align-items:center;justify-content:center}
+.how b{color:var(--ink);font-size:15px}
+
+.scrim{position:fixed;inset:0;background:rgba(8,20,17,.5);z-index:20;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--surface);width:100%;max-width:480px;max-height:88%;overflow:auto;border-radius:18px 18px 0 0;padding:20px 16px 24px;display:flex;flex-direction:column;gap:12px}
+.acct-list{display:flex;flex-direction:column;gap:6px}
+.acct-row{appearance:none;font:inherit;color:inherit;text-align:left;display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;border:1px solid var(--line);background:var(--surface);cursor:pointer}
+.acct-row.on{border-color:var(--accent);background:var(--accent-soft)}
+
+.name-btn{appearance:none;flex:none;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-weight:700;font-size:15px;border-radius:999px;padding:6px 14px;min-height:40px;cursor:pointer;max-width:9em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.name-btn:hover{border-color:var(--accent)}
+.av-btn{appearance:none;border:0;background:none;padding:0;border-radius:50%;cursor:pointer;flex:none}
+header.top .grow{min-width:0}
+.dscrim{position:fixed;inset:0;background:rgba(8,20,17,.5);z-index:15}
+.drawer{position:fixed;top:0;bottom:0;left:max(0px,calc(50% - 240px));width:min(88vw,400px);background:var(--bg);overflow-y:auto;padding:16px 16px 32px;display:flex;flex-direction:column;gap:12px;box-shadow:4px 0 24px rgba(0,0,0,.2)}
+.drawer.anim{animation:slidein .2s ease-out}
+.drawer-title{font-size:18px;font-weight:700}
+@keyframes slidein{from{transform:translateX(-100%)}to{transform:none}}
+@media (prefers-reduced-motion:reduce){.drawer{animation:none}}
+.toolbar{display:flex;flex-direction:column;gap:8px}
+.search{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:0 12px;color:var(--muted)}
+.search input{border:0;padding:10px 0;background:transparent;min-height:44px}
+.search input:focus{outline:none}
+.search:focus-within{outline:3px solid var(--sun);outline-offset:1px}
+.sel-sm{width:auto;flex:1;min-height:36px;padding:6px 10px;font-size:14px}
+.btn.active{border-color:var(--accent);background:var(--accent-soft)}
+.btn .badge{margin-left:6px}
+#toast{position:fixed;left:50%;bottom:88px;transform:translate(-50%,20px);background:var(--ink);color:var(--surface);padding:10px 16px;border-radius:12px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:30;width:max-content;max-width:calc(100% - 32px);text-align:center}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+@media (prefers-reduced-motion:reduce){#toast{transition:none}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<script>
+(function(){
+'use strict';
+const KEY='swaptime-proto-v1';
+const M=60e3, H=60*M, D=24*H;
+const BUILDINGS=['第一宿舍','第二宿舍','第三宿舍','第四宿舍','研究生宿舍'];
+const GENDERS=['不限','限男生','限女生'];
+const BANKS={'004':'臺灣銀行','013':'國泰世華','700':'中華郵政','808':'玉山銀行','812':'台新銀行','822':'中國信託'};
+const ST={open:{label:'媒合中',cls:'s-open'},pending:{label:'待接案人確認',cls:'s-wait'},assigned:{label:'進行中',cls:'s-assigned'},done:{label:'發案人確認中',cls:'s-wait'},confirmed:{label:'付款未完成',cls:'s-wait'},paid:{label:'付款未完成',cls:'s-wait'},closed:{label:'結案',cls:'s-good'},cancelled:{label:'已取消',cls:'s-off'}};
+const STEPS=['媒合中','進行中','發案人確認','付款','結案'];
+const IDX={open:0,pending:0,assigned:1,done:2,confirmed:3,paid:3,closed:4};
+const YEARS=['大一','大二','大三','大四','大五以上','碩一','碩二','博士班'];
+const PAYWAYS=['現金','電子支付','其他'];
+const AV=['#bfe3d8','#f6dca0','#c9d9f1','#f1c9bf','#d9d1ef'];
+const IC={
+  search:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>',
+  list:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01"/></svg>',
+  plus:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>',
+  user:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>',
+  pen:'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M14 6l4 4"/></svg>',
+  clock:'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+  kbd:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="2.5" y="6" width="19" height="12" rx="2"/><path d="M6 10h.01M9 10h.01M12 10h.01M15 10h.01M18 10h.01M7 14h10"/></svg>',
+  bell:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9"/><path d="M10 20a2.2 2.2 0 0 0 4 0"/></svg>',
+  star:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></svg>',
+  bookmark:'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-6-4.5L6 21z"/></svg>',
+  sort:'<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4v16M3 8l4-4 4 4M17 20V4M13 16l4 4 4-4"/></svg>',
+  filter:'<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h18l-7 8v6l-4-2v-4z"/></svg>',
+  cal:'<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>',
+  clip:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9zM9 12h6M9 16h4"/></svg>',
+  shield:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6z"/></svg>'
+};
+
+/* ---------- 示範資料 ---------- */
+function demoPhoto(label,clean){
+  const mess=clean?'':'<rect x="40" y="150" width="34" height="22" rx="4" fill="#b9a27a"/><rect x="150" y="172" width="26" height="16" rx="3" fill="#8e9aa6"/><circle cx="208" cy="146" r="12" fill="#c9b48a"/><rect x="95" y="188" width="40" height="10" rx="3" fill="#a08f70"/><rect x="60" y="205" width="22" height="14" rx="3" fill="#9aa7a0"/>';
+  const svg='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240"><rect width="240" height="120" fill="'+(clean?'#e4eef0':'#d3d9d9')+'"/><rect y="120" width="240" height="120" fill="'+(clean?'#ebe5d8':'#cbc1ab')+'"/><rect x="150" y="50" width="70" height="80" fill="#a5b8bd"/><rect x="20" y="72" width="90" height="54" fill="#b08d63"/>'+mess+'<rect width="240" height="30" fill="rgba(0,0,0,.5)"/><text x="12" y="20" font-family="sans-serif" font-size="14" fill="#fff">'+label+'（示範照片）</text></svg>';
+  return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
+}
+function seed(){
+  const t0=Date.now();
+  const at=(dd,h,mi)=>{const d=new Date(t0);d.setDate(d.getDate()+dd);d.setHours(h,mi||0,0,0);return d.getTime();};
+  const users=[
+    {id:'u1',name:'王小明',sid:'S11240117',gender:'男',cls:'資工2A',line:'xiaoming_w',bank:{code:'700',acct:'00012345678901',name:'王小明'},doneWork:3,donePost:2,dropped:0,suspendedUntil:0},
+    {id:'u2',name:'陳怡君',sid:'S11330422',gender:'女',cls:'工工1B',line:'yijun.chen',bank:{code:'822',acct:'123456789012',name:'陳怡君'},doneWork:12,donePost:4,dropped:0,suspendedUntil:0},
+    {id:'u3',name:'林柏翰',sid:'S11120856',gender:'男',cls:'企管3A',line:'pohan_lin',bank:null,doneWork:4,donePost:1,dropped:1,suspendedUntil:0},
+    {id:'u4',name:'張書瑋',sid:'S11240633',gender:'男',cls:'',line:'shuwei.c',bank:{code:'808',acct:'0912345678123',name:'張書瑋'},doneWork:1,donePost:2,dropped:0,suspendedUntil:0}
+  ];
+  const base=(o)=>Object.assign({offers:[],assignee:null,price:null,budget:null,photos:[],comments:[],seen:{},gender:'不限',note:'',createdAt:t0-5*H},o);
+  const soon=Math.ceil((t0+40*M)/M)*M, past=Math.floor((t0-3*H)/(30*M))*30*M;
+  const tasks=[
+    base({id:'t1',budget:400,poster:'u1',building:'第二宿舍',meet:'第二宿舍一樓大廳，我下樓接你',start:at(1,14),end:at(1,16),note:'四人房期末大掃除：地板、浴室、書桌、倒垃圾。浴室比較髒，清潔劑和拖把我們有。',status:'open',
+      offers:[{id:'o1',user:'u2',price:420,msg:'打掃過好幾次四人房，大約 2 小時可以完成，浴室會刷磁磚縫。',at:t0-2*H},{id:'o2',user:'u3',price:380,msg:'我住隔壁棟，時間很彈性。',at:t0-H}]}),
+    base({id:'t2',poster:'u3',building:'第四宿舍',meet:'第四宿舍一樓大廳',gender:'限男生',start:at(2,10),end:at(2,11),note:'雙人房只要洗浴室，含馬桶、洗手台和地板。',status:'open',
+      offers:[{id:'o3',user:'u4',price:250,msg:'可以，週末都有空。',at:t0-3*H}]}),
+    base({id:'t3',comments:[{id:'c1',user:'u2',text:'鑰匙放在一樓櫃檯，跟阿姨說 1-102 就可以拿。',at:t0-3*H}],budget:200,poster:'u2',building:'第一宿舍',meet:'第一宿舍櫃檯',start:soon,end:soon+H,note:'單人房地板掃拖、書桌整理。鑰匙放在櫃檯，報房號 1-102 領取。',status:'assigned',assignee:'u1',price:200,
+      offers:[{id:'o4',user:'u1',price:200,msg:'沒問題。',at:t0-D}]}),
+    base({id:'t4',budget:300,poster:'u1',building:'第二宿舍',meet:'第二宿舍一樓大廳',start:at(-1,19),end:at(-1,20,30),note:'雙人房浴室加地板。',status:'done',assignee:'u2',price:300,requestedAt:t0-2*H,
+      photos:[{src:demoPhoto('打掃前',false),at:t0-4*H},{src:demoPhoto('打掃後',true),at:t0-2*H}],
+      offers:[{id:'o5',user:'u2',price:300,msg:'',at:t0-2*D}]}),
+    base({id:'t5',budget:100,poster:'u2',building:'第一宿舍',meet:'第一宿舍一樓回收區',start:at(-3,10),end:at(-3,10,30),note:'幫忙倒垃圾和資源回收。',status:'closed',assignee:'u3',price:100,closedAt:t0-3*D,payment:{last5:'67890',method:'匯款',at:t0-3*D},
+      offers:[{id:'o6',user:'u3',price:100,msg:'',at:t0-4*D}]}),
+    base({id:'t6',budget:350,poster:'u2',building:'第三宿舍',meet:'第三宿舍一樓大廳',start:past,end:past+H,note:'四人房冰箱清潔。',status:'assigned',assignee:'u4',price:330,
+      offers:[{id:'o7',user:'u4',price:330,msg:'',at:t0-D}]}),
+    base({id:'t8',budget:350,poster:'u1',building:'第二宿舍',meet:'第二宿舍一樓大廳',start:at(-2,15),end:at(-2,16),note:'四人房地板掃拖。',status:'confirmed',assignee:'u3',price:350,requestedAt:t0-D,confirmedAt:t0-3*H,
+      photos:[{src:demoPhoto('打掃前',false),at:t0-2*D},{src:demoPhoto('打掃後',true),at:t0-2*D+H}],
+      offers:[{id:'o8',user:'u3',price:350,msg:'',at:t0-3*D}]}),
+    base({id:'t9',budget:150,poster:'u4',building:'第三宿舍',meet:'第三宿舍一樓大廳',start:at(-5,13),end:at(-5,14),note:'單人房書桌和地板。',status:'closed',assignee:'u1',price:150,payment:{last5:'11223',method:'匯款',at:t0-5*D},
+      offers:[{id:'o9',user:'u1',price:150,msg:'',at:t0-6*D}]}),
+    base({id:'t10',poster:'u1',building:'第二宿舍',meet:'第二宿舍一樓大廳',start:at(-6,10),end:at(-6,11),note:'倒垃圾。',status:'cancelled',cancelReason:'發案人取消'}),
+    base({id:'t11',budget:220,poster:'u2',building:'第一宿舍',meet:'第一宿舍一樓大廳',start:at(2,15),end:at(2,16),note:'單人房地板和浴室。',status:'pending',assignee:'u1',price:220,pendingAt:t0-2*H,
+      offers:[{id:'o11',user:'u1',price:220,msg:'',at:t0-5*H},{id:'o12',user:'u3',price:240,msg:'',at:t0-4*H}]}),
+    base({id:'t7',budget:180,poster:'u4',building:'第三宿舍',meet:'第三宿舍門口',gender:'限女生',start:at(3,16),end:at(3,17),note:'單人房窗戶和窗溝。',status:'open'})
+  ];
+  const tags={u1:{u3:{type:'custom',text:'打掃很仔細，但遲到 20 分鐘',at:t0-D}}};
+  return {v:11,users,tasks,tags,favs:{},notes:[{id:'n2',to:'u1',text:'有人對你的案子出價（第二宿舍・'+fmtShort(at(1,14))+'）。',taskId:'t1',at:t0-H,read:false},{id:'n1',to:'u1',text:'陳怡君選擇了你的出價（第一宿舍・'+fmtShort(at(2,15))+'），請在 24 小時內確認接案。',taskId:'t11',at:t0-2*H,read:false}],clockOffset:0,me:null,seq:100};
+}
+
+/* ---------- 狀態 ---------- */
+let S=null;
+try{const raw=localStorage.getItem(KEY); if(raw) S=JSON.parse(raw);}catch(e){S=null;}
+if(!S||S.v!==11) S=seed();
+if(!S.notes)S.notes=[];
+if(!S.favs)S.favs={};
+function freshUI(){return {tab:'browse',view:'list',detailId:null,workSeg:null,ownSeg:null,adminSeg:'todo',meSub:'main',cdraft:{},expanded:{},tagMenu:null,tagCustom:false,pf:pfdef(),editing:false,histSeg:'all',drawer:false,q:'',sort:'start',dir:'asc',day:null,bcalMonth:'',f:fdef(),modal:null,pending:null,top:false};}
+let ui=freshUI();
+let warned=false;
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){if(!warned){warned=true;toast('照片太多，瀏覽器存不下；重新整理後新照片會消失');}}}
+
+/* ---------- 工具 ---------- */
+function now(){return Date.now()+S.clockOffset;}
+function u(id){return S.users.find(x=>x.id===id);}
+function me(){return u(S.me);}
+function T(id){return S.tasks.find(t=>t.id===id);}
+function nid(p){S.seq++;return p+S.seq;}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function pad(n){return String(n).padStart(2,'0');}
+function money(n){return Number(n).toLocaleString('zh-TW');}
+function mdw(d){return (d.getMonth()+1)+'月'+d.getDate()+'日（'+'日一二三四五六'[d.getDay()]+'）';}
+function fmtTime(ts){const d=new Date(ts);return (d.getMonth()+1)+'月'+d.getDate()+'日（'+'日一二三四五六'[d.getDay()]+'）'+pad(d.getHours())+':'+pad(d.getMinutes());}
+function fmtShort(ts){const d=new Date(ts);return (d.getMonth()+1)+'月'+d.getDate()+'日 '+pad(d.getHours())+':'+pad(d.getMinutes());}
+function toDate(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+function fmtRange(t){const e=new Date(t.end);return fmtTime(t.start)+' 至 '+pad(e.getHours())+':'+pad(e.getMinutes());}
+function label(t){return t.building+'・'+fmtShort(t.start);}
+function lowBid(t){return t.offers.length?Math.min.apply(null,t.offers.map(o=>o.price)):null;}
+function genderOk(t,x){return t.gender==='不限'||(t.gender==='限男生'&&x.gender==='男')||(t.gender==='限女生'&&x.gender==='女');}
+function span(ms){const a=Math.abs(ms);if(a<H)return Math.max(1,Math.round(a/M))+' 分鐘';if(a<D)return Math.round(a/H)+' 小時';return Math.round(a/D)+' 天';}
+function rel(ts){const d=ts-now();return d>0?span(d)+'後開始':'已開始 '+span(d);}
+function deptLine(x){return x.cls||'';}
+function suspended(x){return x.suspendedUntil>now();}
+function canCancel(t){return now()<t.start;}
+function role(t,id){return t.poster===id?'poster':t.assignee===id?'worker':'viewer';}
+function avatar(x,sz){let h=0;for(const c of x.id)h+=c.charCodeAt(0);return '<span class="av '+(sz||'')+'" style="background:'+AV[h%AV.length]+'" aria-hidden="true">'+esc(x.name[0])+'</span>';}
+function v(f,n){return f.elements[n].value.trim();}
+function empty(t,s){return '<div class="empty"><b>'+t+'</b><span class="small">'+s+'</span></div>';}
+let tt;
+function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>el.classList.remove('show'),2600);return false;}
+function ask(title,body,ok,fn,danger){ui.modal={type:'confirm',title,body,ok,danger:!!danger};ui.pending=fn;}
+
+function todo(t,id){
+  const r=role(t,id);
+  if(t.status==='open'&&r==='poster'&&t.offers.length)return t.offers.length+' 個出價，挑一位';
+  if(t.status==='pending'&&r==='worker')return '確認接案';
+  if(t.status==='assigned'&&r==='worker')return '去打掃並上傳證明';
+  if(t.status==='done'&&r==='poster')return '確認打掃結果';
+  if(t.status==='confirmed'&&r==='poster')return '請付款給接案人';
+  if(t.status==='confirmed'&&r==='worker')return '等發案人付款';
+  if(t.status==='paid'&&r==='poster')return null;
+  if(t.status==='paid'&&r==='worker')return '確認是否收到款項';
+  return null;
+}
+function byPriority(a,b){
+  const rk=t=>todo(t,S.me)?0:(t.status==='closed'||t.status==='cancelled')?2:1;
+  const ra=rk(a),rb=rk(b);if(ra!==rb)return ra-rb;
+  return ra===2?b.start-a.start:a.start-b.start;
+}
+
+/* ---------- 畫面 ---------- */
+function headerView(){
+  const m=me();
+  return '<header class="top">'+(m?'<button class="name-btn" data-act="drawer" aria-label="開啟我的，'+esc(m.name)+'">'+esc(m.name)+'</button>':'<button class="btn sm" data-act="login">登入</button>')+
+  '<div class="grow"><div class="brand">交換時間</div><div class="clock">'+(S.clockOffset?'模擬時間 ':'')+fmtTime(now())+'</div></div>'+
+  (m?'<button class="icon-btn bell" data-act="openNotes" aria-label="通知'+(unreadNotes()?'，'+unreadNotes()+' 則未讀':'')+'">'+IC.bell+(unreadNotes()?'<span class="nbadge hdr">'+unreadNotes()+'</span>':'')+'</button>':'')+
+  '<button class="btn ghost sm" data-act="openDemo">示範工具</button></header>';
+}
+function tabsView(){
+  const m=me();
+  const tabs=[['browse','接案',IC.search],['post','發案',IC.plus],['work','接案管理',IC.list],['own','發案管理',IC.clip]];
+  const badge=m?{work:S.tasks.filter(t=>t.assignee===m.id&&todo(t,m.id)).length,own:S.tasks.filter(t=>t.poster===m.id&&todo(t,m.id)).length}:{};
+  return '<nav class="tabs n4">'+tabs.map(([k,l,ic])=>'<button class="'+(ui.tab===k&&ui.view==='list'?'on':'')+'" data-act="tab" data-v="'+k+'">'+ic+'<span>'+l+'</span>'+(badge[k]?'<span class="badge">'+badge[k]+'</span>':'')+'</button>').join('')+'</nav>';
+}
+function drawerView(){
+  if(!ui.drawer||!S.me)return '';
+  return '<div class="dscrim" data-act="dscrim"><aside class="drawer'+(ui.drawerAnim?' anim':'')+'" role="dialog" aria-modal="true" aria-label="我的">'+
+  '<div class="row between"><span class="drawer-title">我的</span><button class="btn ghost sm" data-act="closeDrawer" aria-label="關閉">✕</button></div>'+meView()+'</aside></div>';
+}
+function suspendBanner(m){return m&&suspended(m)?'<div class="banner bad">你目前停權中，到 '+fmtTime(m.suspendedUntil)+' 為止不能發案或出價。</div>':'';}
+
+const SYM_M='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="14" r="6"/><path d="M14.5 9.5L20 4M14.5 4H20V9.5"/></svg>';
+const SYM_F='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="9" r="6"/><path d="M12 15v7M8.5 19h7"/></svg>';
+function genderIcon(g){
+  if(g==='限男生')return '<span class="gsym male" role="img" aria-label="限男生" title="限男生">'+SYM_M+'</span>';
+  if(g==='限女生')return '<span class="gsym female" role="img" aria-label="限女生" title="限女生">'+SYM_F+'</span>';
+  return '<span class="gtag any">不限</span>';
+}
+function dateLabel(t){return mdw(new Date(t.start));}
+function timeLabel(t){const d=new Date(t.start),e=new Date(t.end);return pad(d.getHours())+':'+pad(d.getMinutes())+' 至 '+pad(e.getHours())+':'+pad(e.getMinutes());}
+function isFav(id){return (S.favs[S.me]||[]).indexOf(id)>=0;}
+function favBtn(id,withText){
+  const on=isFav(id);
+  return '<button class="favbtn'+(on?' on':'')+(withText?' txt':'')+'" data-act="fav" data-id="'+id+'" aria-pressed="'+on+'" aria-label="'+(on?'取消收藏':'收藏這個案子')+'">'+IC.star+(withText?'<span>'+(on?'已收藏':'收藏')+'</span>':'')+'</button>';
+}
+function cardDate(t){const d=new Date(t.start);return (d.getMonth()+1)+'月'+d.getDate()+'日（'+'日一二三四五六'[d.getDay()]+'）';}
+function cardTime(t){const d=new Date(t.start),e=new Date(t.end);return pad(d.getHours())+':'+pad(d.getMinutes())+' 至 '+pad(e.getHours())+':'+pad(e.getMinutes());}
+function gLabel(g){return g==='限男生'?'限男':g==='限女生'?'限女':'不限';}
+function genderText(g){return g==='限男生'?'<span class="gtxt male">限男</span>':g==='限女生'?'<span class="gtxt female">限女</span>':'<span class="gtag any">不限</span>';}
+function taskCard(t,opt){
+  opt=opt||{};
+  const td=todo(t,S.me),st=ST[t.status],own=t.poster===S.me;
+  const chosen=t.status==='pending'&&t.assignee===S.me;
+  const myBid=(t.status==='open'||t.status==='pending')&&!own&&!chosen?t.offers.find(o=>o.user===S.me):null;
+  const price=t.price||t.budget,exp=!!ui.expanded[t.id];
+  const role=own?'我發的':t.assignee===S.me?'我接的':'';
+  let bar='';
+  if(opt.bar&&chosen)bar='<div class="tc-bar bottom s-wait">發案人已選擇你，是否確認接案？</div>';
+  else if(opt.bar&&myBid)bar='<div class="tc-bar bottom s-open">等待發案人決定人選</div>';
+  else if(opt.bar&&own&&t.status==='open')bar='<div class="tc-bar bottom '+(t.offers.length?'s-wait':'s-open')+'">'+(t.offers.length?'已有 '+t.offers.length+' 個人出價，請決定人選':'還沒有人出價')+'</div>';
+  else if(opt.bar&&own&&t.status==='pending')bar='<div class="tc-bar bottom s-wait">已選擇 '+esc(u(t.assignee).name)+'，等待對方確認接案</div>';
+  else if(opt.bar)bar='<div class="tc-bar bottom '+st.cls+'">'+st.label+(td?'・'+td:'')+(opt.role&&role?'<span class="bar-role">'+role+'</span>':'')+'</div>';
+  return '<div class="card task'+(td?' todo':'')+'">'+
+    '<button class="tc-open" data-act="open" data-id="'+t.id+'" aria-label="查看 '+dateLabel(t)+esc(t.building)+' 的案子"></button>'+
+    favBtn(t.id)+(unread(t)?'<span class="nbadge" aria-label="'+unread(t)+' 則新留言">'+unread(t)+'</span>':'')+
+    '<div class="tc-body"><div class="tc-date">'+cardDate(t)+'<span class="tc-time">'+cardTime(t)+'</span></div>'+
+    '<div class="tc-row"><div class="tc-main">'+
+      '<div class="tc-place">'+esc(t.building)+'</div>'+
+      '<div class="tc-g">'+genderText(t.gender)+'</div>'+
+    '</div><div class="tc-side"><div class="tc-bottom">'+(opt.own&&own?'<span class="pill s-ownt">我發的</span>':'')+(myBid?'<span class="pill s-bid">你已出價 NT$ '+money(myBid.price)+'</span>':'')+
+      '<span class="price">'+(price?'NT$ '+money(price):'<span class="muted">自由出價</span>')+'</span></div></div></div></div>'+bar+'</div>';
+}
+function fixNotes(){
+  document.querySelectorAll('.tc-note').forEach(n=>{
+    const t=n.querySelector('.tc-note-txt'),b=n.querySelector('.tc-more');
+    if(n.classList.contains('open')){b.hidden=false;return;}
+    b.hidden=!(t.scrollWidth>t.clientWidth+1);
+  });
+}
+
+function fdef(){return {from:'',to:'',tmin:'',tmax:'',pmin:'',pmax:'',genders:GENDERS.slice()};}
+const SORTS=[['created','desc','刊登時間：最新的在前'],['created','asc','刊登時間：最早的在前'],['price','desc','價格：高到低'],['price','asc','價格：低到高'],['start','asc','執行時間：最近的在前'],['start','desc','執行時間：最晚的在前']];
+function sortText(){const o=SORTS.find(x=>x[0]===ui.sort&&x[1]===ui.dir);return o?o[2]:'';}
+function filterCount(){const f=ui.f;return (f.from||f.to?1:0)+(f.tmin!==''||f.tmax!==''?1:0)+(f.pmin!==''||f.pmax!==''?1:0)+(f.genders.length<GENDERS.length?1:0);}
+function matchBrowse(t,ignoreDay){
+  const f=ui.f;
+  if(!ignoreDay&&ui.day&&toDate(new Date(t.start))!==ui.day)return false;
+  if(f.from&&t.start<new Date(f.from+'T00:00').getTime())return false;
+  if(f.to&&t.start>=new Date(f.to+'T00:00').getTime()+D)return false;
+  if(f.pmin!==''||f.pmax!==''){
+    if(!t.budget)return false;
+    if(f.pmin!==''&&t.budget<Number(f.pmin))return false;
+    if(f.pmax!==''&&t.budget>Number(f.pmax))return false;
+  }
+  if(f.genders.indexOf(t.gender)<0)return false;
+  if(f.tmin!==''||f.tmax!==''){const d=new Date(t.start),e=new Date(t.end),sm=d.getHours()*60+d.getMinutes(),em=e.getHours()*60+e.getMinutes();
+    if(f.tmin!==''&&sm<Number(f.tmin))return false;if(f.tmax!==''&&em>Number(f.tmax))return false;}
+  const q=ui.q.trim().toLowerCase();
+  if(q&&(t.building+' '+t.meet+' '+t.note).toLowerCase().indexOf(q)<0)return false;
+  return true;
+}
+function browseList(){
+  const list=S.tasks.filter(t=>t.status==='open'&&matchBrowse(t));
+  const s=ui.sort,sg=ui.dir==='asc'?1:-1;
+  list.sort((a,b)=>{
+    if(s==='price'){
+      if(!a.budget!==!b.budget)return a.budget?-1:1;
+      if(a.budget&&b.budget&&a.budget!==b.budget)return sg*(a.budget-b.budget);
+      return a.start-b.start;
+    }
+    if(s==='created')return sg*(a.createdAt-b.createdAt)||a.start-b.start;
+    return sg*(a.start-b.start);
+  });
+  const total=S.tasks.filter(t=>t.status==='open').length;
+  let dayChip='';
+  if(ui.day){const d=new Date(ui.day+'T00:00');dayChip='<div class="daychip"><span>只看 '+mdw(d)+'的案子</span><button class="btn ghost sm" data-act="clearDay" aria-label="取消只看這天">看全部日期</button></div>';}
+  return dayChip+'<div class="small muted">'+sortText()+'・'+(list.length===total?'共 '+total+' 個媒合中':'符合 '+list.length+' 個（共 '+total+' 個媒合中）')+'</div>'+
+  (list.length?list.map(t=>taskCard(t,{own:true})).join(''):'<div class="empty"><b>沒有符合條件的案子</b><span class="small">換個關鍵字、篩選條件或日期試試。</span><button class="btn ghost sm" data-act="resetFilter">清除搜尋、篩選和日期</button></div>');
+}
+function browseView(){
+  const m=me(),n=filterCount();
+  return suspendBanner(m)+
+  '<div class="sec-head"><h1>接案</h1></div>'+
+  '<div class="toolbar"><div class="search">'+IC.search+'<input id="q" type="search" enterkeyhint="search" placeholder="搜尋地點、集合位置、備註" aria-label="搜尋案子" value="'+esc(ui.q)+'"></div>'+
+  '<div class="tb3">'+
+    '<button class="btn ghost sm" data-act="openSort" aria-haspopup="dialog">'+IC.sort+'排序</button>'+
+    '<button class="btn ghost sm '+(n?'active':'')+'" data-act="openFilter" aria-haspopup="dialog">'+IC.filter+'篩選'+(n?'<span class="badge">'+n+'</span>':'')+'</button>'+
+    '<button class="btn ghost sm '+(ui.day?'active':'')+'" data-act="openBcal" aria-haspopup="dialog">'+IC.cal+'日曆'+(ui.day?'<span class="badge">1</span>':'')+'</button>'+
+  '</div></div>'+
+  '<div id="blist" class="stack">'+browseList()+'</div>';
+}
+function bcalSheet(){
+  const ym=ui.bcalMonth.split('-').map(Number),y=ym[0],mo=ym[1];
+  const lead=(new Date(y,mo-1,1).getDay()+6)%7,days=new Date(y,mo,0).getDate(),today=toDate(new Date(now()));
+  const cnt={};S.tasks.forEach(t=>{if(t.status==='open'&&matchBrowse(t,true)){const k=toDate(new Date(t.start));cnt[k]=(cnt[k]||0)+1;}});
+  let cells='';
+  for(let i=0;i<lead;i++)cells+='<span></span>';
+  for(let d=1;d<=days;d++){
+    const ds=toDate(new Date(y,mo-1,d)),c=cnt[ds]||0,past=ds<today,sel=ds===ui.day;
+    cells+='<button type="button" class="bc-day'+(sel?' on':'')+(ds===today?' today':'')+(c?' has':'')+'" data-act="pickDay" data-v="'+ds+'"'+(past?' disabled':'')+' aria-pressed="'+sel+'" aria-label="'+mo+' 月 '+d+' 日，'+(c?c+' 個案子':'沒有案子')+'"><span class="bc-n">'+d+'</span>'+(c?'<span class="bc-cnt">'+c+' 件</span>':'')+'</button>';
+  }
+  return '<h2>用日曆找案子</h2><p class="small muted">數字是那天可以接的案子，點一天只看那天的案子。</p>'+
+  '<div class="cal bcal"><div class="cal-head"><button type="button" class="cal-nav" data-act="bcalMonth" data-v="-1"'+(ui.bcalMonth>today.slice(0,7)?'':' disabled')+' aria-label="上個月">‹</button><b>'+y+' 年 '+mo+' 月</b><button type="button" class="cal-nav" data-act="bcalMonth" data-v="1" aria-label="下個月">›</button></div>'+
+  '<div class="cal-grid">'+'一二三四五六日'.split('').map(w=>'<span class="cal-wd">'+w+'</span>').join('')+cells+'</div></div>'+
+  '<div class="two">'+(ui.day?'<button class="btn ghost" data-act="clearDay">看全部日期</button>':'<span></span>')+'<button class="btn ghost" data-act="close">關閉</button></div>';
+}
+function sortSheet(){
+  return '<h2>排序</h2><div class="optlist" role="radiogroup" aria-label="排序方式">'+SORTS.map(([k,dir,l])=>{const on=ui.sort===k&&ui.dir===dir;
+    return '<button class="opt-row'+(on?' on':'')+'" role="radio" aria-checked="'+on+'" data-act="pickSort" data-k="'+k+'" data-v="'+dir+'"><span>'+l+'</span>'+(on?'<span class="tm-check">✓</span>':'')+'</button>';}).join('')+'</div>';
+}
+
+function mineSegs(id){
+  return [
+    ['w-bid','出價中',t=>(t.status==='open'||t.status==='pending')&&t.poster!==id&&t.offers.some(o=>o.user===id),'出價後、發案人還沒挑人前，會出現在這裡。'],
+    ['w-active','進行中',t=>t.assignee===id&&t.status==='assigned','發案人選你之後，案子會出現在這裡。'],
+    ['w-pay','等待收款',t=>t.assignee===id&&['done','confirmed','paid'].includes(t.status),'打掃完成、等發案人付款的案子會出現在這裡。'],
+    ['p-open','媒合中',t=>t.poster===id&&(t.status==='open'||t.status==='pending'),'按下方「發案」，填好日期、時間和地點就能開始。'],
+    ['p-active','進行中',t=>t.poster===id&&t.status==='assigned','選好接案人之後，案子會出現在這裡。'],
+    ['p-deliver','交付中',t=>t.poster===id&&['done','confirmed','paid'].includes(t.status),'接案人完成打掃後，等你確認和付款的案子會出現在這裡。']
+  ];
+}
+function manageView(kind){
+  const id=S.me,all=mineSegs(id),segs=kind==='work'?all.slice(0,3):all.slice(3),key=kind==='work'?'workSeg':'ownSeg';
+  const cnt=sg=>S.tasks.filter(sg[2]).filter(t=>todo(t,id)).length;
+  if(!ui[key]){const hit=segs.find(sg=>cnt(sg));ui[key]=hit?hit[0]:segs[0][0];}
+  const cur=segs.find(sg=>sg[0]===ui[key])||segs[0];
+  const list=S.tasks.filter(cur[2]).sort((a,b)=>a.start-b.start);
+  return '<div class="sec-head"><h1>'+(kind==='work'?'接案管理':'發案管理')+'</h1></div>'+
+  '<div class="seg" role="tablist">'+segs.map(sg=>'<button role="tab" aria-selected="'+(ui[key]===sg[0])+'" class="'+(ui[key]===sg[0]?'on':'')+'" data-act="seg" data-k="'+key+'" data-v="'+sg[0]+'">'+sg[1]+(cnt(sg)?'<span class="badge">'+cnt(sg)+'</span>':'')+'</button>').join('')+'</div>'+
+  (list.length?list.map(t=>taskCard(t,{bar:true})).join(''):empty('這裡目前沒有案子',cur[3]));
+}
+
+function pfdef(){const d=new Date(now()+D);return {date:toDate(d),month:toDate(d).slice(0,7),start:'10:00',end:'11:00',building:'',meet:'',gender:'不限',budget:'',note:''};}
+function toMin(s){const p=s.split(':');return Number(p[0])*60+Number(p[1]);}
+function fromMin(n){return pad(Math.floor(n/60))+':'+pad(n%60);}
+function durLabel(n){const h=Math.floor(n/60),m=n%60;return (h?h+' 小時':'')+(h&&m?' ':'')+(m?m+' 分鐘':'');}
+function slotOk(date,time){return new Date(date+'T'+time).getTime()>now()+H;}
+function firstSlot(date){for(let n=0;n<=23*60;n+=5){const s=fromMin(n);if(slotOk(date,s))return s;}return null;}
+const MAXEND=23*60+59;
+function timeCol(which,part,sel,isDis){
+  const vals=part==='h'?Array.from({length:24},(_,i)=>i):Array.from({length:60},(_,i)=>i);
+  return '<div class="tcol" role="listbox" aria-label="'+(which==='start'?'開始':'結束')+(part==='h'?'小時':'分鐘')+'">'+vals.map(n=>{
+    const dis=isDis(n),on=n===sel;
+    return '<button type="button" role="option" aria-selected="'+on+'" class="tcell'+(on?' on':'')+'" data-act="pickTime" data-w="'+which+'" data-p="'+part+'" data-v="'+n+'"'+(dis?' disabled':'')+'>'+pad(n)+'</button>';
+  }).join('')+'</div>';
+}
+function calendar(){
+  const pf=ui.pf,ym=pf.month.split('-').map(Number),y=ym[0],mo=ym[1];
+  const lead=new Date(y,mo-1,1).getDay(),days=new Date(y,mo,0).getDate();
+  const today=toDate(new Date(now())),maxDate=toDate(new Date(now()+60*D));
+  let cells='';
+  for(let i=0;i<lead;i++)cells+='<span></span>';
+  for(let d=1;d<=days;d++){
+    const ds=toDate(new Date(y,mo-1,d)),dis=ds<today||ds>maxDate||!firstSlot(ds),sel=ds===pf.date,isT=ds===today;
+    cells+='<button type="button" class="cal-day'+(sel?' on':'')+(isT?' today':'')+'" data-act="pickDate" data-v="'+ds+'"'+(dis?' disabled':'')+' aria-pressed="'+sel+'" aria-label="'+mo+' 月 '+d+' 日'+(isT?'，今天':'')+'">'+d+'</button>';
+  }
+  return '<div class="cal"><div class="cal-head"><button type="button" class="cal-nav" data-act="calMonth" data-v="-1"'+(pf.month>today.slice(0,7)?'':' disabled')+' aria-label="上個月">‹</button>'+
+    '<b>'+y+' 年 '+mo+' 月</b><button type="button" class="cal-nav" data-act="calMonth" data-v="1"'+(pf.month<maxDate.slice(0,7)?'':' disabled')+' aria-label="下個月">›</button></div>'+
+    '<div class="cal-grid">'+'日一二三四五六'.split('').map(w=>'<span class="cal-wd">'+w+'</span>').join('')+cells+'</div></div>';
+}
+function timePicker(){
+  const pf=ui.pf,s=toMin(pf.start),e=toMin(pf.end),sh=Math.floor(s/60),sm=s%60,eh=Math.floor(e/60),em=e%60;
+  const okS=n=>slotOk(pf.date,fromMin(n));
+  const startH=h=>{for(let m=0;m<60;m++)if(okS(h*60+m)&&h*60+m<MAXEND)return false;return true;};
+  const startM=m=>!okS(sh*60+m)||sh*60+m>=MAXEND;
+  const endH=h=>h*60+59<=s;
+  const endM=m=>eh*60+m<=s;
+  const blk=(w,label,val,h,mm,hd,md)=>'<div class="tblock"><div class="tb-head"><label class="small muted" for="tin-'+w+'">'+label+'</label><input id="tin-'+w+'" class="tb-input" data-w="'+w+'" inputmode="numeric" maxlength="5" value="'+val+'" aria-describedby="tp-help"></div>'+
+    '<div class="tcols">'+timeCol(w,'h',h,hd)+'<span class="tsep">:</span>'+timeCol(w,'m',mm,md)+'</div></div>';
+  return '<div class="tpick">'+blk('start','開始',pf.start,sh,sm,startH,startM)+blk('end','結束',pf.end,eh,em,endH,endM)+'</div>'+
+    '<p class="small muted center" id="tp-help">共 '+durLabel(e-s)+'。可以捲動點選，也可以直接在上面的時間輸入，例如 1435。</p>';
+}
+function parseTime(str){
+  const d=String(str).replace(/[^0-9]/g,'');let h,m;
+  if(d.length===3){h=+d[0];m=+d.slice(1);}else if(d.length===4){h=+d.slice(0,2);m=+d.slice(2);}else if(d.length<=2&&d.length>0){h=+d;m=0;}else return null;
+  return h<24&&m<60?h*60+m:null;
+}
+function setTime(which,t){
+  const pf=ui.pf;
+  if(which==='start'){
+    if(!slotOk(pf.date,fromMin(t)))return toast('開始時間至少要在 1 小時後');
+    if(t>=MAXEND)return toast('開始時間太晚了');
+    pf.start=fromMin(t);if(toMin(pf.end)<=t)pf.end=fromMin(Math.min(t+60,MAXEND));
+  }else{
+    if(t<=toMin(pf.start))return toast('結束時間要晚於開始時間');
+    pf.end=fromMin(t);
+  }
+  return true;
+}
+function centerTimeCols(){
+  document.querySelectorAll('.tcol').forEach(c=>{const on=c.querySelector('.on');if(on)c.scrollTop=on.offsetTop-c.clientHeight/2+on.clientHeight/2;});
+}
+function postView(){
+  const m=me();
+  if(suspended(m))return suspendBanner(m)+empty('停權期間不能發案',fmtTime(m.suspendedUntil)+' 後恢復。');
+  const pf=ui.pf,opt='<span class="opt">選填</span>';
+  const d=new Date(pf.date+'T00:00');
+  const sum=mdw(d)+(pf.start?' '+pf.start+(pf.end?' 至 '+pf.end+'（'+durLabel(toMin(pf.end)-toMin(pf.start))+'）':''):'');
+  const gopts=[['不限','不限'],['限男生','限男'],['限女生','限女']];
+  return '<div class="sec-head"><h1>發案</h1><span class="small muted">沒標「選填」的都必填</span></div>'+
+  '<form data-form="post" class="card stack" novalidate>'+
+    '<div class="field"><span class="lbl">日期</span><button type="button" class="dt-btn" data-act="openDate">'+IC.cal+'<span>'+mdw(d)+'</span></button></div>'+
+    '<div class="two"><div class="field"><span class="lbl">開始時間</span><button type="button" class="dt-btn" data-act="openTime" data-w="start">'+IC.clock+'<span>'+pf.start+'</span></button></div>'+
+    '<div class="field"><span class="lbl">結束時間</span><button type="button" class="dt-btn" data-act="openTime" data-w="end">'+IC.clock+'<span>'+pf.end+'</span></button></div></div>'+
+    '<p class="small muted">共 '+durLabel(toMin(pf.end)-toMin(pf.start))+'</p>'+
+    '<div class="field"><label for="p-b">地點</label><input id="p-b" name="building" maxlength="30" placeholder="例如：第二宿舍" value="'+esc(pf.building)+'"><span class="small muted">所有人都看得到。</span></div>'+
+    '<div class="field"><label for="p-meet">集合位置</label><input id="p-meet" name="meet" maxlength="40" placeholder="例如：第二宿舍一樓大廳" value="'+esc(pf.meet)+'"><span class="small muted">所有人都看得到，建議寫公共地點，例如宿舍大廳。</span></div>'+
+    '<div class="field"><span class="lbl" id="p-g">指定接案人性別</span><div class="checks" role="radiogroup" aria-labelledby="p-g">'+gopts.map(([x,l],i)=>'<label for="p-g'+i+'" class="'+(x==='限男生'?'gm':x==='限女生'?'gf':'')+'" aria-label="'+x+'"><input type="radio" id="p-g'+i+'" name="gender" value="'+x+'"'+(pf.gender===x?' checked':'')+'>'+l+'</label>').join('')+'</div></div>'+
+    '<div class="field"><label for="p-budget">價碼（NT$） '+opt+'</label><input id="p-budget" name="budget" type="number" inputmode="numeric" min="50" max="5000" step="10" placeholder="例如 300" value="'+esc(pf.budget)+'"><span class="small muted">會顯示在案子卡片上。不填就由接案人自由出價。</span></div>'+
+    '<div class="field"><label for="p-note">備註 '+opt+'</label><textarea id="p-note" name="note" rows="4" maxlength="300" placeholder="例如：四人房，要掃地拖地和洗浴室；清潔劑我們有">'+esc(pf.note)+'</textarea></div>'+
+    '<p class="small muted">接案人可以照你的價碼出價，也可以提出不同價格，你再從出價裡挑人。開工前都可以取消。</p>'+
+    '<button class="btn block" type="submit">發布案子</button>'+
+  '</form>';
+}
+
+function idLine(x){const parts=[x.sid?'<span class="mono">'+esc(x.sid)+'</span>':'',x.gender?'<span>'+esc(x.gender)+'</span>':'',x.cls?'<span>'+esc(x.cls)+'</span>':''].filter(Boolean);return '<span class="idline">'+parts.join('<span class="dot" aria-hidden="true">•</span>')+'</span>';}
+function idBlock(x,big){return '<div class="idblock'+(big?' big':'')+'"><b class="id-name">'+esc(x.name)+'</b>'+idLine(x)+'</div>';}
+function profileForm(m){
+  const req='<span class="req">必填</span>',opt='<span class="opt">選填</span>';
+  return '<form data-form="profile" class="stack profile-form" novalidate><h3>編輯資料</h3>'+
+    '<div class="field"><label for="m-name">姓名 '+req+'</label><input id="m-name" name="name" maxlength="20" value="'+esc(m.name)+'"></div>'+
+    '<div class="field"><label for="m-sid">學號 '+req+'</label><input id="m-sid" name="sid" maxlength="9" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="例如 S15330124" value="'+esc(m.sid)+'"><span class="small muted">一個英文字母加八個數字。</span></div>'+
+    '<div class="field"><span class="lbl" id="m-g">性別 '+req+'</span><div class="checks" role="radiogroup" aria-labelledby="m-g">'+[['男','男'],['女','女']].map(([x,l],i)=>'<label for="m-g'+i+'"><input type="radio" id="m-g'+i+'" name="gender" value="'+x+'"'+((m.gender||'')===x?' checked':'')+'>'+l+'</label>').join('')+'</div>'+
+      '<span class="small muted">用來判斷你能不能接有指定性別的案子。</span></div>'+
+    '<div class="field"><label for="m-cls">系級 '+opt+'</label><input id="m-cls" name="cls" maxlength="12" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="例如 資工2A" value="'+esc(m.cls||'')+'"></div>'+
+    '<div class="two"><button class="btn ghost" type="button" data-act="cancelEdit">取消</button><button class="btn" type="submit">儲存</button></div></form>';
+}
+function bankView(){
+  const m=me(),b=m.bank||{code:'',acct:'',name:m.name};
+  return '<div class="row"><button class="btn ghost sm" data-act="backMe">← 我的</button></div>'+
+  '<div class="sec-head"><h1>收款帳戶</h1></div>'+
+  (m.bank?'<section class="card"><div class="row between"><span class="muted">目前帳戶</span><b>'+m.bank.code+' '+(BANKS[m.bank.code]||'')+' <span class="mono">****'+esc(m.bank.acct.slice(-4))+'</span></b></div></section>':'<div class="banner warn">你還沒設定收款帳戶。沒有帳戶的話，發案人確認完成後，雙方要自行約定用現金、電子支付等方式付款。</div>')+
+  '<form data-form="bank" class="card stack" novalidate><h2>'+(m.bank?'修改收款帳戶':'設定收款帳戶')+'</h2>'+
+    '<div class="field"><label for="b-code">銀行</label><select id="b-code" name="code"><option value="">請選擇銀行</option>'+Object.keys(BANKS).map(k=>'<option value="'+k+'"'+(k===b.code?' selected':'')+'>'+k+' '+BANKS[k]+'</option>').join('')+'</select></div>'+
+    '<div class="field"><label for="b-acct">帳號</label><input id="b-acct" name="acct" inputmode="numeric" value="'+esc(b.acct)+'"></div>'+
+    '<div class="field"><label for="b-name">戶名</label><input id="b-name" name="bname" value="'+esc(b.name)+'"><span class="small muted">必須和你的姓名「'+esc(m.name)+'」相同。</span></div>'+
+    '<p class="small muted">只有在發案人確認你完成打掃後，才會顯示給那位發案人。</p>'+
+    '<button class="btn block" type="submit">儲存收款帳戶</button>'+
+    (m.bank?'<button class="btn danger block" type="button" data-act="removeBank">移除收款帳戶</button>':'')+'</form>';
+}
+function profileView(){
+  const m=me();
+  return '<div class="row"><button class="btn ghost sm" data-act="backMe">← 我的</button></div>'+
+  '<div class="sec-head"><h1>個人資料</h1>'+(ui.editing?'':'<button class="btn ghost sm" data-act="editProfile">編輯資料</button>')+'</div>'+
+  '<section class="card">'+(ui.editing?profileForm(m):idBlock(m,true)+'<p class="small muted">出價時，發案人會看到這些資料。</p>')+'</section>';
+}
+function tagsView(){
+  const mine=S.tags[S.me]||{},ids=Object.keys(mine).filter(id=>u(id)).sort((a,b)=>mine[b].at-mine[a].at);
+  return '<div class="row"><button class="btn ghost sm" data-act="backMe">← 我的</button></div>'+
+  '<div class="sec-head"><h1>標記的人</h1><span class="small muted">共 '+ids.length+' 人</span></div>'+
+  '<p class="small muted">只有你自己看得到。點右邊的標記可以更改或撤銷。</p>'+
+  (ids.length?ids.map(id=>{const x=u(id);return '<section class="card mini"><div class="row between">'+idBlock(x)+tagButton(id)+'</div></section>';}).join('')
+    :empty('還沒有標記任何人','在案子詳情的發案人或接案人資訊卡上，按「標記他」就能標記。'));
+}
+function historyList(id){return S.tasks.filter(t=>(t.poster===id||t.assignee===id)&&t.status==='closed');}
+function cancelledList(id){return S.tasks.filter(t=>(t.poster===id||t.assignee===id)&&t.status==='cancelled');}
+function historyView(kind){
+  const id=S.me,all=kind==='cancelled'?cancelledList(id):historyList(id),sg=ui.histSeg;
+  const list=all.filter(t=>sg==='all'||(sg==='work'?t.assignee===id:t.poster===id)).sort((a,b)=>b.start-a.start);
+  return '<div class="row"><button class="btn ghost sm" data-act="backMe">← 我的</button></div>'+
+  '<div class="sec-head"><h1>'+(kind==='cancelled'?'已取消':'歷史紀錄')+'</h1><span class="small muted">共 '+all.length+' 筆</span></div>'+
+  '<div class="seg" role="tablist">'+[['all','全部'],['work','我接的'],['post','我發的']].map(([k,l])=>'<button role="tab" aria-selected="'+(sg===k)+'" class="'+(sg===k?'on':'')+'" data-act="seg" data-k="histSeg" data-v="'+k+'">'+l+'</button>').join('')+'</div>'+
+  (list.length?list.map(t=>taskCard(t,{bar:true,role:true})).join(''):empty('還沒有紀錄',kind==='cancelled'?'取消的案子會出現在這裡。':'完成的案子會出現在這裡。'));
+}
+function favList(){const ids=S.favs[S.me]||[];return S.tasks.filter(t=>ids.indexOf(t.id)>=0);}
+function favView(){
+  const list=favList().sort((a,b)=>a.start-b.start);
+  return '<div class="row"><button class="btn ghost sm" data-act="backMe">← 我的</button></div>'+
+  '<div class="sec-head"><h1>收藏</h1><span class="small muted">共 '+list.length+' 筆</span></div>'+
+  (list.length?list.map(t=>taskCard(t,{bar:true,role:true})).join(''):empty('還沒有收藏','在案子卡片或案子詳情的右上角按星號，就能收藏。'));
+}
+function meView(){
+  const m=me();
+  if(ui.meSub==='history'||ui.meSub==='cancelled')return historyView(ui.meSub);
+  if(ui.meSub==='favs')return favView();
+  if(ui.meSub==='profile')return profileView();
+  if(ui.meSub==='tags')return tagsView();
+  if(ui.meSub==='bank')return bankView();
+  const b=m.bank,hn=historyList(m.id).length,cn=cancelledList(m.id).length,fn=favList().length;
+  const row=(act,title,sub)=>'<button class="card linkrow" data-act="'+act+'"><span class="grow"><b>'+title+'</b><span class="small muted">'+sub+'</span></span><span class="chev" aria-hidden="true">›</span></button>';
+  return suspendBanner(m)+
+  '<button class="card linkrow me-card" data-act="profile"><span class="grow">'+idBlock(m,true).replace(/<div/g,'<span').replace(/<\/div>/g,'</span>')+'</span><span class="chev" aria-hidden="true">›</span></button>'+
+  row('bankPage','收款帳戶',b?b.code+' '+(BANKS[b.code]||'')+' ****'+esc(b.acct.slice(-4)):'還沒設定')+
+  row('favs','收藏','你收藏的案子，共 '+fn+' 筆')+
+  row('history','歷史紀錄','完成的案子，共 '+hn+' 筆，也可以在這裡標記合作過的人')+
+  row('cancelled','已取消','取消或沒有完成的案子，共 '+cn+' 筆')+
+  row('tagsPage','標記的人','你標記過的人，共 '+Object.keys(S.tags[S.me]||{}).length+' 人')+
+  '<section class="card"><h2>使用規則</h2><ul class="small" style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px">'+
+  '<li>開工前，發案人和接案人都可以取消。</li><li>發案人選擇出價後，接案人要在 24 小時內、而且在開工前確認接案，否則這次選擇作廢。1 小時後還沒確認，發案人可以改選別人。</li><li>付款要雙方都確認：發案人按「已付款」，接案人按「已收款」。</li><li>完成證明照片只有雙方看得到，結案 7 天後自動刪除。</li>'+
+  '<li>平台不經手款項，發案人確認完成後直接付款給接案人。</li>'+
+  '<li>可以標記合作過的人（可信賴、黑名單或自訂內容），只有你自己看得到。</li></ul></section>'+
+  '<button class="btn ghost block" data-act="logout">登出</button>';
+}
+
+function stepper(t){
+  if(t.status==='cancelled')return '';
+  const i=IDX[t.status];
+  return '<ol class="steps" aria-label="案件進度">'+STEPS.map((s,k)=>'<li class="'+(k<i?'past':k===i?'cur':'')+'"><span class="dot"></span><span>'+s+'</span></li>').join('')+'</ol>';
+}
+function notify(to,text,taskId){if(!to)return;S.notes=S.notes||[];S.notes.unshift({id:nid('n'),to:to,text:text,taskId:taskId||null,at:now(),read:false});}
+function myNotes(){return (S.notes||[]).filter(n=>n.to===S.me);}
+function unreadNotes(){return myNotes().filter(n=>!n.read).length;}
+function notesSheet(){
+  const list=myNotes(),fresh=ui.noteFresh||[];
+  return '<div class="row between"><h2>通知</h2><button class="btn ghost sm" data-act="close">關閉</button></div>'+
+    (list.length?'<div class="notes">'+list.map(n=>'<button class="note'+(fresh.indexOf(n.id)>=0?' new':'')+'" data-act="openNote" data-id="'+n.id+'"><span class="note-txt">'+esc(n.text)+'</span><span class="note-time">'+fmtShort(n.at)+'</span></button>').join('')+'</div>'
+      :'<p class="small muted">目前沒有通知。</p>');
+}
+function deadline(t){return Math.min(t.pendingAt+24*H,t.start);}
+function sweep(){
+  let ch=false;
+  S.tasks.forEach(t=>{
+    const lb=t.building+'・'+fmtShort(t.start);
+    if(t.status==='pending'&&now()>=deadline(t)){
+      ch=true;const w=t.assignee;
+      if(now()>=t.start){t.status='cancelled';t.cancelReason='開工時間到了，接案人還沒確認接案，案子已自動取消';
+        notify(t.poster,'接案人在開工前沒有確認，案子已自動取消（'+lb+'）。',t.id);notify(w,'你沒有在開工前確認接案，案子已自動取消（'+lb+'）。',t.id);}
+      else{t.offers=t.offers.filter(o=>o.user!==w);t.status='open';t.assignee=null;t.price=null;t.matchNote='接案人沒有在 24 小時內確認，這次選擇已作廢，可以改選其他出價。';
+        notify(t.poster,'接案人沒有在 24 小時內確認，這次選擇已作廢，可以改選其他出價（'+lb+'）。',t.id);notify(w,'你沒有在 24 小時內確認接案，發案人的選擇已作廢（'+lb+'）。',t.id);}
+    }
+    if((t.status==='confirmed'||t.status==='paid')&&!t.payWarned&&t.confirmedAt&&now()>t.confirmedAt+24*H){
+      ch=true;t.payWarned=true;
+      notify(t.poster,'付款已超過 24 小時還沒完成（'+lb+'），'+(t.status==='confirmed'?'請盡快付款並按「已付款」。':'正在等接案人確認收款。'),t.id);
+      notify(t.assignee,'付款已超過 24 小時還沒完成（'+lb+'），'+(t.status==='confirmed'?'發案人還沒按「已付款」。':'收到款項後請按「已收款」。'),t.id);
+    }
+    if(t.status==='closed'&&t.photos&&t.photos.length&&t.closedAt&&now()>t.closedAt+7*D){ch=true;t.photos=[];t.photosGone=true;}
+  });
+  if(ch)save();
+}
+const TAGS=[['trust','可信賴'],['black','黑名單'],['custom','自訂內容']];
+function tagOf(uid){return (S.tags[S.me]||{})[uid]||null;}
+function tagText(g){return g.type==='trust'?'可信賴':g.type==='black'?'黑名單':g.text;}
+function tagChip(g){
+  if(!g)return '';
+  return '<span class="pill '+(g.type==='trust'?'s-good':g.type==='black'?'s-bad':'s-assigned')+'">'+esc(tagText(g))+'</span>';
+}
+function tagButton(uid){
+  const g=tagOf(uid),open=ui.tagMenu===uid;
+  return '<span class="tagwrap"><button class="tagbtn tg-'+(g?g.type:'none')+'" data-act="tagMenu" data-uid="'+uid+'" aria-haspopup="menu" aria-expanded="'+open+'" aria-label="標記'+(g?'，目前是「'+esc(tagText(g))+'」':'')+'">'+
+    '<span class="tg-lbl">'+(g?esc(tagText(g)):'標記他')+'</span>'+IC.bookmark+'</button>'+
+    (open?'<div class="tagmenu" role="menu">'+
+      '<button role="menuitemradio" aria-checked="'+(!!g&&g.type==='trust')+'" data-act="setTag" data-uid="'+uid+'" data-type="trust"><span class="tm-dot trust"></span>可信賴'+(g&&g.type==='trust'?'<span class="tm-check">✓</span>':'')+'</button>'+
+      '<button role="menuitemradio" aria-checked="'+(!!g&&g.type==='black')+'" data-act="setTag" data-uid="'+uid+'" data-type="black"><span class="tm-dot black"></span>黑名單'+(g&&g.type==='black'?'<span class="tm-check">✓</span>':'')+'</button>'+
+      (ui.tagCustom?'<form data-form="tag" data-uid="'+uid+'" class="tm-custom" novalidate><input name="text" maxlength="30" placeholder="輸入自訂內容" aria-label="自訂標記內容" value="'+esc(g&&g.type==='custom'?g.text:'')+'"><button class="btn sm" type="submit">儲存</button></form>'
+        :'<button role="menuitemradio" aria-checked="'+(!!g&&g.type==='custom')+'" data-act="tagCustom" data-uid="'+uid+'"><span class="tm-dot custom"></span>'+(g&&g.type==='custom'?'自訂：'+esc(g.text):'自訂內容…')+'</button>')+
+      (g?'<button role="menuitem" class="tm-remove" data-act="untag" data-uid="'+uid+'">撤銷標記</button>':'')+
+    '</div>':'')+'</span>';
+}
+const CMT_OPEN=['assigned','done','confirmed','paid'];
+function unread(t){
+  if(!S.me||!t.comments||!t.comments.length)return 0;
+  const seen=(t.seen||{})[S.me]||0;
+  return t.comments.filter(c=>c.user!==S.me&&c.at>seen).length;
+}
+function commentSection(t,r){
+  if(r==='viewer'||!t.assignee)return '';
+  const can=CMT_OPEN.indexOf(t.status)>=0,list=t.comments||[];
+  if(!can&&!list.length)return '';
+  return '<section class="card"><div class="row between"><h2>留言板</h2><span class="small muted">只有你們兩人看得到</span></div>'+
+    (list.length?'<div class="cmts">'+list.map(c=>{const mine=c.user===S.me,x=u(c.user);
+      return '<div class="cmt'+(mine?' mine':'')+'"><div class="cmt-meta">'+(mine?'你':esc(x.name))+'・'+fmtShort(c.at)+'</div><div class="cmt-txt">'+esc(c.text)+'</div></div>';}).join('')+'</div>'
+      :'<p class="small muted">還沒有留言。可以在這裡約鑰匙怎麼拿、房號、要特別注意的地方。</p>')+
+    (can?'<form data-form="comment" data-id="'+t.id+'" class="cmt-form" novalidate><textarea id="cmt-in" name="text" rows="2" maxlength="300" placeholder="輸入留言" aria-label="輸入留言">'+esc(ui.cdraft[t.id]||'')+'</textarea><button class="btn" type="submit">送出</button></form>'
+      :'<p class="small muted">案子已經'+(t.status==='closed'?'結案':'取消')+'，留言板只能查看。</p>')+
+  '</section>';
+}
+function personCard(title,x,self){
+  return '<section class="card mini"><div class="row between"><span class="mini-role">'+title+'</span>'+(self?'<span class="small muted">你</span>':tagButton(x.id))+'</div>'+
+  idBlock(x)+'</section>';
+}
+function offerRow(t,o,i,canChoose){
+  const x=u(o.user),sus=suspended(x),g=tagOf(x.id);
+  return '<div class="offer"><div class="row between"><div>'+idBlock(x)+(g?'<div class="row wrap small"><span class="muted">你的標記</span>'+tagChip(g)+'</div>':'')+'</div><span class="price">NT$ '+money(o.price)+'</span></div>'+
+  (!canChoose?'':sus?'<span class="pill s-bad">停權中，不能選擇</span>':'<button class="btn sm" data-act="choose" data-id="'+t.id+'" data-oid="'+o.id+'">選擇他</button>')+'</div>';
+}
+function photoSection(t,editable){
+  const r=role(t,S.me),ph=t.photos||[];
+  if(r==='viewer')return '';
+  if(!editable&&!ph.length)return t.photosGone?'<div class="banner small">完成證明照片已在結案 7 天後自動刪除。</div>':'';
+  const del=t.status==='closed'&&t.closedAt?'照片會在 '+fmtTime(t.closedAt+7*D)+' 自動刪除。':'照片只有你們兩人看得到，結案 7 天後會自動刪除。';
+  return '<section class="card"><div class="row between"><h2>'+(editable?'上傳完成證明':'完成證明')+'</h2><span class="small muted">'+(editable?'選填・':'')+ph.length+' 張</span></div><div class="photos">'+
+  ph.map((p,i)=>'<div class="ph"><img src="'+p.src+'" alt="完成證明照片 '+(i+1)+'" data-act="viewPhoto" data-id="'+t.id+'" data-i="'+i+'"><span class="ph-time">'+fmtShort(p.at)+'</span>'+
+    (editable?'<button class="ph-x" data-act="rmPhoto" data-id="'+t.id+'" data-i="'+i+'" aria-label="刪除這張">×</button>':'')+'</div>').join('')+
+  (editable?'<label class="ph add" for="f-ph">＋ 加照片<input class="vh" id="f-ph" type="file" accept="image/*" multiple data-upload="photos" data-id="'+t.id+'"></label>':'')+'</div>'+
+  '<p class="small muted">'+(editable?'可以一次選多張，不傳也沒關係。':'')+del+'</p></section>';
+}
+
+function priceCard(t,r){
+  const m=me(),bud=t.budget?'NT$ '+money(t.budget):'<span class="muted">自由出價</span>';
+  let body='';
+  if(t.status==='open'){
+    if(r==='poster'){
+      body='<div class="row between pc-row"><span class="muted">你的價碼</span><span class="price">'+bud+'</span></div>'+
+        '<h3>收到的出價（'+t.offers.length+'）</h3>'+
+        (t.offers.length?t.offers.slice().sort((a,b)=>a.price-b.price).map((o,i)=>offerRow(t,o,i,true)).join(''):'<p class="small muted">還沒有人出價。案子已經顯示在「接案」頁。</p>');
+    }else if(!m){
+      body='<div class="pc-center"><span class="small muted">發案人價碼</span><span class="pc-big">'+(t.budget?'NT$ '+money(t.budget):'自由出價')+'</span></div>'+
+        '<button class="btn block" data-act="login" data-why="登入後才能出價或接受價碼。">登入後出價</button>';
+    }else{
+      const mine=t.offers.find(o=>o.user===m.id),took=mine&&t.budget&&mine.price===t.budget;
+      body=mine?'<div class="banner info center">你目前的出價 <b class="price">NT$ '+money(mine.price)+'</b><br><span class="small">等待發案人選定，選中後會通知你確認接案。</span></div>':'';
+      body+='<div class="pc-center"><span class="small muted">發案人價碼</span><span class="pc-big">'+(t.budget?'NT$ '+money(t.budget):'自由出價')+'</span></div>';
+      if(suspended(m))body+='<div class="banner bad">你目前停權中，'+fmtTime(m.suspendedUntil)+' 後才能出價。</div>';
+      else if(!genderOk(t,m))body+='<div class="banner warn">這個案子'+gLabel(t.gender)+'，'+(m.gender?'你沒辦法出價。':'你的個人資料沒有填性別，所以沒辦法出價。')+'</div>';
+      else{
+        if(t.budget)body+='<button class="btn block" data-act="acceptPrice" data-id="'+t.id+'"'+(took?' disabled':'')+'>'+(took?'已接受此價':'接受此價')+'</button>';
+        body+='<button class="btn block'+(t.budget?' ghost':'')+'" data-act="openBid" data-id="'+t.id+'">'+(mine?'查看我的出價':'自行出價')+'</button>';
+      }
+    }
+  }else if(t.status==='pending'&&r==='viewer'){
+    const mine=m?t.offers.find(o=>o.user===m.id):null;
+    body='<div class="pc-center"><span class="small muted">發案人價碼</span><span class="pc-big">'+(t.budget?'NT$ '+money(t.budget):'自由出價')+'</span></div>'+
+      (mine?'<div class="row between pc-row"><span class="muted">你的出價</span><span class="price">NT$ '+money(mine.price)+'</span></div>':'')+
+      '<p class="small muted center">發案人已選擇其他出價，正在等對方確認。對方沒有確認的話，案子會重新開放出價。</p>';
+  }else if(t.price){
+    body='<div class="pc-center"><span class="small muted">'+(t.status==='pending'?'選定的價格':'價格')+'</span><span class="pc-big">NT$ '+money(t.price)+'</span></div>';
+  }else{
+    body='<div class="pc-center"><span class="small muted">發案人價碼</span><span class="pc-big">'+(t.budget?'NT$ '+money(t.budget):'自由出價')+'</span><span class="small muted">未成交</span></div>';
+  }
+  return '<section class="card"><h2>價格</h2>'+body+'</section>';
+}
+
+function otherCards(t,r){
+  const out=[],lock=!canCancel(t),w=t.assignee?u(t.assignee):null;
+  const lockNote='<p class="small muted">'+(lock?'已經開工，不能取消了。有狀況請先跟對方說明。':'開工前都可以取消。')+'</p>';
+  const cancelBtn='<button class="btn danger block" data-act="cancelTask" data-id="'+t.id+'"'+(lock?' disabled':'')+'>取消這個案子</button>';
+  if(r==='viewer'){const g=tagOf(t.poster);if(g)out.push('<div class="banner warn row wrap">你標記過這位發案人：'+tagChip(g)+'</div>');}
+  if(t.status==='open'&&r==='poster'){
+    if(t.matchNote)out.push('<div class="banner warn">'+esc(t.matchNote)+'</div>');
+    out.push('<section class="card">'+cancelBtn+lockNote+'</section>');
+  }
+  if(t.status==='pending'){
+    const dl=fmtTime(deadline(t));
+    if(r==='worker')out.push('<section class="card"><h2>確認接案</h2><p>發案人選了你的出價 <b class="price">NT$ '+money(t.price)+'</b>。確認後才算媒合成功。請在 <b>'+dl+'</b> 前確認或婉拒（選中後 24 小時內，而且要在開工前），逾時這次選擇就作廢。</p><p class="small muted">請盡快確認：發案人選擇你 1 小時後，如果你還沒確認，發案人就可以改選別人。</p>'+
+      '<button class="btn block" data-act="acceptMatch" data-id="'+t.id+'">確認接案</button><button class="btn ghost block" data-act="declineMatch" data-id="'+t.id+'">婉拒</button></section>');
+    else if(r==='poster'){
+      const canUn=now()>=t.pendingAt+H;
+      out.push('<section class="card"><h2>等接案人確認</h2><div class="chosen"><div class="row between">'+idBlock(w)+tagButton(w.id)+'</div><div class="row between"><span class="small muted">選定的出價</span><b class="price">NT$ '+money(t.price)+'</b></div></div><p class="small muted">還沒媒合成功。已通知接案人，他要在 '+dl+' 前確認，逾時這次選擇就作廢。</p>'+
+        '<button class="btn ghost block" data-act="unchoose" data-id="'+t.id+'"'+(canUn?'':' disabled')+'>取消選擇，改選其他出價</button>'+
+        '<p class="small muted">選擇後要等 1 小時才能取消選擇，讓接案人有時間回應。'+(canUn?'':'（'+fmtTime(t.pendingAt+H)+' 後可以取消）')+'</p>'+
+        cancelBtn+lockNote+'</section>');
+    }
+  }
+  if(t.status==='assigned'){
+    const over=now()>=t.end;
+    if(r==='worker'){
+      out.push(photoSection(t,true));
+      const begun=now()>=t.start;
+      out.push('<section class="card"><h2>打掃完成後</h2><p class="small muted">'+(begun?'按下按鈕通知發案人確認。提早完成也可以直接按。':'開工時間 '+fmtTime(t.start)+' 到了之後才能按。')+'</p><button class="btn block" data-act="requestPay" data-id="'+t.id+'"'+(begun?'':' disabled')+'>打掃完成，請發案人確認</button></section>');
+      out.push('<section class="card"><button class="btn danger block" data-act="withdrawAssign" data-id="'+t.id+'"'+(lock?' disabled':'')+'>我無法前往，退出這個案子</button>'+lockNote+'</section>');
+    }else if(r==='poster'){
+      out.push('<section class="card"><h2>等接案人打掃</h2><p class="small muted">接案人完成後會通知你確認。</p>'+
+        (over?'<button class="btn ghost block" data-act="endTask" data-id="'+t.id+'">時間已過，接案人沒有完成，結束案子</button>':cancelBtn+lockNote)+'</section>');
+    }
+  }
+  if(t.status==='done'){
+    out.push(photoSection(t,false));
+    if(r==='poster')out.push('<section class="card"><h2>確認打掃結果</h2><p class="small muted">確認後會顯示接案人的收款方式。</p>'+
+      '<button class="btn block" data-act="confirmDone" data-id="'+t.id+'">確認完成</button></section>');
+    if(r==='worker')out.push('<div class="banner info">已通知發案人確認。</div>');
+  }
+  if(t.status==='confirmed'||t.status==='paid'){
+    const late=t.confirmedAt&&now()>t.confirmedAt+24*H;
+    out.push('<div class="banner warn"><b>付款未完成</b><div class="paysteps"><span class="'+(t.status==='paid'?'ok':'')+'">'+(t.status==='paid'?'✓ 發案人已付款':'○ 發案人還沒按「已付款」')+'</span><span>○ 接案人還沒按「已收款」</span></div>'+(late?'<div class="small">已經超過 24 小時，請雙方盡快確認。</div>':'')+'</div>');
+  }
+  if(t.status==='confirmed'){
+    const b=w.bank;
+    if(r==='poster'&&b){
+      out.push('<section class="card"><h2>匯款給接案人</h2><div class="bank"><div><span class="small muted">銀行</span><b>'+b.code+' '+(BANKS[b.code]||'')+'</b></div><div><span class="small muted">帳號</span><b class="mono">'+esc(b.acct)+'</b></div><div><span class="small muted">戶名</span><b>'+esc(b.name)+'</b></div><div><span class="small muted">金額</span><b class="price">NT$ '+money(t.price)+'</b></div></div>'+
+        '<button class="btn ghost sm" data-act="copy" data-v="'+esc(b.acct)+'">複製帳號</button>'+
+        '<p class="small muted">只匯到這裡顯示的帳戶。對方私下要求改帳號的話，請先確認清楚再匯款。</p>'+
+        '<form data-form="pay" data-id="'+t.id+'" class="stack" novalidate><div class="field"><label for="l5">你的匯款帳號末五碼</label><input id="l5" name="last5" inputmode="numeric" maxlength="5" placeholder="12345"></div><button class="btn block" type="submit">已付款</button></form></section>');
+    }else if(r==='poster'){
+      out.push('<section class="card"><h2>付款給接案人</h2><p>接案人沒有提供收款帳戶，請和接案人約定用現金、電子支付或其他方式付款 <b class="price">NT$ '+money(t.price)+'</b>。</p>'+
+        '<form data-form="pay" data-id="'+t.id+'" class="stack" novalidate><div class="field"><span class="lbl" id="pw">付款方式</span><div class="checks" role="radiogroup" aria-labelledby="pw">'+PAYWAYS.map((x,i)=>'<label for="pw'+i+'"><input type="radio" id="pw'+i+'" name="method" value="'+x+'">'+x+'</label>').join('')+'</div></div><button class="btn block" type="submit">已付款</button></form></section>');
+    }else if(r==='worker')out.push('<div class="banner info">發案人已確認完成，會付款 NT$ '+money(t.price)+' 給你。'+(b?'':'你沒有提供收款帳戶，請和發案人約定付款方式。')+'</div>');
+  }
+  if(t.status==='paid'){
+    const how=t.payment.last5?'匯款，帳號末五碼 <b class="mono">'+esc(t.payment.last5)+'</b>':'用「'+esc(t.payment.method)+'」付款';
+    if(r==='worker')out.push('<section class="card"><h2>確認收款</h2><p>發案人表示已'+how+'，金額 <b class="price">NT$ '+money(t.price)+'</b>。</p>'+
+      '<button class="btn block" data-act="received" data-id="'+t.id+'">已收款</button>'+'<p class="small muted">還沒收到的話，先跟發案人確認。</p></section>');
+    if(r==='poster')out.push('<div class="banner info">你已'+how+'，等接案人確認收款。</div>');
+  }
+  if(t.status==='closed'){
+    out.push(photoSection(t,false));
+    out.push('<div class="banner info">已結案'+(t.payment?'（'+(t.payment.last5?'匯款末五碼 '+esc(t.payment.last5):esc(t.payment.method)+'付款')+'）':'')+'。</div>');
+  }
+  if(t.status==='cancelled')out.push('<div class="banner">'+esc(t.cancelReason||'已取消')+'</div>');
+  return out.join('');
+}
+
+function detailView(){
+  const t=T(ui.detailId),m=me();
+  if(!t){ui.view='list';return null;}
+  const r=role(t,S.me),p=u(t.poster),w=t.assignee?u(t.assignee):null;
+  const live=t.status==='open'||t.status==='pending'||t.status==='assigned';
+  const d=new Date(t.start),e=new Date(t.end);
+  const date=mdw(d);
+  const people=[];
+  if(w&&r!=='viewer'&&t.status!=='pending')people.push('<div class="people">'+personCard('發案人',p,r==='poster')+personCard('接案人',w,r==='worker')+'</div>');
+  return '<div class="row between"><button class="btn ghost sm" data-act="back">← 返回</button>'+favBtn(t.id,true)+'</div>'+
+  stepper(t)+(CMT_OPEN.indexOf(t.status)>=0?commentSection(t,r):'')+people.join('')+
+  '<section class="card"><h2>案子資訊</h2><dl class="facts">'+
+    '<dt>日期</dt><dd>'+date+'</dd>'+
+    '<dt>時間</dt><dd>'+pad(d.getHours())+':'+pad(d.getMinutes())+' 至 '+pad(e.getHours())+':'+pad(e.getMinutes())+(live?'　<span class="small muted">'+rel(t.start)+'</span>':'')+'</dd>'+
+    '<dt>接案人性別</dt><dd>'+genderText(t.gender)+'</dd>'+
+    '<dt>地點</dt><dd>'+esc(t.building)+'</dd>'+
+    '<dt>集合位置</dt><dd>'+esc(t.meet)+'</dd>'+
+    '<dt>備註</dt><dd>'+(t.note?esc(t.note):'<span class="muted">無</span>')+'</dd>'+
+  '</dl></section>'+
+  priceCard(t,r)+(CMT_OPEN.indexOf(t.status)>=0?'':commentSection(t,r))+otherCards(t,r);
+}
+
+function dateDlg(){
+  const g=ui.dlg,sel=new Date(g.sel+'T00:00'),today=toDate(new Date(now())),maxD=toDate(new Date(now()+60*D));
+  let body='';
+  if(g.input){
+    body='<div class="field"><label for="dlg-date" class="small muted">輸入日期</label><input id="dlg-date" class="dlg-input" inputmode="numeric" autocomplete="off" placeholder="例如 2026/11/20" value="'+g.sel.replace(/-/g,'/')+'"><span class="small muted">格式：年/月/日，可以選今天到 60 天內。</span></div>';
+  }else{
+    const ym=g.month.split('-').map(Number),y=ym[0],mo=ym[1],lead=(new Date(y,mo-1,1).getDay()+6)%7,days=new Date(y,mo,0).getDate();
+    let cells='';for(let i=0;i<lead;i++)cells+='<span></span>';
+    for(let d=1;d<=days;d++){const ds=toDate(new Date(y,mo-1,d)),dis=ds<today||ds>maxD||!firstSlot(ds),on=ds===g.sel;
+      cells+='<button type="button" class="dd'+(on?' on':'')+(ds===today?' today':'')+'" data-act="dPick" data-v="'+ds+'"'+(dis?' disabled':'')+' aria-pressed="'+on+'" aria-label="'+mo+' 月 '+d+' 日">'+d+'</button>';}
+    body='<div class="row between dlg-month"><b>'+y+'年'+mo+'月</b><span class="row"><button type="button" class="icon-btn" data-act="dMonth" data-v="-1"'+(g.month>today.slice(0,7)?'':' disabled')+' aria-label="上個月">‹</button><button type="button" class="icon-btn" data-act="dMonth" data-v="1"'+(g.month<maxD.slice(0,7)?'':' disabled')+' aria-label="下個月">›</button></span></div>'+
+      '<div class="dd-grid">'+'一二三四五六日'.split('').map(w=>'<span class="dd-wd">'+w+'</span>').join('')+cells+'</div>';
+  }
+  return '<div class="dlg-title">選取日期</div>'+
+    '<div class="row between dlg-big"><span>'+sel.getFullYear()+'年'+(sel.getMonth()+1)+'月'+sel.getDate()+'日</span><button type="button" class="icon-btn" data-act="dInput" aria-label="'+(g.input?'改用日曆選擇':'手動輸入日期')+'">'+(g.input?IC.cal:IC.pen)+'</button></div>'+
+    body+'<div class="dlg-actions"><button type="button" class="btn ghost" data-act="close">取消</button><button type="button" class="btn" data-act="dOk">確定</button></div>';
+}
+function dialHTML(g){
+  const isH=g.mode==='h',val=isH?g.h%12:g.m,ang=isH?val*30:val*6,C=120,R=92,rad=a=>a*Math.PI/180;
+  const pos=a=>'left:'+(C+R*Math.sin(rad(a))).toFixed(1)+'px;top:'+(C-R*Math.cos(rad(a))).toFixed(1)+'px';
+  let labels='';
+  for(let i=0;i<12;i++){const lab=isH?(i===0?12:i):pad(i*5),on=isH?val===i:val===i*5;labels+='<span class="dial-n'+(on?' on':'')+'" style="'+pos(i*30)+'">'+lab+'</span>';}
+  return '<div class="dial" aria-hidden="true">'+labels+'<span class="dial-hand" style="transform:rotate('+ang+'deg)"></span>'+
+    '<span class="dial-knob" style="'+pos(ang)+'">'+(isH?(val===0?12:val):pad(val))+'</span><span class="dial-c"></span></div>';
+}
+function timeDlg(){
+  const g=ui.dlg,h12=g.h%12===0?12:g.h%12,pm=g.h>=12;
+  const ap='<div class="ampm"><button type="button" class="'+(!pm?'on':'')+'" data-act="tAmpm" data-v="am" aria-pressed="'+!pm+'">上午</button><button type="button" class="'+(pm?'on':'')+'" data-act="tAmpm" data-v="pm" aria-pressed="'+pm+'">下午</button></div>';
+  let head,body;
+  if(g.input){
+    head='<div class="tbig"><div class="tbig-in"><input id="dlg-h" inputmode="numeric" maxlength="2" value="'+h12+'" aria-label="小時（1 到 12）"><span class="small muted">時</span></div><span class="tcolon">:</span><div class="tbig-in"><input id="dlg-m" inputmode="numeric" maxlength="2" value="'+pad(g.m)+'" aria-label="分鐘（0 到 59）"><span class="small muted">分</span></div>'+ap+'</div>';
+    body='<p class="small muted">小時填 1 到 12，再選上午或下午。</p>';
+  }else{
+    head='<div class="tbig"><button type="button" class="tbox'+(g.mode==='h'?' on':'')+'" data-act="tMode" data-v="h" aria-label="選小時">'+h12+'</button><span class="tcolon">:</span><button type="button" class="tbox'+(g.mode==='m'?' on':'')+'" data-act="tMode" data-v="m" aria-label="選分鐘">'+pad(g.m)+'</button>'+ap+'</div>';
+    body=dialHTML(g)+'<p class="small muted center">'+(g.mode==='h'?'點或拖曳選小時，放開後會換選分鐘。':'點或拖曳選分鐘，可以停在任何一分鐘。')+'</p>';
+  }
+  return '<div class="dlg-title">選取'+(g.which==='start'?'開始':'結束')+'時間</div>'+head+body+
+    '<div class="dlg-actions"><button type="button" class="icon-btn" data-act="tInput" aria-label="'+(g.input?'改用時鐘選擇':'用鍵盤輸入')+'">'+(g.input?IC.clock:IC.kbd)+'</button><span class="grow"></span><button type="button" class="btn ghost" data-act="close">取消</button><button type="button" class="btn" data-act="tOk">確定</button></div>';
+}
+function parseDateIn(){
+  const el=document.getElementById('dlg-date');if(!el)return null;
+  const p=el.value.trim().split(/[\/\-.\s]+/).map(Number);if(p.length!==3||p.some(isNaN))return null;
+  const dt=new Date(p[0],p[1]-1,p[2]);if(dt.getMonth()!==p[1]-1)return null;
+  const ds=toDate(dt),today=toDate(new Date(now())),maxD=toDate(new Date(now()+60*D));
+  return ds>=today&&ds<=maxD&&firstSlot(ds)?ds:null;
+}
+function readTimeIn(){
+  const h=Number((document.getElementById('dlg-h')||{}).value),m=Number((document.getElementById('dlg-m')||{}).value);
+  if(!(h>=1&&h<=12)||!(m>=0&&m<=59)||!Number.isInteger(h)||!Number.isInteger(m))return null;
+  return {h:h%12+(ui.dlg.h>=12?12:0),m:m};
+}
+function renderModal(){const sc=document.querySelector('.scrim');if(sc)sc.outerHTML=modalView();}
+function dialSet(e){
+  const el=document.querySelector('.dial');if(!el||!ui.dlg)return;
+  const r=el.getBoundingClientRect(),x=e.clientX-(r.left+r.width/2),y=e.clientY-(r.top+r.height/2);
+  let a=Math.atan2(x,-y)*180/Math.PI;if(a<0)a+=360;
+  const g=ui.dlg;
+  if(g.mode==='h'){const h12=Math.round(a/30)%12;g.h=h12+(g.h>=12?12:0);}else g.m=Math.round(a/6)%60;
+  renderModal();
+}
+function modalView(){
+  const md=ui.modal;if(!md)return '';
+  let inner='';
+  if(md.type==='pick'||md.type==='demo'){
+    inner='<h2>'+(md.type==='pick'?'登入交換時間':'示範工具')+'</h2>'+
+    (md.type==='pick'?(md.why?'<div class="banner info">'+esc(md.why)+'</div>':'')+'<p class="small muted">僅限本校學生登入。原型示範：請選一個示範帳號。</p>':'')+
+    (md.type==='demo'?'<p class="small muted">只有原型才有，用來切換身分、測試和時間有關的規則。</p><h3>切換帳號</h3>':'')+
+    '<div class="acct-list">'+S.users.map(x=>'<button class="acct-row '+(x.id===S.me?'on':'')+'" data-act="pick" data-id="'+x.id+'"><div class="grow"><b>'+esc(x.name)+'</b><div class="small muted">'+esc(deptLine(x)||'未填系級')+'</div></div>'+(suspended(x)?'<span class="pill s-bad">停權中</span>':'')+'</button>').join('')+'</div>';
+    if(md.type==='demo')inner+='<h3>模擬時間</h3><p class="small">現在是 '+fmtTime(now())+(S.clockOffset?'（已快轉 '+span(S.clockOffset)+'）':'')+'</p>'+
+      '<div class="row wrap">'+[[30,'+30 分鐘'],[60,'+1 小時'],[1440,'+1 天'],[2880,'+2 天']].map(([n,l])=>'<button class="btn ghost sm" data-act="ff" data-v="'+n+'">'+l+'</button>').join('')+(S.clockOffset?'<button class="btn ghost sm" data-act="nowReset">回到現在</button>':'')+'</div>'+
+      '<h3>資料</h3><div class="row wrap"><button class="btn ghost sm" data-act="reset">重設示範資料</button>'+(S.me?'<button class="btn ghost sm" data-act="logout">登出</button>':'')+'<button class="btn sm" data-act="close">關閉</button></div>';
+  }
+  if(md.type==='confirm')inner='<h2>'+esc(md.title)+'</h2><p>'+esc(md.body)+'</p><div class="row end"><button class="btn ghost" data-act="close">返回</button><button class="btn '+(md.danger?'danger-solid':'')+'" data-act="ok">'+esc(md.ok)+'</button></div>';
+  if(md.type==='sort')inner=sortSheet();
+  if(md.type==='notes')inner=notesSheet();
+  if(md.type==='dpick')inner=dateDlg();
+  if(md.type==='tpick')inner=timeDlg();
+  if(md.type==='bid'){
+    const t=T(md.id),mine=t.offers.find(o=>o.user===S.me);
+    inner='<h2>'+(mine?'我的出價':'自行出價')+'</h2>'+
+      (mine?'<div class="banner info center">目前出價 <b class="price">NT$ '+money(mine.price)+'</b></div>':'')+
+      '<p class="small muted center">發案人價碼：'+(t.budget?'NT$ '+money(t.budget):'自由出價')+'</p>'+
+      '<form data-form="offer" data-id="'+t.id+'" class="stack" novalidate><label class="pc-label" for="op">'+(mine?'新的出價':'你的出價')+'</label>'+
+      '<div class="pc-input"><span>NT$</span><input id="op" name="price" type="number" inputmode="numeric" min="1" step="1" placeholder="'+(t.budget||300)+'" value="'+(mine?mine.price:'')+'"></div>'+
+      '<button class="btn block" type="submit">'+(mine?'更新出價':'送出出價')+'</button>'+
+      (mine?'<button class="btn danger block" type="button" data-act="withdrawOffer" data-id="'+t.id+'">撤回出價</button>':'')+
+      '<button class="btn ghost block" type="button" data-act="close">關閉</button>'+
+      '<p class="small muted center">發案人會看到你的姓名、學號和報價。</p></form>';
+  }
+  if(md.type==='bcal')inner=bcalSheet();
+  if(md.type==='filter'){
+    const f=ui.f,today=toDate(new Date(now()));
+    inner='<h2>篩選案子</h2><form data-form="filter" class="stack" novalidate>'+
+      '<div class="field"><span class="lbl">日期區間</span><div class="range"><input type="date" name="from" aria-label="開始日期" min="'+today+'" value="'+esc(f.from)+'"><span>到</span><input type="date" name="to" aria-label="結束日期" min="'+today+'" value="'+esc(f.to)+'"></div></div>'+
+      '<div class="field"><span class="lbl">時段</span><div class="range"><select name="tmin" aria-label="最早開始時間"><option value="">不限</option>'+Array.from({length:24},(_,h)=>'<option value="'+h*60+'"'+(String(f.tmin)===String(h*60)?' selected':'')+'>'+pad(h)+':00</option>').join('')+'</select><span>到</span>'+
+        '<select name="tmax" aria-label="最晚結束時間"><option value="">不限</option>'+Array.from({length:24},(_,h)=>'<option value="'+(h+1)*60+'"'+(String(f.tmax)===String((h+1)*60)?' selected':'')+'>'+(h===23?'24:00':pad(h+1)+':00')+'</option>').join('')+'</select></div>'+
+        '<span class="small muted">只顯示整個案子都在這段時間內的，例如你 13:00 到 17:00 有空。</span></div>'+
+      '<div class="field"><span class="lbl">價格區間（NT$）</span><div class="range"><input type="number" name="pmin" inputmode="numeric" min="0" step="10" placeholder="最低" aria-label="最低價格" value="'+esc(f.pmin)+'"><span>到</span><input type="number" name="pmax" inputmode="numeric" min="0" step="10" placeholder="最高" aria-label="最高價格" value="'+esc(f.pmax)+'"></div>'+
+      '<span class="small muted">設定價格區間後，自由出價的案子不會顯示。</span></div>'+
+      '<div class="field"><span class="lbl" id="fl-g">接案人性別限制</span><div class="checks" role="group" aria-labelledby="fl-g">'+GENDERS.map((x,i)=>'<label for="fg'+i+'"><input type="checkbox" id="fg'+i+'" name="g" value="'+x+'"'+(f.genders.indexOf(x)>=0?' checked':'')+'>'+gLabel(x)+'</label>').join('')+'</div></div>'+
+      '<div class="two"><button type="button" class="btn ghost" data-act="resetFilter">清除</button><button class="btn" type="submit">套用</button></div></form>';
+  }
+  if(md.type==='photo')inner='<img src="'+md.src+'" alt="放大的照片" class="big-photo"><div class="row end"><button class="btn ghost" data-act="close">關閉</button></div>';
+  const dlg=md.type==='dpick'||md.type==='tpick';
+  return '<div class="scrim'+(dlg?' center':'')+'" data-act="scrim"><div class="sheet'+(dlg?' dlg':'')+'" role="dialog" aria-modal="true">'+inner+'</div></div>';
+}
+
+function render(){
+  const app=document.getElementById('app');
+  sweep();
+  if(S.me&&!u(S.me))S.me=null;
+  let body=null;
+  if(ui.view==='detail')body=detailView();
+  if(body===null){
+    body=S.me?({browse:browseView,post:postView,work:()=>manageView('work'),own:()=>manageView('own')}[ui.tab]||browseView)():browseView();
+  }
+  app.innerHTML=headerView()+'<main>'+body+'</main>'+tabsView()+drawerView()+modalView();
+  if(ui.top){window.scrollTo(0,0);ui.top=false;}
+  ui.drawerAnim=false;
+  fixNotes();
+  centerTimeCols();
+  document.querySelectorAll('.cmts').forEach(c=>{c.scrollTop=c.scrollHeight;});
+  if(ui.tagCustom){const i=document.querySelector('.tm-custom input');if(i&&document.activeElement!==i)i.focus();}
+}
+
+/* ---------- 動作 ---------- */
+const A={
+  login(d){ui.modal={type:'pick',why:d&&d.why||''};},
+  pick(d){S.me=d.id;const x=u(d.id),keep={view:ui.view,detailId:ui.detailId,tab:ui.tab,q:ui.q,f:ui.f,sort:ui.sort,dir:ui.dir,day:ui.day};ui=freshUI();Object.assign(ui,keep);save();toast('已用 '+x.name+' 登入');},
+  openDemo(){ui.modal={type:'demo'};},
+  close(){ui.modal=null;ui.pending=null;ui.dlg=null;},
+  scrim(d,el,e){if(e.target!==el)return false;ui.modal=null;ui.pending=null;},
+  ok(){const f=ui.pending;ui.modal=null;ui.pending=null;if(f)f();},
+  ff(d){S.clockOffset+=Number(d.v)*M;save();toast('時間快轉到 '+fmtTime(now()));},
+  nowReset(){S.clockOffset=0;save();},
+  reset(){ask('重設示範資料？','你建立的案件、出價和照片都會清除。','重設',()=>{S=seed();ui=freshUI();save();toast('已重設示範資料');},true);},
+  logout(){S.me=null;ui=freshUI();save();},
+  tab(d){if(!S.me&&d.v!=='browse'){ui.modal={type:'pick',why:d.v==='post'?'登入後才能發案。':'登入後才能查看你的案子。'};return;}ui.tab=d.v;ui.view='list';ui.top=true;if(d.v==='work')ui.workSeg=null;if(d.v==='own')ui.ownSeg=null;},
+  drawer(){ui.drawer=true;ui.drawerAnim=true;ui.meSub='main';ui.editing=false;},
+  closeDrawer(){ui.drawer=false;},
+  dscrim(d,el,e){if(e.target!==el)return false;ui.drawer=false;},
+  openFilter(){ui.modal={type:'filter'};},
+  resetFilter(){ui.f=fdef();ui.q='';ui.day=null;ui.modal=null;},
+  openSort(){ui.modal={type:'sort'};},
+  openNotes(){const mine=myNotes();ui.noteFresh=mine.filter(n=>!n.read).map(n=>n.id);mine.forEach(n=>{n.read=true;});save();ui.modal={type:'notes'};},
+  openNote(d){const n=(S.notes||[]).find(x=>x.id===d.id);ui.modal=null;if(n&&n.taskId&&T(n.taskId)){ui.view='detail';ui.detailId=n.taskId;ui.drawer=false;ui.top=true;const t=T(n.taskId);t.seen=t.seen||{};t.seen[S.me]=now();save();}},
+  pickSort(d){ui.sort=d.k;ui.dir=d.v;ui.modal=null;},
+  openBcal(){ui.bcalMonth=(ui.day||toDate(new Date(now()))).slice(0,7);ui.modal={type:'bcal'};},
+  bcalMonth(d){const p=ui.bcalMonth.split('-').map(Number),nd=new Date(p[0],p[1]-1+Number(d.v),1);ui.bcalMonth=nd.getFullYear()+'-'+pad(nd.getMonth()+1);},
+  pickDay(d){ui.day=d.v;ui.modal=null;ui.top=true;},
+  clearDay(){ui.day=null;ui.modal=null;},
+  cancelled(){ui.meSub='cancelled';ui.histSeg='all';ui.top=true;},
+  favs(){ui.meSub='favs';ui.top=true;},
+  fav(d){if(!S.me){ui.modal={type:'pick',why:'登入後才能收藏案子。'};return;}S.favs[S.me]=S.favs[S.me]||[];const a=S.favs[S.me],i=a.indexOf(d.id);if(i>=0){a.splice(i,1);toast('已取消收藏');}else{a.push(d.id);toast('已加入收藏，可在「我的 → 收藏」找到');}save();},
+  openBid(d){ui.modal={type:'bid',id:d.id};},
+  editProfile(){ui.editing=true;},
+  cancelEdit(){ui.editing=false;},
+  history(){ui.meSub='history';ui.histSeg='all';ui.top=true;},
+  backMe(){ui.meSub='main';ui.editing=false;ui.top=true;},
+  profile(){ui.meSub='profile';ui.editing=false;ui.top=true;},
+  bankPage(){ui.meSub='bank';ui.top=true;},
+  tagsPage(){ui.meSub='tags';ui.tagMenu=null;ui.top=true;},
+  removeBank(){ask('移除收款帳戶？','移除後，發案人確認完成時要和你自行約定付款方式。','移除',()=>{me().bank=null;save();toast('已移除收款帳戶');},true);},
+  open(d){ui.view='detail';ui.detailId=d.id;ui.drawer=false;ui.top=true;const t=T(d.id);if(t&&S.me){t.seen=t.seen||{};t.seen[S.me]=now();save();}},
+  back(){ui.view='list';ui.top=true;},
+  filter(d){ui.filter=d.v;},
+  seg(d){ui[d.k]=d.v;},
+  acceptPrice(d){const m=me(),t=T(d.id);if(suspended(m))return toast('停權中不能出價');if(!genderOk(t,m))return toast('這個案子有指定性別，你沒辦法出價');const ex=t.offers.find(o=>o.user===m.id);if(ex){ex.price=t.budget;ex.at=now();}else{t.offers.push({id:nid('o'),user:m.id,price:t.budget,msg:'',at:now()});notify(t.poster,'有人接受了你的價碼（'+t.building+'・'+fmtShort(t.start)+'）。',t.id);}save();toast('已接受發案人價碼，等發案人挑選');},
+  withdrawOffer(d){const t=T(d.id);t.offers=t.offers.filter(o=>o.user!==S.me);ui.modal=null;save();toast('已撤回出價');},
+  choose(d){const t=T(d.id),o=t.offers.find(x=>x.id===d.oid);
+    ask('選擇 '+u(o.user).name+'（NT$ '+money(o.price)+'）？','會通知接案人確認接案，確認後才算媒合成功。接案人要在 24 小時內、而且在開工前確認，否則這次選擇作廢。1 小時後他還沒確認的話，你可以改選別人。','選擇並通知',()=>{t.status='pending';t.assignee=o.user;t.price=o.price;t.pendingAt=now();t.matchNote=null;notify(o.user,me().name+' 選擇了你的出價（'+t.building+'・'+fmtShort(t.start)+'），請在 '+fmtTime(deadline(t))+' 前確認接案。',t.id);save();toast('已通知接案人確認接案');});},
+  acceptMatch(d){const t=T(d.id);if(t.status!=='pending')return toast('這次媒合已經失效');t.status='assigned';t.assignedAt=now();notify(t.poster,me().name+' 已確認接案，媒合成功（'+t.building+'・'+fmtShort(t.start)+'）。',t.id);save();toast('已確認接案，媒合成功');},
+  declineMatch(d){const t=T(d.id);ask('婉拒這次媒合？','你的出價會一起撤回，發案人可以改選其他出價。','婉拒',()=>{t.offers=t.offers.filter(o=>o.user!==S.me);t.status='open';t.assignee=null;t.price=null;t.matchNote='接案人婉拒了這次媒合，可以改選其他出價。';notify(t.poster,me().name+' 婉拒了這次媒合，可以改選其他出價（'+t.building+'・'+fmtShort(t.start)+'）。',t.id);save();ui.view='list';toast('已婉拒');},true);},
+  unchoose(d){const t=T(d.id);if(now()<t.pendingAt+H)return toast('選擇後要等 1 小時才能取消選擇');ask('取消這次選擇？','原本的選擇會直接作廢並通知接案人，他的出價仍然保留，你可以重新挑選。','取消選擇',()=>{notify(t.assignee,'發案人取消了對你的選擇，這次媒合已作廢（'+t.building+'・'+fmtShort(t.start)+'）。你的出價仍然保留。',t.id);t.status='open';t.assignee=null;t.price=null;t.matchNote=null;save();toast('已取消選擇，可以改選其他出價');},true);},
+  cancelTask(d){const t=T(d.id);if(!canCancel(t))return toast('已經開工，不能取消');
+    ask('取消這個案子？',t.assignee?'接案人會收到取消通知。':'所有出價都會結束。','取消案子',()=>{const who=new Set(t.offers.map(o=>o.user));if(t.assignee)who.add(t.assignee);who.forEach(x=>notify(x,'發案人取消了案子（'+t.building+'・'+fmtShort(t.start)+'）。',t.id));t.status='cancelled';t.cancelReason='發案人於 '+fmtTime(now())+' 取消';save();toast('已取消');},true);},
+  withdrawAssign(d){const t=T(d.id);if(!canCancel(t))return toast('已經開工，不能退出');
+    ask('退出這個案子？','案子會回到媒合中，發案人可以重新挑人。','確定退出',()=>{notify(t.poster,me().name+' 退出了案子，案子回到媒合中（'+t.building+'・'+fmtShort(t.start)+'）。',t.id);t.status='open';t.assignee=null;t.price=null;t.offers=t.offers.filter(o=>o.user!==S.me);t.photos=[];save();ui.view='list';toast('已退出');},true);},
+  rmPhoto(d){T(d.id).photos.splice(Number(d.i),1);save();},
+  viewPhoto(d){ui.modal={type:'photo',src:T(d.id).photos[Number(d.i)].src};},
+  requestPay(d){const t=T(d.id);if(now()<t.start)return toast('開工時間到了之後才能按打掃完成');t.status='done';t.requestedAt=now();notify(t.poster,'接案人已完成打掃，請確認（'+t.building+'・'+fmtShort(t.start)+'）。',t.id);save();toast('已通知發案人確認');},
+  confirmDone(d){const t=T(d.id);ask('確認打掃完成？','確認後會顯示接案人的收款方式，請盡快付款 NT$ '+money(t.price)+'。','確認完成',()=>{t.status='confirmed';t.confirmedAt=now();notify(t.assignee,'發案人已確認打掃完成，接下來會付款 NT$ '+money(t.price)+'（'+t.building+'・'+fmtShort(t.start)+'）。',t.id);save();});},
+  received(d){const t=T(d.id);ask('確認已收到款項？','確認後案子就結案了。','確認結案',()=>{t.status='closed';t.closedAt=now();notify(t.poster,'接案人已確認收款，案子結案（'+t.building+'・'+fmtShort(t.start)+'）。',t.id);save();toast('已結案');});},
+  tagMenu(d){ui.tagMenu=ui.tagMenu===d.uid?null:d.uid;ui.tagCustom=false;},
+  tagCustom(){ui.tagCustom=true;},
+  setTag(d){S.tags[S.me]=S.tags[S.me]||{};S.tags[S.me][d.uid]={type:d.type,text:'',at:now()};ui.tagMenu=null;save();toast('已標記為「'+(d.type==='trust'?'可信賴':'黑名單')+'」');},
+  untag(d){const mine=S.tags[S.me]||{};delete mine[d.uid];ui.tagMenu=null;ui.tagCustom=false;save();toast('已撤銷標記');},
+  toggleNote(d){ui.expanded[d.id]=!ui.expanded[d.id];},
+  calMonth(d){const p=ui.pf.month.split('-').map(Number),nd=new Date(p[0],p[1]-1+Number(d.v),1);ui.pf.month=nd.getFullYear()+'-'+pad(nd.getMonth()+1);},
+  pickDate(d){const pf=ui.pf;pf.date=d.v;if(!pf.start||!slotOk(pf.date,pf.start)){const f=firstSlot(pf.date);pf.start=f;pf.end=f?fromMin(Math.min(toMin(f)+60,MAXEND)):null;}},
+  openDate(){const d=ui.pf.date;ui.dlg={kind:'date',sel:d,month:d.slice(0,7),input:false};ui.modal={type:'dpick'};},
+  dMonth(d){const p=ui.dlg.month.split('-').map(Number),nd=new Date(p[0],p[1]-1+Number(d.v),1);ui.dlg.month=nd.getFullYear()+'-'+pad(nd.getMonth()+1);},
+  dPick(d){ui.dlg.sel=d.v;},
+  dInput(){const g=ui.dlg;if(g.input){const v2=parseDateIn();if(v2){g.sel=v2;g.month=v2.slice(0,7);}}g.input=!g.input;},
+  dOk(){const g=ui.dlg;let ds=g.sel;if(g.input){ds=parseDateIn();if(!ds)return toast('請輸入今天到 60 天內的日期，例如 2026/11/20');}
+    const pf=ui.pf;pf.date=ds;pf.month=ds.slice(0,7);
+    if(!slotOk(pf.date,pf.start)){const f=firstSlot(pf.date);if(f){pf.start=f;pf.end=fromMin(Math.min(toMin(f)+60,MAXEND));}}
+    ui.modal=null;ui.dlg=null;},
+  openTime(d){const t=toMin(ui.pf[d.w]);ui.dlg={kind:'time',which:d.w,h:Math.floor(t/60),m:t%60,mode:'h',input:false};ui.modal={type:'tpick'};},
+  tMode(d){ui.dlg.mode=d.v;},
+  tAmpm(d){const g=ui.dlg;g.h=g.h%12+(d.v==='pm'?12:0);},
+  tInput(){const g=ui.dlg;if(g.input){const r=readTimeIn();if(r)Object.assign(g,r);}g.input=!g.input;},
+  tOk(){const g=ui.dlg;if(g.input){const r=readTimeIn();if(!r)return toast('小時請填 1 到 12，分鐘請填 0 到 59');Object.assign(g,r);}
+    const res=setTime(g.which,g.h*60+g.m);if(res!==true){renderModal();return false;}ui.modal=null;ui.dlg=null;},
+  pickTime(d){
+    const pf=ui.pf,cur=toMin(pf[d.w]),n=Number(d.v);
+    let t=d.p==='h'?n*60+cur%60:Math.floor(cur/60)*60+n;
+    if(d.w==='start'){
+      if(!slotOk(pf.date,fromMin(t))||t>=MAXEND){for(let m=0;m<60;m++){const c=Math.floor(t/60)*60+m;if(slotOk(pf.date,fromMin(c))&&c<MAXEND){t=c;break;}}}
+      pf.start=fromMin(t);if(toMin(pf.end)<=t)pf.end=fromMin(Math.min(t+60,MAXEND));
+    }else{
+      const s0=toMin(pf.start);
+      if(t<=s0||t>MAXEND){const h0=Math.floor(t/60)*60;t=null;for(let m=0;m<60;m++){if(h0+m>s0&&h0+m<=MAXEND){t=h0+m;break;}}if(t===null)t=Math.min(s0+60,MAXEND);}
+      pf.end=fromMin(t);
+    }
+  },
+  endTask(d){const t=T(d.id);ask('結束這個案子？','案子會標記為未完成並移到「已取消」。需要的話，可以順便標記這位接案人。','結束案子',()=>{t.status='cancelled';t.cancelReason='時間已過，接案人沒有完成，發案人結束了案子';save();toast('已結束案子');},true);},
+  copy(d){try{navigator.clipboard.writeText(d.v).then(()=>toast('已複製帳號'),()=>toast('無法複製，請手動選取帳號'));}catch(e){toast('無法複製，請手動選取帳號');}return false;}
+};
+
+/* ---------- 表單 ---------- */
+const F={
+  offer(f,d){
+    const m=me();if(suspended(m))return toast('停權中不能出價');if(!genderOk(T(d.id),m))return toast('這個案子有指定性別，你沒辦法出價');
+    const raw=v(f,'price'),price=Math.round(Number(raw));
+    if(!raw||!(price>0))return toast('請輸入出價金額');
+    const t=T(d.id),msg='',ex=t.offers.find(o=>o.user===m.id);
+    if(ex){ex.price=price;ex.msg=msg;ex.at=now();toast('已更新出價');}
+    else{t.offers.push({id:nid('o'),user:m.id,price,msg,at:now()});notify(t.poster,'有人對你的案子出價（'+t.building+'・'+fmtShort(t.start)+'）。',t.id);toast('已送出出價，等發案人挑選');}
+    ui.modal=null;save();
+  },
+  post(f){
+    const m=me(),pf=ui.pf;if(suspended(m))return toast('停權中不能發案');
+    if(!pf.date||!pf.start||!pf.end)return toast('請選日期、開始和結束時間');
+    const start=new Date(pf.date+'T'+pf.start).getTime(),end=new Date(pf.date+'T'+pf.end).getTime();
+    if(!(end>start))return toast('結束時間要晚於開始時間');
+    if(!(start>now()+H))return toast('開始時間至少要在 1 小時後');
+    if(!v(f,'building'))return toast('請填地點');
+    if(!v(f,'meet'))return toast('請填集合位置');
+    const g=f.querySelector('input[name=gender]:checked');if(!g)return toast('請選擇接案人性別');
+    const bs=v(f,'budget');let budget=null;
+    if(bs){budget=Math.round(Number(bs));if(!(budget>=50&&budget<=5000))return toast('價碼請在 NT$ 50 到 5,000 之間');}
+    const t={id:nid('t'),poster:m.id,building:v(f,'building'),meet:v(f,'meet'),gender:g.value,start,end,budget,note:v(f,'note'),status:'open',offers:[],assignee:null,price:null,photos:[],createdAt:now()};
+    S.tasks.unshift(t);ui.pf=pfdef();save();ui.tab='own';ui.ownSeg='p-open';ui.view='detail';ui.detailId=t.id;ui.top=true;toast('已發布，同學可以開始出價');
+  },
+  pay(f,d){
+    const t=T(d.id);
+    if(f.elements.last5){const x=v(f,'last5');if(!/^\d{5}$/.test(x))return toast('請輸入 5 位數字');t.payment={last5:x,method:'匯款',at:now()};}
+    else{const c=f.querySelector('input[name=method]:checked');if(!c)return toast('請選擇付款方式');t.payment={last5:null,method:c.value,at:now()};}
+    t.status='paid';notify(t.assignee,'發案人表示已付款 NT$ '+money(t.price)+'，收到後請按「已收款」（'+t.building+'・'+fmtShort(t.start)+'）。',t.id);save();toast('已通知接案人確認收款');
+  },
+  profile(f){
+    const m=me(),name=v(f,'name'),sid=v(f,'sid').toUpperCase(),g=f.querySelector('input[name=gender]:checked');
+    if(!name)return toast('請填姓名');
+    if(!/^[A-Z]\d{8}$/.test(sid))return toast('學號格式是一個英文字母加八個數字，例如 S15330124');
+    if(!g||!g.value)return toast('請選擇性別');
+    if(m.bank&&m.bank.name!==name)return toast('姓名要和收款帳戶的戶名相同，請先到「收款帳戶」修改或移除');
+    Object.assign(m,{name,sid,gender:g.value,cls:v(f,'cls').toUpperCase()});
+    ui.editing=false;save();toast('資料已更新');
+  },
+  bank(f){
+    const m=me(),code=v(f,'code'),acct=v(f,'acct').replace(/[\s-]/g,''),bname=v(f,'bname');
+    if(!code)return toast('請選擇銀行');
+    if(!/^\d{10,16}$/.test(acct))return toast('帳號請輸入 10 到 16 位數字');
+    if(bname!==m.name)return toast('戶名必須和姓名「'+m.name+'」相同');
+    m.bank={code,acct,name:bname};save();toast('收款帳戶已儲存');
+  },
+  filter(f){
+    const from=v(f,'from'),to=v(f,'to'),tmin=v(f,'tmin'),tmax=v(f,'tmax'),pmin=v(f,'pmin'),pmax=v(f,'pmax'),today=toDate(new Date(now()));
+    if(tmin!==''&&tmax!==''&&Number(tmax)<=Number(tmin))return toast('時段的結束要晚於開始');
+    if(from&&from<today)return toast('開始日期不能早於今天');
+    if(to&&to<today)return toast('結束日期不能早於今天');
+    if(from&&to&&to<from)return toast('結束日期不能早於開始日期');
+    if(pmin!==''&&pmax!==''&&Number(pmax)<Number(pmin))return toast('最高價格不能低於最低價格');
+    const genders=Array.from(f.querySelectorAll('input[name=g]:checked')).map(x=>x.value);
+    if(!genders.length)return toast('至少勾選一種性別限制');
+    ui.f={from,to,tmin,tmax,pmin,pmax,genders};ui.modal=null;
+  },
+  comment(f,d){
+    const t=T(d.id),text=v(f,'text');
+    if(!text)return toast('請輸入留言');
+    if(CMT_OPEN.indexOf(t.status)<0)return toast('這個案子的留言板已經關閉');
+    t.comments=t.comments||[];t.comments.push({id:nid('c'),user:S.me,text,at:now()});
+    t.seen=t.seen||{};t.seen[S.me]=now();ui.cdraft[t.id]='';save();
+  },
+  tag(f,d){
+    const text=v(f,'text');if(!text)return toast('請輸入自訂內容');
+    S.tags[S.me]=S.tags[S.me]||{};S.tags[S.me][d.uid]={type:'custom',text,at:now()};
+    ui.tagMenu=null;ui.tagCustom=false;save();toast('已儲存標記');
+  }
+};
+
+/* ---------- 照片 ---------- */
+function shrink(file){
+  return new Promise((res,rej)=>{
+    const url=URL.createObjectURL(file),img=new Image();
+    img.onload=()=>{const max=640,s=Math.min(1,max/Math.max(img.width,img.height)),c=document.createElement('canvas');
+      c.width=Math.round(img.width*s);c.height=Math.round(img.height*s);c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+      URL.revokeObjectURL(url);res(c.toDataURL('image/jpeg',0.7));};
+    img.onerror=()=>{URL.revokeObjectURL(url);rej(new Error('bad image'));};
+    img.src=url;
+  });
+}
+
+document.addEventListener('click',e=>{
+  const el=e.target.closest('[data-act]');
+  if(ui.tagMenu&&!e.target.closest('.tagwrap')){ui.tagMenu=null;ui.tagCustom=false;if(!el){render();return;}}
+  if(!el)return;
+  const fn=A[el.dataset.act];if(!fn)return;
+  if(el.dataset.act!=='scrim'&&el.dataset.act!=='dscrim')e.preventDefault();
+  if(fn(el.dataset,el,e)!==false)render();
+});
+document.addEventListener('submit',e=>{
+  const f=e.target;if(!f.dataset||!f.dataset.form)return;
+  e.preventDefault();
+  if(F[f.dataset.form](f,f.dataset)!==false)render();
+});
+document.addEventListener('input',e=>{
+  const el=e.target,pf=el.form&&el.form.dataset.form==='post';
+  if(el.id==='m-sid'||el.id==='m-cls'){const p=el.selectionStart,up=el.value.toUpperCase();if(up!==el.value){el.value=up;try{el.setSelectionRange(p,p);}catch(x){}}return;}
+  if(el.id==='cmt-in'&&el.form){ui.cdraft[el.form.dataset.id]=el.value;return;}
+  if(pf&&['building','meet','budget','note','gender'].indexOf(el.name)>=0){ui.pf[el.name]=el.value;return;}
+  if(el.id!=='q')return;
+  ui.q=el.value;const box=document.getElementById('blist');if(box){box.innerHTML=browseList();fixNotes();}
+});
+window.addEventListener('resize',()=>fixNotes());
+document.addEventListener('change',async e=>{
+  const el=e.target;
+  if(el.id==='sort'){ui.sort=el.value;render();return;}
+  if(el.form&&el.form.dataset.form==='post'&&el.name==='gender'){ui.pf.gender=el.value;return;}
+  if(el.classList.contains('tb-input')){const t=parseTime(el.value);if(t===null){toast('請輸入像 14:35 或 1435 的時間');}else setTime(el.dataset.w,t);render();return;}if(!el.dataset||!el.dataset.upload)return;
+  const files=Array.from(el.files||[]);if(!files.length)return;
+  const t=T(el.dataset.id);let ok=0,bad=0;
+  for(const file of files){try{t.photos.push({src:await shrink(file),at:now()});ok++;}catch(err){bad++;}}
+  save();render();toast(bad?'上傳 '+ok+' 張，'+bad+' 張讀不到':'已上傳 '+ok+' 張');
+});
+document.addEventListener('pointerdown',e=>{if(e.target.closest&&e.target.closest('.dial')){ui.drag=true;e.preventDefault();dialSet(e);}});
+document.addEventListener('pointermove',e=>{if(ui.drag)dialSet(e);});
+document.addEventListener('pointerup',()=>{if(!ui.drag)return;ui.drag=false;if(ui.dlg&&ui.dlg.mode==='h'){ui.dlg.mode='m';renderModal();}});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.target.id==='dlg-date'||e.target.id==='dlg-h'||e.target.id==='dlg-m')){e.preventDefault();A[e.target.id==='dlg-date'?'dOk':'tOk']();render();return;}if(e.key==='Enter'&&e.target.classList&&e.target.classList.contains('tb-input')){e.preventDefault();e.target.blur();return;}if(e.key!=='Escape')return;if(ui.tagMenu){ui.tagMenu=null;ui.tagCustom=false;render();}else if(ui.modal){ui.modal=null;ui.pending=null;render();}else if(ui.drawer){ui.drawer=false;render();}});
+
+render();
+})();
+</script>
+</body>
+</html>
