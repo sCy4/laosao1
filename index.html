@@ -9,10 +9,12 @@
 <link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  /* 替身掃者：宿舍綠為主色、時間暖黃標示金額與待辦；單欄手機版，頂部帳號列＋底部分頁 */
-  --bg:#edf2f0; --surface:#ffffff; --ink:#15302a; --muted:#4b5e58; --line:#d5dfdb;
-  --accent:#0d7765; --accent-ink:#ffffff; --accent-soft:#d6eee7;
-  --sun:#e3a21a; --sun-soft:#fbeecf; --warn:#8a5703;
+  /* 替身掃者・方案 E「派工單」：紙張底色、石板墨色字、宿舍綠為主色、暖黃標示金額與待辦；
+     每個案件是一張派工單（左邊時間地點、右邊撕線隔開的價格存根），平面無陰影，用細線和虛線分隔 */
+  --bg:#eff1ea; --surface:#ffffff; --ink:#24263a; --muted:#555566; --line:#d6d8dc;
+  --accent:#0d7765; --accent-ink:#ffffff; --accent-soft:#d9efe1;
+  --sun:#e3a21a; --sun-soft:#f8edcc; --warn:#7a5600;
+  --stub:#f1f8ef; --stub-w:104px; --perf:#b9bcc6; --r:8px; --r-s:6px;
   --good:#24804a; --good-soft:#dcf0e3; --bad:#b9382a; --bad-soft:#f7e0db; --info:#2a63a8; --info-soft:#dce8f6;
   /* 提醒色只有一種意思：需要你處理，或有未讀 */
   --alert:#f05a28; --alert-soft:#fde6dc; --alert-ink:#a5390c;
@@ -68,7 +70,7 @@ nav.tabs.n2{grid-template-columns:repeat(2,1fr)}
 nav.tabs button{position:relative;appearance:none;background:none;border:0;font:inherit;font-size:12px;color:var(--muted);padding:9px 0 12px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;min-height:56px}
 nav.tabs button.on{color:var(--accent);font-weight:700}
 nav.tabs button.on::before{content:"";position:absolute;top:0;left:30%;right:30%;height:3px;border-radius:0 0 3px 3px;background:var(--accent)}
-.badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--alert);color:#fff;font-size:11px;font-weight:700;font-variant-numeric:tabular-nums}
+.badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--alert);color:#fff;font-size:12px;font-weight:700;font-variant-numeric:tabular-nums}
 nav.tabs .badge{position:absolute;top:4px;left:calc(50% + 8px)}
 
 .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px}
@@ -133,7 +135,7 @@ nav.tabs .badge{position:absolute;top:4px;left:calc(50% + 8px)}
 .seg-sm button{min-height:34px;font-size:13px}
 .slots{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
 .slot{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:14px;font-variant-numeric:tabular-nums;border-radius:10px;padding:8px 0;cursor:pointer;display:flex;flex-direction:column;align-items:center;line-height:1.2;min-height:40px;justify-content:center}
-.slot small{font-size:11px;color:var(--muted)}
+.slot small{font-size:12px;color:var(--muted)}
 .slot.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .slot.on small{color:var(--accent-ink)}
 .slot:disabled{opacity:.35;cursor:not-allowed}
@@ -354,7 +356,7 @@ textarea{resize:vertical}
 .photos{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .ph{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;background:var(--bg)}
 .ph img{width:100%;height:100%;object-fit:cover;display:block;cursor:zoom-in}
-.ph-time{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.55);color:#fff;font-size:11px;padding:2px 6px;font-variant-numeric:tabular-nums}
+.ph-time{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.55);color:#fff;font-size:12px;padding:2px 6px;font-variant-numeric:tabular-nums}
 .ph-x{position:absolute;top:4px;right:4px;width:28px;height:28px;border-radius:50%;border:0;background:rgba(0,0,0,.6);color:#fff;font-size:16px;cursor:pointer}
 .ph.add{display:flex;align-items:center;justify-content:center;border:2px dashed var(--line);color:var(--accent);font-weight:700;font-size:14px;cursor:pointer;background:transparent}
 .big-photo{width:100%;border-radius:12px;display:block}
@@ -392,7 +394,7 @@ label.btn{display:flex;align-items:center;justify-content:center}
 .stats.n2{grid-template-columns:repeat(2,1fr)}
 .tagrow{margin-top:6px;padding-top:8px;border-top:1px solid var(--line)}
 .profile-form{border-top:1px solid var(--line);padding-top:12px}
-.req,.opt{font-size:11px;font-weight:700;border-radius:4px;padding:0 4px;margin-left:2px}
+.req,.opt{font-size:12px;font-weight:700;border-radius:4px;padding:0 4px;margin-left:2px}
 .req{color:var(--bad);background:var(--bad-soft)}
 .opt{color:var(--muted);background:var(--bg)}
 .stat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:2px}
@@ -436,7 +438,7 @@ label.btn{display:flex;align-items:center;justify-content:center}
 .how li::before{content:counter(s);grid-row:span 2;width:32px;height:32px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-weight:700;display:flex;align-items:center;justify-content:center}
 .how b{color:var(--ink);font-size:15px}
 
-.scrim{position:fixed;inset:0;background:rgba(8,20,17,.5);z-index:20;display:flex;align-items:flex-end;justify-content:center}
+.scrim{position:fixed;inset:0;background:rgba(28,30,46,.5);z-index:20;display:flex;align-items:flex-end;justify-content:center}
 .scrim.d-layer{z-index:22}
 .range .dt-btn{flex:1;min-width:0;font-size:15px;padding:8px 10px;gap:6px}
 .sheet{background:var(--surface);width:100%;max-width:480px;max-height:88%;overflow:auto;border-radius:18px 18px 0 0;padding:20px 16px 24px;display:flex;flex-direction:column;gap:12px}
@@ -497,6 +499,125 @@ label.btn{display:flex;align-items:center;justify-content:center}
 #toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 70px);transform:translate(-50%,-12px);background:var(--ink);color:var(--surface);padding:10px 16px;border-radius:12px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:30;width:max-content;max-width:calc(100% - 32px);text-align:center}
 #toast.show{opacity:1;transform:translate(-50%,0)}
 @media (prefers-reduced-motion:reduce){#toast{transition:none}}
+
+/* ===================== 方案 E「派工單」 =====================
+   規則：平台印出來的字（標題、欄位名稱、說明）用 Noto Sans；人填進去的資料（日期、金額、姓名）用霞鶩文楷，像手寫填在單子上。
+   平面無陰影；卡片用細線，撕線用虛線；「掃過的波浪」只用在品牌名底線、分頁指示和大標題底線。 */
+:root{--wave:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 10'%3E%3Cpath d='M1.5 5Q4.75 1 8 5T14.5 5T21 5T27.5 5' fill='none' stroke='%23000' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E")}
+@media (max-width:360px){:root{--stub-w:96px}}
+/* 標題欄：品牌名下面一道暖黃波浪 */
+header.top{min-height:58px;padding:6px 16px}
+.hd-brand .brand{padding-bottom:5px;text-decoration:underline wavy var(--sun);text-decoration-thickness:1.5px;text-underline-offset:6px;text-decoration-skip-ink:none}
+.clock{margin-top:-2px}
+@media (max-width:360px){header.top{padding:6px 12px}}
+/* 下方分頁：目前的分頁上方是一道綠色波浪 */
+nav.tabs button.on::before{left:50%;right:auto;top:4px;width:30px;height:10px;margin-left:-15px;border-radius:0;-webkit-mask:var(--wave) center/contain no-repeat;mask:var(--wave) center/contain no-repeat}
+nav.tabs button{padding-top:12px}
+/* 共用元件：小圓角、無陰影 */
+.card{border-radius:var(--r)}
+.btn{border-radius:var(--r-s)}
+.btn.ghost{border-color:#c5c8cf;background:var(--surface)}
+.btn.quiet{background:transparent;border-color:transparent}
+input,select,textarea,.search,.tool,.dt-btn,.mail-in,.opt-row,.tblock,.cal,.banner,.chosen,.bank,.pay-acc,.acct-row,.note{border-radius:var(--r-s)}
+.chip,.checks label{border-radius:var(--r-s)}
+.seg{border-radius:var(--r);padding:3px;gap:3px}
+.seg button{border-radius:5px}
+.seg button.on{background:var(--ink);color:#fff}
+.seg button.on .muted{color:#d5d7e2}
+.sheet{border-radius:14px 14px 0 0}
+.sheet.dlg{border-radius:16px}
+.tagmenu{box-shadow:none;border-color:#c5c8cf;border-radius:var(--r)}
+.price{font-family:var(--font-display);letter-spacing:.01em}
+.price .cur{font-family:var(--font-body);font-size:.6em;font-weight:700;color:var(--muted);margin-right:1px;letter-spacing:0}
+.id-name,.mini-name{font-family:var(--font-display);letter-spacing:.04em}
+/* 霞鶩文楷的粗體偏細，填寫的資料描一道細邊加重，和印刷字一樣站得住 */
+.price,.id-name,.tc-date,.sum-date{-webkit-text-stroke:.35px currentColor}
+.price .cur,.price .muted,.tc-date .tc-time{-webkit-text-stroke:0}
+/* 大標題（待你處理、全部案件）下面一道暖黃波浪 */
+h2.grp-h{margin-bottom:4px}
+.grp-h .wv{text-decoration:underline wavy var(--sun);text-decoration-thickness:1.5px;text-underline-offset:7px;text-decoration-skip-ink:none}
+.grp-h.sub{font-size:13px;letter-spacing:.08em;color:var(--muted);text-decoration:none;margin:6px 0 -2px}
+
+/* ---- 案件卡片＝派工單：左邊時間地點，右邊是虛線撕線隔開的價格存根，撕線上下各咬一個半圓缺口 ---- */
+.card.task{border-radius:var(--r)}
+.tc-open{border-radius:var(--r)}
+.tc-body{display:grid;grid-template-columns:minmax(0,1fr) var(--stub-w);padding:0;gap:0;position:relative}
+.tc-main{padding:13px 12px 14px 14px;gap:2px;justify-content:center}
+.tc-date{font-family:var(--font-display);font-size:19px;line-height:1.3;padding-right:0;flex-direction:column;align-items:flex-start;row-gap:1px;letter-spacing:.02em}
+.tc-date .tc-time{font-family:var(--font-body);font-size:15px;font-weight:700;letter-spacing:0}
+.tc-place{font-size:15px;color:var(--ink);margin-top:2px}
+.tc-g{min-height:24px;margin-top:2px}
+.tc-side{position:relative;background:var(--stub);border-radius:0 7px 7px 0;padding:12px 10px 13px;justify-content:flex-end;align-items:flex-end;gap:6px}
+.card.task.fav .tc-side{padding-top:46px}
+.card.task.has-bar .tc-side{border-radius:0 7px 0 0}
+.tc-side::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:1px;background:repeating-linear-gradient(to bottom,var(--perf) 0 5px,transparent 5px 10px)}
+.tc-body::before,.tc-body::after{content:"";position:absolute;right:calc(var(--stub-w) - 7px);width:14px;height:8px;background:var(--bg);border:1px solid var(--line);z-index:2;pointer-events:none}
+.tc-body::before{top:-1px;border-top:0;border-radius:0 0 8px 8px}
+.tc-body::after{bottom:-1px;border-bottom:0;border-radius:8px 8px 0 0}
+.card.task.has-bar .tc-body::after{display:none}
+.card.task:hover .tc-body::before,.card.task:hover .tc-body::after{border-color:var(--accent)}
+.tc-bottom{gap:7px}
+.tc-side .price{font-size:23px;line-height:1.1}
+.tc-side .price .muted{font-family:var(--font-body);font-size:15px}
+.favbtn{top:4px;right:4px}
+.favbtn:hover{background:rgba(36,38,58,.06)}
+/* 存根上的身分標籤做成印章：細框、略為傾斜 */
+.tc-side .pill{white-space:normal;text-align:center;line-height:1.3;border-radius:4px;padding:2px 6px;background:transparent;border:1.5px solid currentColor;transform:rotate(-3deg);letter-spacing:.04em}
+.tc-side .pill.s-ownt{color:var(--accent)}
+.tc-side .pill.s-bid{color:var(--warn);background:var(--sun-soft)}
+.tc-side .pill.s-bad{color:var(--bad)}
+.tc-bar{padding:8px 14px}
+.tc-bar.bottom{border-radius:0 0 7px 7px;border-top:1px solid var(--line);background:#f6f7f3}
+.tc-bar.bottom.todo{border-top:1px solid #f6c8b6}
+
+/* ---- 案件詳情 ---- */
+.steps .dot{width:12px;height:12px}
+.steps li.cur .dot{box-shadow:0 0 0 4px var(--sun-soft)}
+/* 摘要＝大張派工單：上半是日期時間＋價格存根，下面隔一道橫向撕線，再來是像表格一樣的欄位 */
+.card.sum{padding:0;gap:0}
+.sum-top{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 124px;align-items:stretch;gap:0}
+.sum-top>.grow{padding:16px 12px 16px 16px;display:flex;flex-direction:column;gap:2px;justify-content:center}
+.sum-date{font-family:var(--font-display);font-size:23px;letter-spacing:.02em;line-height:1.3}
+.sum-time{font-size:16px}
+.sum-price{position:relative;background:var(--stub);border-radius:0 7px 0 0;padding:14px 10px 14px;justify-content:flex-end;gap:2px}
+.card.sum.has-fav .sum-price{padding-top:44px}
+.sum-price .price{font-size:25px;line-height:1.15}
+.sum-price .price .muted{font-family:var(--font-body);font-size:16px}
+/* 存根裡的金額放不下時，「NT$」自動換到上一行，不會被切掉 */
+.tc-side .price,.sum-price .price{white-space:normal;text-align:right}
+@media (max-width:360px){.sum-top{grid-template-columns:minmax(0,1fr) 96px}.sum-date{font-size:20px}.sum-top>.grow{padding-left:14px}.sum-price .price{font-size:23px}.tc-side .price{font-size:21px}}
+.sum-price::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:1px;background:repeating-linear-gradient(to bottom,var(--perf) 0 5px,transparent 5px 10px)}
+.sum-top::after{content:"";position:absolute;left:10px;right:10px;bottom:0;height:1px;background:repeating-linear-gradient(to right,var(--perf) 0 5px,transparent 5px 10px)}
+.card.sum .facts{padding:6px 16px 10px;gap:0 14px}
+.facts dt,.facts dd{padding:6px 0;border-bottom:1px dashed var(--line)}
+.facts dt:nth-last-of-type(1),.facts dd:last-of-type{border-bottom:0}
+.facts dt{font-size:13px;letter-spacing:.04em;padding-top:7px}
+.card.sum>.stamp{position:absolute;left:14px;top:-11px;z-index:2}
+.stamp{display:inline-flex;align-items:center;border:1.5px solid currentColor;border-radius:4px;padding:1px 8px;font-size:13px;font-weight:700;letter-spacing:.12em;color:var(--bad);background:var(--surface);transform:rotate(-4deg)}
+/* 你的下一步：輪到你的時候，左邊一道 5px 綠邊，標題變綠 */
+.card.next.act{border-color:var(--accent);box-shadow:none;border-left-width:5px;padding-left:12px}
+.card.next.act>h2{color:var(--accent)}
+.card.mini{gap:6px}
+.mini-role{letter-spacing:.08em}
+.idblock.big .id-name{font-size:23px}
+.id-name{font-size:18px}
+.offer .price{font-size:20px}
+
+/* ---- 我的：資料卡＋一張清單 ---- */
+.me-card{padding:16px}
+.card.list{padding:0;gap:0;overflow:hidden}
+.listrow{appearance:none;border:0;background:none;font:inherit;color:inherit;text-align:left;width:100%;display:flex;align-items:center;gap:10px;padding:13px 14px;min-height:62px;cursor:pointer}
+.listrow+.listrow{border-top:1px solid var(--line)}
+.listrow:hover{background:#f7f8f4}
+.listrow .grow{display:flex;flex-direction:column;gap:1px}
+.listrow b{font-size:16px}
+
+/* ---- 介紹頁：品牌名下面的波浪 ---- */
+.brand.big{text-decoration:underline wavy var(--sun);text-decoration-thickness:2.5px;text-underline-offset:12px;text-decoration-skip-ink:none;padding-bottom:18px}
+/* 發案表單：每一組欄位之間是一道撕線 */
+hr.perf{border:0;height:1px;margin:4px -14px;background:repeating-linear-gradient(to right,var(--perf) 0 5px,transparent 5px 10px)}
+.intro-roles dt{font-family:var(--font-display);font-size:18px}
+.how li::before{border-radius:var(--r-s);background:var(--stub);border:1.5px solid var(--accent)}
 </style>
 </head>
 <body>
@@ -823,15 +944,15 @@ function taskCard(t,opt){
   const role=own?'我是本體':(t.assignee===S.me||t.offers.some(o=>o.user===S.me))?'我是替身':'';
   let bar='';
   if(opt.bar)bar='<div class="tc-bar bottom'+(td?' todo':'')+'">'+(td?'<span class="tc-dot" aria-hidden="true"></span>':'')+'<span class="grow">'+(td?'<span class="vh">需要你處理：</span>':'')+esc(barText(t,S.me))+'</span>'+(opt.role&&role?'<span class="bar-role">'+role+'</span>':'')+'</div>';
-  return '<div class="card task">'+
+  return '<div class="card task'+(S.me?' fav':'')+(bar?' has-bar':'')+'">'+
     '<button class="tc-open" data-act="open" data-id="'+t.id+'" aria-label="查看 '+dateLabel(t)+esc(t.building)+' 的案件"></button>'+
     favBtn(t.id)+(unread(t)?'<span class="nbadge" aria-label="'+unread(t)+' 則新留言">'+unread(t)+'</span>':'')+
-    '<div class="tc-body"><div class="tc-date">'+cardDate(t)+'<span class="tc-time">'+cardTime(t)+'</span></div>'+
-    '<div class="tc-row"><div class="tc-main">'+
+    /* 派工單：左邊是日期、時間、地點、性別；右邊是撕線隔開的存根，放收藏星號、身分印章和金額 */
+    '<div class="tc-body"><div class="tc-main"><div class="tc-date">'+cardDate(t)+'<span class="tc-time">'+cardTime(t)+'</span></div>'+
       '<div class="tc-place">'+esc(t.building)+'</div>'+
       (t.gender==='不限'?'':'<div class="tc-g">'+genderText(t.gender)+'</div>')+
     '</div><div class="tc-side"><div class="tc-bottom">'+(opt.own&&own?'<span class="pill s-ownt">我是本體</span>':'')+(myBid?'<span class="pill s-bid">你已出價 NT$ '+money(myBid.price)+'</span>':'')+(opt.own&&isBlackPoster(t)?'<span class="pill s-bad">你的黑名單</span>':'')+
-      '<span class="price">'+(price?'NT$ '+money(price):'<span class="muted">自由出價</span>')+'</span></div></div></div></div>'+bar+'</div>';
+      '<span class="price">'+(price?'<span class="cur">NT$</span> '+money(price):'<span class="muted">自由出價</span>')+'</span></div></div></div>'+bar+'</div>';
 }
 /* 備註超過兩行才顯示「展開」 */
 function fixNotes(){
@@ -926,9 +1047,9 @@ function mineView(){
     :'<div class="empty"><b>你目前沒有當本體的案件</b><span class="small">填好日期、時間和地點就能發案。</span><button class="btn ghost sm" data-act="tab" data-v="post">發案</button></div>';
   return '<h1 class="vh">我的案件</h1>'+
   (todos.length
-    ?'<section class="grp" aria-label="待你處理"><h2 class="grp-h">待你處理<span class="badge">'+todos.length+'</span></h2>'+todos.map(t=>taskCard(t,{bar:true,role:true})).join('')+'</section>'
+    ?'<section class="grp" aria-label="待你處理"><h2 class="grp-h"><span class="wv">待你處理</span><span class="badge">'+todos.length+'</span></h2>'+todos.map(t=>taskCard(t,{bar:true,role:true})).join('')+'</section>'
     :'<p class="small muted">目前沒有需要你處理的事。</p>')+
-  '<h2 class="grp-h">全部案件</h2>'+
+  '<h2 class="grp-h"><span class="wv">全部案件</span></h2>'+
   '<div class="seg" role="tablist">'+[['work','我是替身'],['own','我是本體']].map(([v,l])=>'<button role="tab" aria-selected="'+(k===v)+'" class="'+(k===v?'on':'')+'" data-act="seg" data-k="mineRole" data-v="'+v+'">'+l+'<span class="muted small">'+cnt(v)+'</span></button>').join('')+'</div>'+
   (groups||none);
 }
@@ -1005,11 +1126,11 @@ function postView(){
     '<div class="field"><span class="lbl">日期</span><button type="button" class="dt-btn" data-act="openDate">'+IC.cal+'<span>'+mdw(d)+'</span></button></div>'+
     '<div class="two"><div class="field"><span class="lbl">開工時間</span><button type="button" class="dt-btn" data-act="openTime" data-w="start">'+IC.clock+'<span>'+pf.start+'</span></button></div>'+
     '<div class="field"><span class="lbl">結束時間</span><button type="button" class="dt-btn" data-act="openTime" data-w="end">'+IC.clock+'<span>'+pf.end+'</span></button></div></div>'+
-    '<p class="small muted">共 '+durLabel(toMin(pf.end)-toMin(pf.start))+'</p>'+
+    '<p class="small muted">共 '+durLabel(toMin(pf.end)-toMin(pf.start))+'</p><hr class="perf">'+
     '<div class="field"><label for="p-b">地點</label><input id="p-b" name="building" maxlength="30" value="'+esc(pf.building)+'"></div>'+
-    '<div class="field"><label for="p-meet">集合位置</label><input id="p-meet" name="meet" maxlength="40" value="'+esc(pf.meet)+'"></div>'+
+    '<div class="field"><label for="p-meet">集合位置</label><input id="p-meet" name="meet" maxlength="40" value="'+esc(pf.meet)+'"></div><hr class="perf">'+
     '<div class="field"><span class="lbl" id="p-g">替身性別</span><div class="checks" role="radiogroup" aria-labelledby="p-g">'+gopts.map(([x,l],i)=>'<label for="p-g'+i+'" class="'+(x==='限男生'?'gm':x==='限女生'?'gf':'')+'" aria-label="'+x+'"><input type="radio" id="p-g'+i+'" name="gender" value="'+x+'"'+(pf.gender===x?' checked':'')+'>'+l+'</label>').join('')+'</div></div>'+
-    '<div class="field"><label for="p-budget">標價（NT$） '+opt+'</label><input id="p-budget" name="budget" type="number" inputmode="numeric" min="50" max="5000" step="10" value="'+esc(pf.budget)+'"><span class="small muted">不填就由替身自由出價。</span></div>'+
+    '<div class="field"><label for="p-budget">標價（NT$） '+opt+'</label><input id="p-budget" name="budget" type="number" inputmode="numeric" min="50" max="5000" step="10" value="'+esc(pf.budget)+'"><span class="small muted">不填就由替身自由出價。</span></div><hr class="perf">'+
     '<div class="field"><label for="p-note">備註 '+opt+'</label><textarea id="p-note" name="note" rows="4" maxlength="300">'+esc(pf.note)+'</textarea></div>'+
     '<p class="small muted">替身可以接受你的標價，也可以自行出價，你再從出價裡挑人。</p>'+
     '<button class="btn block" type="submit">發布案件</button>'+
@@ -1096,13 +1217,15 @@ function meView(){
   if(ui.meSub==='tags')return tagsView();
   if(ui.meSub==='bank')return bankView();
   const b=m.bank,hn=historyList(m.id).length,cn=cancelledList(m.id).length,fn=favList().length;
-  const row=(act,title,sub)=>'<button class="card linkrow" data-act="'+act+'"><span class="grow"><b>'+title+'</b><span class="small muted">'+sub+'</span></span><span class="chev" aria-hidden="true">›</span></button>';
+  const row=(act,title,sub)=>'<button class="listrow" data-act="'+act+'"><span class="grow"><b>'+title+'</b><span class="small muted">'+sub+'</span></span><span class="chev" aria-hidden="true">›</span></button>';
   return suspendBanner(m)+'<h1 class="vh">我的</h1>'+
   '<button class="card linkrow me-card" data-act="profile"><span class="grow">'+idBlock(m,true).replace(/<div/g,'<span').replace(/<\/div>/g,'</span>')+'</span><span class="chev" aria-hidden="true">›</span></button>'+
+  '<div class="card list">'+
   row('bankPage','收款方式',esc(payList(m))||'還沒設定，出價前要先設定')+
   row('favs','收藏',fn+' 筆')+
   row('past','過去的案件','已完成 '+hn+' 筆、已取消 '+cn+' 筆')+
   row('tagsPage','標記的人',Object.keys(S.tags[S.me]||{}).length+' 人')+
+  '</div>'+
   '<section class="card"><h2>使用規則</h2><ul class="small" style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px">'+
   '<li>本體：發案、請人打掃的人。替身：接案、去打掃的人。</li>'+
   '<li>開工前，本體和替身都可以取消。</li><li>本體選了替身之後，替身要在 24 小時內、而且在開工前確認接案，逾時自動撤銷。本體選擇 1 小時後，可以改選別人。</li><li>開工時間結束 24 小時後，替身還沒按「打掃完成」，會自動算打掃完成。</li><li>替身打掃完成 3 天後，本體還沒驗收，會自動驗收完成。</li>'+
@@ -1243,7 +1366,7 @@ function personCard(title,x,self){
 function offerRow(t,o,i,canChoose){
   const x=u(o.user),sus=suspended(x),g=tagOf(x.id);
   return '<div class="offer"><div class="row between offer-row"><div class="grow">'+idBlock(x)+(g?'<div class="row wrap small"><span class="muted">你的標記</span>'+tagChip(g)+'</div>':'')+'</div>'+
-    '<div class="offer-side"><span class="price">NT$ '+money(o.price)+'</span>'+(!canChoose?'':sus?'<span class="pill s-bad">停權中，不能選擇</span>':'<button class="btn sm" data-act="choose" data-id="'+t.id+'" data-oid="'+o.id+'">選這位</button>')+'</div></div></div>';
+    '<div class="offer-side"><span class="price"><span class="cur">NT$</span> '+money(o.price)+'</span>'+(!canChoose?'':sus?'<span class="pill s-bad">停權中，不能選擇</span>':'<button class="btn sm" data-act="choose" data-id="'+t.id+'" data-oid="'+o.id+'">選這位</button>')+'</div></div></div>';
 }
 /* ---------- 案件詳情 ----------
    由上到下：進度條（只有當事人）→ 摘要 → 你的下一步 → 留言板 → 對方資訊 → 取消或退出 */
@@ -1262,13 +1385,13 @@ function hhmm(ts){const d=new Date(ts);return pad(d.getHours())+':'+pad(d.getMin
 function summaryCard(t){
   const live=t.status==='open'||t.status==='pending'||t.status==='assigned';
   const pl=t.price?'成交價':'本體標價';
-  const pv=t.price?'NT$ '+money(t.price):t.budget?'NT$ '+money(t.budget):'<span class="muted">自由出價</span>';
+  const pv=t.price?'<span class="cur">NT$</span> '+money(t.price):t.budget?'<span class="cur">NT$</span> '+money(t.budget):'<span class="muted">自由出價</span>';
   const clamp=t.note&&!(t.status==='open'||t.status==='pending'),exp=!!ui.expanded[t.id];
   const note=!t.note?'<span class="muted">無</span>'
     :clamp?'<div class="clamp'+(exp?' open':'')+'"><span class="clamp-txt">'+esc(t.note)+'</span><button class="tc-more" data-act="toggleNote" data-id="'+t.id+'" aria-expanded="'+exp+'">'+(exp?'收合':'展開')+'</button></div>'
     :esc(t.note);
   return '<section class="card sum'+(S.me?' has-fav':'')+'" aria-label="案件摘要">'+favBtn(t.id)+
-    (t.status==='cancelled'?'<span class="pill s-off" style="align-self:flex-start">已取消</span>':'')+
+    (t.status==='cancelled'?'<span class="stamp">已取消</span>':'')+
     '<div class="sum-top"><div class="grow"><div class="sum-date">'+mdw(new Date(t.start))+'</div><div class="sum-time"><span>'+hhmm(t.start)+' 至 '+hhmm(t.end)+'</span>'+(live?'<span class="small muted">'+when(t)+'</span>':'')+'</div></div>'+
     '<div class="sum-price"><span class="small muted">'+pl+'</span><b class="price">'+pv+'</b></div></div>'+
     '<dl class="facts"><dt>地點</dt><dd>'+esc(t.building)+'</dd><dt>集合位置</dt><dd>'+esc(t.meet)+'</dd><dt>替身性別</dt><dd>'+genderText(t.gender)+'</dd><dt>備註</dt><dd>'+note+'</dd></dl></section>';
