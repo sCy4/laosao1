@@ -9,9 +9,11 @@
 <link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  /* 替身掃者：宿舍綠為主色、時間暖黃標示金額與待辦；單欄手機版，頂部帳號列＋底部分頁 */
-  --bg:#edf2f0; --surface:#ffffff; --ink:#15302a; --muted:#4b5e58; --line:#d5dfdb;
-  --accent:#0d7765; --accent-ink:#ffffff; --accent-soft:#d6eee7;
+  /* 替身掃者・方案 A「套印」：宿舍綠為主色、暖黃是「替身」錯位色層；紙張是淡橄欖米色，文字是帶紫的墨色。
+     單欄手機版，頂部帳號列＋底部分頁 */
+  --bg:#f1f2e5; --surface:#fffdf8; --ink:#2b2233; --muted:#5a5366; --line:#dcdacb;
+  --edge:#2b2233; --twin:#c9cf96; --twin-deep:#acb75e; --plum:#553366;
+  --accent:#0d7765; --accent-ink:#ffffff; --accent-soft:#d9eee6;
   --sun:#e3a21a; --sun-soft:#fbeecf; --warn:#8a5703;
   --good:#24804a; --good-soft:#dcf0e3; --bad:#b9382a; --bad-soft:#f7e0db; --info:#2a63a8; --info-soft:#dce8f6;
   /* 提醒色只有一種意思：需要你處理，或有未讀 */
@@ -68,7 +70,7 @@ nav.tabs.n2{grid-template-columns:repeat(2,1fr)}
 nav.tabs button{position:relative;appearance:none;background:none;border:0;font:inherit;font-size:12px;color:var(--muted);padding:9px 0 12px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;min-height:56px}
 nav.tabs button.on{color:var(--accent);font-weight:700}
 nav.tabs button.on::before{content:"";position:absolute;top:0;left:30%;right:30%;height:3px;border-radius:0 0 3px 3px;background:var(--accent)}
-.badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--alert);color:#fff;font-size:11px;font-weight:700;font-variant-numeric:tabular-nums}
+.badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--alert);color:#fff;font-size:12px;font-weight:700;font-variant-numeric:tabular-nums}
 nav.tabs .badge{position:absolute;top:4px;left:calc(50% + 8px)}
 
 .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px}
@@ -133,7 +135,7 @@ nav.tabs .badge{position:absolute;top:4px;left:calc(50% + 8px)}
 .seg-sm button{min-height:34px;font-size:13px}
 .slots{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
 .slot{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:14px;font-variant-numeric:tabular-nums;border-radius:10px;padding:8px 0;cursor:pointer;display:flex;flex-direction:column;align-items:center;line-height:1.2;min-height:40px;justify-content:center}
-.slot small{font-size:11px;color:var(--muted)}
+.slot small{font-size:12px;color:var(--muted)}
 .slot.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .slot.on small{color:var(--accent-ink)}
 .slot:disabled{opacity:.35;cursor:not-allowed}
@@ -354,7 +356,7 @@ textarea{resize:vertical}
 .photos{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .ph{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;background:var(--bg)}
 .ph img{width:100%;height:100%;object-fit:cover;display:block;cursor:zoom-in}
-.ph-time{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.55);color:#fff;font-size:11px;padding:2px 6px;font-variant-numeric:tabular-nums}
+.ph-time{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.55);color:#fff;font-size:12px;padding:2px 6px;font-variant-numeric:tabular-nums}
 .ph-x{position:absolute;top:4px;right:4px;width:28px;height:28px;border-radius:50%;border:0;background:rgba(0,0,0,.6);color:#fff;font-size:16px;cursor:pointer}
 .ph.add{display:flex;align-items:center;justify-content:center;border:2px dashed var(--line);color:var(--accent);font-weight:700;font-size:14px;cursor:pointer;background:transparent}
 .big-photo{width:100%;border-radius:12px;display:block}
@@ -392,7 +394,7 @@ label.btn{display:flex;align-items:center;justify-content:center}
 .stats.n2{grid-template-columns:repeat(2,1fr)}
 .tagrow{margin-top:6px;padding-top:8px;border-top:1px solid var(--line)}
 .profile-form{border-top:1px solid var(--line);padding-top:12px}
-.req,.opt{font-size:11px;font-weight:700;border-radius:4px;padding:0 4px;margin-left:2px}
+.req,.opt{font-size:12px;font-weight:700;border-radius:4px;padding:0 4px;margin-left:2px}
 .req{color:var(--bad);background:var(--bad-soft)}
 .opt{color:var(--muted);background:var(--bg)}
 .stat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:2px}
@@ -497,6 +499,169 @@ label.btn{display:flex;align-items:center;justify-content:center}
 #toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 70px);transform:translate(-50%,-12px);background:var(--ink);color:var(--surface);padding:10px 16px;border-radius:12px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:30;width:max-content;max-width:calc(100% - 32px);text-align:center}
 #toast.show{opacity:1;transform:translate(-50%,0)}
 @media (prefers-reduced-motion:reduce){#toast{transition:none}}
+
+/* ================= 方案 A「套印」 =================
+   本體和替身＝一個實心色塊和它錯位的影子，像雙色套印沒對準。
+   所以重點元素（卡片、主要按鈕、目前的分頁、目前的進度、輸入中的欄位）都有一層錯位、不模糊的「替身」色：
+   主要按鈕是暖黃、一般卡片是淡橄欖。外框用墨色細線，間距以 8px 為單位，紙張有淡淡的點格。
+   案件卡片像一張工作單：下面的狀態列用虛線「撕線」隔開。 */
+:root{--line-strong:#b9b6a5;--r:16px;--sh:4px}
+body{background-image:radial-gradient(circle at 1px 1px,rgba(43,34,51,.10) 1px,transparent 1.5px);background-size:16px 16px}
+:focus-visible{outline-color:var(--plum)}
+.tc-open:focus-visible,.pway input:focus-visible + .acc-h{outline-color:var(--plum)}
+h2{font-family:var(--font-display);font-size:18px;letter-spacing:.02em}
+.sheet h2{font-size:20px}
+
+/* 標題欄、下方分頁：墨色細線收邊；品牌字有暖黃的錯位影子 */
+header.top{border-bottom:1.5px solid var(--edge)}
+.brand{text-shadow:1.5px 1.5px 0 var(--sun)}
+.brand.big{text-shadow:3px 3px 0 var(--sun)}
+nav.tabs{border-top:1.5px solid var(--edge)}
+nav.tabs button{padding:8px 0 8px;gap:6px}
+nav.tabs button>svg,nav.tabs button>span:not(.badge){position:relative;z-index:1}
+nav.tabs button.on{color:var(--accent)}
+nav.tabs button.on>svg{color:var(--accent-ink)}
+nav.tabs button.on::before{top:4px;left:50%;right:auto;width:52px;height:30px;margin-left:-28px;border-radius:999px;background:var(--accent);border:1.5px solid var(--edge);box-shadow:2px 2px 0 var(--sun)}
+nav.tabs .badge{z-index:2;top:1px;left:calc(50% + 12px);box-shadow:0 0 0 2px var(--surface)}
+
+/* 間距以 8px 為單位 */
+main{gap:16px}
+.stack,.grp{gap:16px}
+
+/* 卡片：墨色外框＋淡橄欖錯位影子 */
+.card{border:1.5px solid var(--edge);border-radius:var(--r);box-shadow:var(--sh) var(--sh) 0 var(--twin);padding:16px}
+.card.task{padding:0}
+.card.task:hover{border-color:var(--edge);box-shadow:5px 5px 0 var(--twin-deep)}
+.card.task:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--twin)}
+.tc-open{border-radius:var(--r)}
+.tc-body{padding:14px 16px 16px;gap:4px}
+.tc-date{font-size:17px;column-gap:10px}
+.tc-place{color:var(--muted)}
+.nbadge{border-color:var(--surface);box-shadow:0 0 0 1.5px var(--edge)}
+/* 金額：「NT$」小、數字大，掃一眼就看到 */
+.price .cur{font-size:.6em;font-weight:700;margin-right:1px;letter-spacing:.02em;vertical-align:.12em}
+.tc-side .price{font-size:26px;line-height:1.1;color:var(--ink)}
+.tc-side .price .muted{font-size:17px;font-family:var(--font-display);color:var(--muted)}
+/* 狀態列＝工作單的存根：虛線撕線＋兩側半圓缺口 */
+.tc-bar.bottom{position:relative;padding:9px 16px;border-top:1.5px dashed var(--line-strong);border-radius:0 0 14.5px 14.5px;background:#f7f7ee}
+.tc-bar.bottom.todo{border-top:1.5px dashed #e9a487}
+.tc-bar.bottom::before,.tc-bar.bottom::after{content:"";position:absolute;top:-8px;width:13px;height:13px;border-radius:50%;background:var(--bg);border:1.5px solid var(--edge)}
+.tc-bar.bottom::before{left:-8.5px;clip-path:inset(0 0 0 6.5px)}
+.tc-bar.bottom::after{right:-8.5px;clip-path:inset(0 6.5px 0 0)}
+.bar-role{font-size:12px;padding:1px 8px;border-radius:999px;border:1px solid currentColor;opacity:1}
+.pill{border:1px solid color-mix(in srgb,currentColor 40%,transparent)}
+.pill.s-bid{border-color:var(--edge)}
+.favbtn{color:var(--muted)}
+.favbtn.on{color:var(--sun)}
+.favbtn.on svg path{stroke:var(--edge)}
+
+/* 按鈕：主要按鈕是宿舍綠＋暖黃錯位影子，按下去時「本體」疊回「替身」上 */
+.btn{border:1.5px solid var(--edge);border-radius:12px;box-shadow:3px 3px 0 var(--sun);transition:transform .08s ease,box-shadow .08s ease}
+.btn.sm{box-shadow:2px 2px 0 var(--sun)}
+.btn:active:not(:disabled){transform:translate(3px,3px);box-shadow:0 0 0 var(--sun)}
+.btn.ghost{background:var(--surface);color:var(--accent);border-color:var(--edge);box-shadow:3px 3px 0 var(--twin)}
+.btn.ghost.sm{box-shadow:2px 2px 0 var(--twin)}
+.btn.danger{background:var(--surface);border-color:var(--bad);box-shadow:3px 3px 0 var(--bad-soft)}
+.btn.danger-solid{border-color:var(--edge);box-shadow:3px 3px 0 #f2b9ad}
+.btn.line{border-color:var(--edge);box-shadow:3px 3px 0 var(--twin)}
+.btn.quiet{border-color:transparent;box-shadow:none;background:transparent}
+.btn.quiet:active{transform:none}
+.btn:disabled{box-shadow:none;border-color:var(--line-strong)}
+.btn.active{background:var(--accent-soft);border-color:var(--edge)}
+@media (prefers-reduced-motion:reduce){.btn{transition:none}}
+
+/* 輸入欄位：輸入中的欄位出現暖黃「替身」 */
+input,select,textarea,.dt-btn,.mail-in{border:1.5px solid var(--line-strong);border-radius:12px}
+.mail-in input,.search input,.tm-custom input{border:0}
+.tm-custom input{border:1.5px solid var(--line-strong)}
+input:focus-visible,select:focus-visible,textarea:focus-visible,.mail-in:focus-within,.search:focus-within{outline:none;border-color:var(--edge);box-shadow:3px 3px 0 var(--sun)}
+.mail-in input:focus-visible,.search input:focus-visible{box-shadow:none}
+[aria-invalid="true"],[aria-invalid="true"]:focus-visible{border-color:var(--bad)}
+[aria-invalid="true"]:focus-visible{box-shadow:3px 3px 0 var(--bad-soft)}
+.dt-btn:hover{border-color:var(--edge)}
+.dt-btn svg{color:var(--accent)}
+.field label,.field .lbl{color:var(--ink);font-weight:700}
+.checks label{border:1.5px solid var(--line-strong);background:var(--surface)}
+.checks label:has(input:checked){background:var(--accent-soft);border-color:var(--edge);box-shadow:2px 2px 0 var(--twin)}
+.opt-row{border:1.5px solid var(--line-strong)}
+.opt-row.on{border-color:var(--edge);box-shadow:3px 3px 0 var(--twin)}
+.chip{border:1.5px solid var(--line-strong)}
+.chip.on{border-color:var(--edge)}
+.slot{border:1.5px solid var(--line-strong)}
+.slot.on{border-color:var(--edge)}
+
+/* 接案頁工具列 */
+.search{border:1.5px solid var(--edge);box-shadow:3px 3px 0 var(--twin)}
+.tool{border:1.5px solid var(--edge);box-shadow:3px 3px 0 var(--twin)}
+.tool:hover{border-color:var(--edge);background:var(--accent-soft)}
+.tool.active{border-color:var(--edge);box-shadow:3px 3px 0 var(--sun)}
+.tool .badge{border:1.5px solid var(--edge)}
+
+/* 「我的案件」：分組標題 */
+.grp-h{font-family:var(--font-display);font-size:19px;gap:10px}
+.grp-h:not(.sub)::before{content:"";flex:none;width:11px;height:11px;border-radius:3px;background:var(--accent);box-shadow:2px 2px 0 var(--sun)}
+.grp-h.sub{font-family:var(--font-body);font-size:14px;color:var(--muted);gap:8px}
+.grp-h.sub::after{content:"";flex:1;border-top:1.5px dashed var(--line-strong)}
+.seg{border:1.5px solid var(--edge);box-shadow:3px 3px 0 var(--twin);padding:4px}
+.seg button.on{background:var(--accent);color:var(--accent-ink);box-shadow:none}
+.seg button.on .muted{color:inherit;opacity:.85}
+
+/* 進度條：圓點換成小方塊，走過的打勾，目前這一步是暖黃加錯位影子 */
+.steps{gap:0}
+.steps li{gap:4px}
+.steps li::before{top:8px;height:2px;background:repeating-linear-gradient(90deg,var(--line-strong) 0 5px,transparent 5px 9px)}
+.steps li.past::before,.steps li.cur::before{background:var(--accent)}
+.steps .dot{width:18px;height:18px;border-radius:5px;border:1.5px solid var(--line-strong);background:var(--surface)}
+.steps li.past .dot{background:var(--accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.5l2.6 2.5L12 5.5' fill='none' stroke='%23fff' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/14px no-repeat;border-color:var(--edge)}
+.steps li.cur .dot{background:var(--sun);border-color:var(--edge);box-shadow:2px 2px 0 var(--edge)}
+.steps li.cur{color:var(--ink)}
+
+/* 案件詳情摘要＝一張收據：上面是時間，中間是明細，最下面虛線後是金額 */
+.sum-top{padding-right:32px}
+.sum-date{font-size:22px;line-height:1.3}
+.sum-time{font-size:18px;row-gap:4px}
+.sum-time .when{display:inline-flex;align-items:center;font-size:13px;font-weight:700;color:var(--warn);background:var(--sun-soft);border:1px solid color-mix(in srgb,var(--warn) 35%,transparent);border-radius:999px;padding:0 8px;line-height:1.6}
+.facts{gap:6px 16px;font-size:15px}
+.card.sum .sum-price,.card.sum.has-fav .sum-price{flex-direction:row;align-items:baseline;justify-content:space-between;gap:12px;padding-top:10px;border-top:1.5px dashed var(--line-strong)}
+.sum-price .price{font-size:28px;line-height:1}
+.sum-price .price .muted{font-size:20px;font-family:var(--font-display)}
+/* 輪到你做事的卡片：綠框＋暖黃錯位影子，比其他卡片更突出 */
+.card.next.act{border:2px solid var(--accent);box-shadow:5px 5px 0 var(--sun)}
+.card.next.act h2{color:var(--accent)}
+.offer{border-top:1.5px dashed var(--line)}
+.offer-side .price{font-size:20px}
+.chosen{background:#f6f6ec;border:1.5px dashed var(--line-strong)}
+.mini-role{font-family:var(--font-display);font-size:15px}
+.cmt{background:#f2f2e8;border:1px solid var(--line)}
+.cmt.mine{background:var(--accent-soft);border-color:#b7dccf}
+.banner{border-radius:12px}
+
+/* 我的：功能列表合成一張卡 */
+.menu{padding:0;gap:0;overflow:hidden}
+.menu-row{appearance:none;border:0;background:none;font:inherit;color:inherit;text-align:left;width:100%;display:flex;align-items:center;gap:12px;padding:14px 16px;min-height:64px;cursor:pointer}
+.menu-row+.menu-row{border-top:1.5px dashed var(--line)}
+.menu-row:hover{background:#f7f7ee}
+.menu-row .grow{display:flex;flex-direction:column;gap:2px}
+.menu-ic{flex:none;width:36px;height:36px;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;background:var(--accent-soft);color:var(--accent);border:1.5px solid var(--edge)}
+.menu-ic svg{width:20px;height:20px}
+.me-card .id-name{font-size:21px}
+
+/* 底部視窗、提示 */
+.scrim{background:rgba(43,34,51,.5)}
+.sheet{border:1.5px solid var(--edge);border-bottom:0;border-radius:20px 20px 0 0}
+.sheet.dlg{border:1.5px solid var(--edge);box-shadow:6px 6px 0 var(--sun)}
+#toast{box-shadow:3px 3px 0 var(--sun);border:1.5px solid var(--edge)}
+.tagmenu{border:1.5px solid var(--edge);box-shadow:4px 4px 0 var(--twin)}
+.tagbtn{border-width:1.5px}
+.note{border:1.5px solid var(--line)}
+.note.new{border-color:var(--alert)}
+.ph.add{border:2px dashed var(--line-strong)}
+.pay-acc,.cmt-ph,.qr,.cal-nav{border:1.5px solid var(--line-strong)}
+.pay-acc{border-radius:12px}
+.demo-entry{border-top:1.5px dashed var(--line-strong)}
+.how li::before{border:1.5px solid var(--edge);border-radius:8px;box-shadow:2px 2px 0 var(--sun)}
+.intro-dots i{width:10px;height:10px;border-radius:3px}
+.intro-dots i.on{box-shadow:2px 2px 0 var(--sun)}
 </style>
 </head>
 <body>
@@ -538,6 +703,7 @@ const IC={
   clip:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9zM9 12h6M9 16h4"/></svg>',
   back:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>',
   image:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M21 16l-5-5-8 8"/></svg>',
+  wallet:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5H18v3"/><rect x="4" y="8" width="16" height="11" rx="2.5"/><path d="M16 13.5h.01"/></svg>',
   shield:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6z"/></svg>'
 };
 
@@ -618,6 +784,7 @@ function nid(p){S.seq++;return p+S.seq;}
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function pad(n){return String(n).padStart(2,'0');}
 function money(n){return Number(n).toLocaleString('zh-TW');}
+function ntd(n){return '<span class="cur">NT$</span> '+money(n);}  /* 大字金額用：「NT$」縮小、數字放大 */
 function mdw(d){return (d.getMonth()+1)+'月'+d.getDate()+'日（'+'日一二三四五六'[d.getDay()]+'）';}
 function fmtTime(ts){const d=new Date(ts);return (d.getMonth()+1)+'月'+d.getDate()+'日（'+'日一二三四五六'[d.getDay()]+'）'+pad(d.getHours())+':'+pad(d.getMinutes());}
 function fmtShort(ts){const d=new Date(ts);return (d.getMonth()+1)+'月'+d.getDate()+'日 '+pad(d.getHours())+':'+pad(d.getMinutes());}
@@ -831,7 +998,7 @@ function taskCard(t,opt){
       '<div class="tc-place">'+esc(t.building)+'</div>'+
       (t.gender==='不限'?'':'<div class="tc-g">'+genderText(t.gender)+'</div>')+
     '</div><div class="tc-side"><div class="tc-bottom">'+(opt.own&&own?'<span class="pill s-ownt">我是本體</span>':'')+(myBid?'<span class="pill s-bid">你已出價 NT$ '+money(myBid.price)+'</span>':'')+(opt.own&&isBlackPoster(t)?'<span class="pill s-bad">你的黑名單</span>':'')+
-      '<span class="price">'+(price?'NT$ '+money(price):'<span class="muted">自由出價</span>')+'</span></div></div></div></div>'+bar+'</div>';
+      '<span class="price">'+(price?ntd(price):'<span class="muted">自由出價</span>')+'</span></div></div></div></div>'+bar+'</div>';
 }
 /* 備註超過兩行才顯示「展開」 */
 function fixNotes(){
@@ -1096,13 +1263,15 @@ function meView(){
   if(ui.meSub==='tags')return tagsView();
   if(ui.meSub==='bank')return bankView();
   const b=m.bank,hn=historyList(m.id).length,cn=cancelledList(m.id).length,fn=favList().length;
-  const row=(act,title,sub)=>'<button class="card linkrow" data-act="'+act+'"><span class="grow"><b>'+title+'</b><span class="small muted">'+sub+'</span></span><span class="chev" aria-hidden="true">›</span></button>';
+  const row=(act,ic,title,sub)=>'<button class="menu-row" data-act="'+act+'"><span class="menu-ic">'+ic+'</span><span class="grow"><b>'+title+'</b><span class="small muted">'+sub+'</span></span><span class="chev" aria-hidden="true">›</span></button>';
   return suspendBanner(m)+'<h1 class="vh">我的</h1>'+
   '<button class="card linkrow me-card" data-act="profile"><span class="grow">'+idBlock(m,true).replace(/<div/g,'<span').replace(/<\/div>/g,'</span>')+'</span><span class="chev" aria-hidden="true">›</span></button>'+
-  row('bankPage','收款方式',esc(payList(m))||'還沒設定，出價前要先設定')+
-  row('favs','收藏',fn+' 筆')+
-  row('past','過去的案件','已完成 '+hn+' 筆、已取消 '+cn+' 筆')+
-  row('tagsPage','標記的人',Object.keys(S.tags[S.me]||{}).length+' 人')+
+  '<nav class="card menu" aria-label="我的功能">'+
+  row('bankPage',IC.wallet,'收款方式',esc(payList(m))||'還沒設定，出價前要先設定')+
+  row('favs',IC.star,'收藏',fn+' 筆')+
+  row('past',IC.clock,'過去的案件','已完成 '+hn+' 筆、已取消 '+cn+' 筆')+
+  row('tagsPage',IC.tag,'標記的人',Object.keys(S.tags[S.me]||{}).length+' 人')+
+  '</nav>'+
   '<section class="card"><h2>使用規則</h2><ul class="small" style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px">'+
   '<li>本體：發案、請人打掃的人。替身：接案、去打掃的人。</li>'+
   '<li>開工前，本體和替身都可以取消。</li><li>本體選了替身之後，替身要在 24 小時內、而且在開工前確認接案，逾時自動撤銷。本體選擇 1 小時後，可以改選別人。</li><li>開工時間結束 24 小時後，替身還沒按「打掃完成」，會自動算打掃完成。</li><li>替身打掃完成 3 天後，本體還沒驗收，會自動驗收完成。</li>'+
@@ -1243,7 +1412,7 @@ function personCard(title,x,self){
 function offerRow(t,o,i,canChoose){
   const x=u(o.user),sus=suspended(x),g=tagOf(x.id);
   return '<div class="offer"><div class="row between offer-row"><div class="grow">'+idBlock(x)+(g?'<div class="row wrap small"><span class="muted">你的標記</span>'+tagChip(g)+'</div>':'')+'</div>'+
-    '<div class="offer-side"><span class="price">NT$ '+money(o.price)+'</span>'+(!canChoose?'':sus?'<span class="pill s-bad">停權中，不能選擇</span>':'<button class="btn sm" data-act="choose" data-id="'+t.id+'" data-oid="'+o.id+'">選這位</button>')+'</div></div></div>';
+    '<div class="offer-side"><span class="price">'+ntd(o.price)+'</span>'+(!canChoose?'':sus?'<span class="pill s-bad">停權中，不能選擇</span>':'<button class="btn sm" data-act="choose" data-id="'+t.id+'" data-oid="'+o.id+'">選這位</button>')+'</div></div></div>';
 }
 /* ---------- 案件詳情 ----------
    由上到下：進度條（只有當事人）→ 摘要 → 你的下一步 → 留言板 → 對方資訊 → 取消或退出 */
@@ -1262,16 +1431,16 @@ function hhmm(ts){const d=new Date(ts);return pad(d.getHours())+':'+pad(d.getMin
 function summaryCard(t){
   const live=t.status==='open'||t.status==='pending'||t.status==='assigned';
   const pl=t.price?'成交價':'本體標價';
-  const pv=t.price?'NT$ '+money(t.price):t.budget?'NT$ '+money(t.budget):'<span class="muted">自由出價</span>';
+  const pv=t.price?ntd(t.price):t.budget?ntd(t.budget):'<span class="muted">自由出價</span>';
   const clamp=t.note&&!(t.status==='open'||t.status==='pending'),exp=!!ui.expanded[t.id];
   const note=!t.note?'<span class="muted">無</span>'
     :clamp?'<div class="clamp'+(exp?' open':'')+'"><span class="clamp-txt">'+esc(t.note)+'</span><button class="tc-more" data-act="toggleNote" data-id="'+t.id+'" aria-expanded="'+exp+'">'+(exp?'收合':'展開')+'</button></div>'
     :esc(t.note);
   return '<section class="card sum'+(S.me?' has-fav':'')+'" aria-label="案件摘要">'+favBtn(t.id)+
     (t.status==='cancelled'?'<span class="pill s-off" style="align-self:flex-start">已取消</span>':'')+
-    '<div class="sum-top"><div class="grow"><div class="sum-date">'+mdw(new Date(t.start))+'</div><div class="sum-time"><span>'+hhmm(t.start)+' 至 '+hhmm(t.end)+'</span>'+(live?'<span class="small muted">'+when(t)+'</span>':'')+'</div></div>'+
-    '<div class="sum-price"><span class="small muted">'+pl+'</span><b class="price">'+pv+'</b></div></div>'+
-    '<dl class="facts"><dt>地點</dt><dd>'+esc(t.building)+'</dd><dt>集合位置</dt><dd>'+esc(t.meet)+'</dd><dt>替身性別</dt><dd>'+genderText(t.gender)+'</dd><dt>備註</dt><dd>'+note+'</dd></dl></section>';
+    '<div class="sum-top"><div class="grow"><div class="sum-date">'+mdw(new Date(t.start))+'</div><div class="sum-time"><span>'+hhmm(t.start)+' 至 '+hhmm(t.end)+'</span>'+(live?'<span class="when">'+when(t)+'</span>':'')+'</div></div></div>'+
+    '<dl class="facts"><dt>地點</dt><dd>'+esc(t.building)+'</dd><dt>集合位置</dt><dd>'+esc(t.meet)+'</dd><dt>替身性別</dt><dd>'+genderText(t.gender)+'</dd><dt>備註</dt><dd>'+note+'</dd></dl>'+
+    '<div class="sum-price"><span class="small muted">'+pl+'</span><b class="price">'+pv+'</b></div></section>';
 }
 /* 付款進度：從看的人的角度寫（你／本體／替身） */
 function payBanner(t,r){
