@@ -22,7 +22,8 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
 
   // 淺色模式：手機設成深色也維持淺色
   await fresh('u1');
-  ok((await js(() => getComputedStyle(document.body).backgroundColor)) === 'rgb(237, 242, 240)', '手機是深色模式時，背景仍是淺色');
+  // 方案F「磁磚」把底色從 #edf2f0 改成 #f2f5f0（磁磚白），檢查的值跟著改；檢查的意思不變：深色模式下底色仍是這個淺色
+  ok((await js(() => getComputedStyle(document.body).backgroundColor)) === 'rgb(242, 245, 240)', '手機是深色模式時，背景仍是淺色');
   // 日曆刪除
   ok(!(await js(() => !!document.querySelector('[data-act="openBcal"]'))) && (await js(() => document.querySelectorAll('.toolbar .tool').length)) === 2, '日曆按鈕已刪除，只剩排序和篩選');
   // 發案頁的 24 小時時鐘
