@@ -354,6 +354,11 @@ textarea{resize:vertical}
 
 .bank{display:grid;grid-template-columns:1fr 1fr;gap:10px;background:var(--bg);border-radius:12px;padding:12px}
 .bank div{display:flex;flex-direction:column;min-width:0;word-break:break-all}
+.payway{display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding-top:10px;border-top:1px solid var(--line)}
+.payway .bank{align-self:stretch}
+.qr{width:180px;height:180px;object-fit:contain;align-self:center;border:1px solid var(--line);border-radius:10px;background:#fff;cursor:zoom-in}
+label.btn{display:flex;align-items:center;justify-content:center}
+.payform:has(input[name=method][value=linepay]:checked) .l5{display:none}
 
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .stats.n3{grid-template-columns:repeat(3,1fr)}
@@ -486,7 +491,6 @@ const ST={open:{label:'召喚替身',cls:'s-open'},pending:{label:'待替身確�
 const STEPS=['召喚替身','打掃','驗收','付款','完成'];
 const IDX={open:0,pending:0,assigned:1,done:2,confirmed:3,paid:3,closed:4};
 const YEARS=['大一','大二','大三','大四','大五以上','碩一','碩二','博士班'];
-const PAYWAYS=['現金','電子支付','其他'];
 const AV=['#bfe3d8','#f6dca0','#c9d9f1','#f1c9bf','#d9d1ef'];
 const IC={
   search:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>',
@@ -515,14 +519,25 @@ function demoPhoto(label,clean){
   const svg='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240"><rect width="240" height="120" fill="'+(clean?'#e4eef0':'#d3d9d9')+'"/><rect y="120" width="240" height="120" fill="'+(clean?'#ebe5d8':'#cbc1ab')+'"/><rect x="150" y="50" width="70" height="80" fill="#a5b8bd"/><rect x="20" y="72" width="90" height="54" fill="#b08d63"/>'+mess+'<rect width="240" height="30" fill="rgba(0,0,0,.5)"/><text x="12" y="20" font-family="sans-serif" font-size="14" fill="#fff">'+label+'（示範照片）</text></svg>';
   return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
 }
+/* 示範用的 LINE Pay 收款碼圖片（只是看起來像，不能真的掃） */
+function demoQR(tag){
+  let h=0;for(const c of tag)h=(h*31+c.charCodeAt(0))>>>0;h=h||1;
+  const rnd=()=>{h^=h<<13;h>>>=0;h^=h>>>17;h^=h<<5;h>>>=0;return h/4294967296;};
+  const n=25,cell=8,pd=16,size=n*cell+pd*2,inF=(x,y)=>(x<8&&y<8)||(x>=n-8&&y<8)||(x<8&&y>=n-8);
+  let r='';
+  for(let y=0;y<n;y++)for(let x=0;x<n;x++)if(!inF(x,y)&&rnd()<0.47)r+='<rect x="'+(pd+x*cell)+'" y="'+(pd+y*cell)+'" width="'+cell+'" height="'+cell+'"/>';
+  const f=(x,y)=>{const X=pd+x*cell,Y=pd+y*cell;return '<rect x="'+X+'" y="'+Y+'" width="56" height="56"/><rect x="'+(X+8)+'" y="'+(Y+8)+'" width="40" height="40" fill="#fff"/><rect x="'+(X+16)+'" y="'+(Y+16)+'" width="24" height="24"/>';};
+  const svg='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+size+' '+(size+26)+'"><rect width="'+size+'" height="'+(size+26)+'" fill="#fff"/><g fill="#111">'+r+f(0,0)+f(n-7,0)+f(0,n-7)+'</g><text x="'+(size/2)+'" y="'+(size+16)+'" font-family="sans-serif" font-size="13" text-anchor="middle" fill="#06c755">LINE Pay 收款碼（示範）</text></svg>';
+  return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
+}
 function seed(){
   const t0=Date.now();
   const at=(dd,h,mi)=>{const d=new Date(t0);d.setDate(d.getDate()+dd);d.setHours(h,mi||0,0,0);return d.getTime();};
   const users=[
-    {id:'u1',name:'王小明',sid:'S11240117',gender:'男',cls:'資工2A',line:'xiaoming_w',bank:{code:'700',acct:'00012345678901',name:'王小明'},doneWork:3,donePost:2,dropped:0,suspendedUntil:0},
-    {id:'u2',name:'陳怡君',sid:'S11330422',gender:'女',cls:'工工1B',line:'yijun.chen',bank:{code:'822',acct:'123456789012',name:'陳怡君'},doneWork:12,donePost:4,dropped:0,suspendedUntil:0},
-    {id:'u3',name:'林柏翰',sid:'S11120856',gender:'男',cls:'企管3A',line:'pohan_lin',bank:null,doneWork:4,donePost:1,dropped:1,suspendedUntil:0},
-    {id:'u4',name:'張書瑋',sid:'S11240633',gender:'男',cls:'',line:'shuwei.c',bank:{code:'808',acct:'0912345678123',name:'張書瑋'},doneWork:1,donePost:2,dropped:0,suspendedUntil:0}
+    {id:'u1',name:'王小明',sid:'S11240117',gender:'男',cls:'資工2A',bank:{code:'700',acct:'00012345678901',name:'王小明'},doneWork:3,donePost:2,dropped:0,suspendedUntil:0},
+    {id:'u2',name:'陳怡君',sid:'S11330422',gender:'女',cls:'工工1B',bank:{code:'822',acct:'123456789012',name:'陳怡君'},linepay:{qr:demoQR('u2'),at:t0},doneWork:12,donePost:4,dropped:0,suspendedUntil:0},
+    {id:'u3',name:'林柏翰',sid:'S11120856',gender:'男',cls:'企管3A',bank:null,linepay:{qr:demoQR('u3'),at:t0},doneWork:4,donePost:1,dropped:1,suspendedUntil:0},
+    {id:'u4',name:'張書瑋',sid:'S11240633',gender:'男',cls:'',bank:{code:'808',acct:'0912345678123',name:'張書瑋'},doneWork:1,donePost:2,dropped:0,suspendedUntil:0}
   ];
   users.forEach(x=>{x.email=x.sid.toLowerCase()+MAIL_DOMAIN;});
   const base=(o)=>Object.assign({offers:[],assignee:null,price:null,budget:null,photos:[],comments:[],seen:{},gender:'不限',note:'',createdAt:t0-5*H},o);
@@ -552,13 +567,13 @@ function seed(){
     base({id:'t7',budget:180,poster:'u4',building:'第三宿舍',meet:'第三宿舍門口',gender:'限女生',start:at(3,16),end:at(3,17),note:'單人房窗戶和窗溝。',status:'open'})
   ];
   const tags={u1:{u3:{type:'custom',text:'打掃很仔細，但遲到 20 分鐘',at:t0-D}}};
-  return {v:14,users,tasks,tags,favs:{},notes:[{id:'n2',to:'u1',text:'有人出價 NT$ 380',taskId:'t1',at:t0-H,read:false},{id:'n1',to:'u1',text:'本體選了你，請在 '+fmtTime(Math.min(t0+22*H,at(2,15)))+' 前確認接案',taskId:'t11',at:t0-2*H,read:false}],clockOffset:0,me:null,seq:100};
+  return {v:15,users,tasks,tags,favs:{},notes:[{id:'n2',to:'u1',text:'有人出價 NT$ 380',taskId:'t1',at:t0-H,read:false},{id:'n1',to:'u1',text:'本體選了你，請在 '+fmtTime(Math.min(t0+22*H,at(2,15)))+' 前確認接案',taskId:'t11',at:t0-2*H,read:false}],clockOffset:0,me:null,seq:100};
 }
 
 /* ---------- 狀態 ---------- */
 let S=null;
 try{const raw=localStorage.getItem(KEY); if(raw) S=JSON.parse(raw);}catch(e){S=null;}
-if(!S||S.v!==14) S=seed();
+if(!S||S.v!==15) S=seed();
 if(!S.notes)S.notes=[];
 if(!S.favs)S.favs={};
 function freshUI(){return {tab:'browse',view:'list',detailId:null,mineRole:null,meSub:'main',cdraft:{},cimg:{},endDraft:null,showBlack:false,expanded:{},tagMenu:null,tagCustom:false,pf:pfdef(),editing:false,histSeg:'all',q:'',sort:'start',dir:'asc',f:fdef(),modal:null,pending:null,top:false,routed:false};}
@@ -776,7 +791,7 @@ function taskCard(t,opt){
   const chosen=t.status==='pending'&&t.assignee===S.me;
   const myBid=(t.status==='open'||t.status==='pending')&&!own&&!chosen?t.offers.find(o=>o.user===S.me):null;
   const price=t.price||t.budget;
-  const role=own?'我發的':(t.assignee===S.me||t.offers.some(o=>o.user===S.me))?'我接的':'';
+  const role=own?'我是本體':(t.assignee===S.me||t.offers.some(o=>o.user===S.me))?'我是替身':'';
   let bar='';
   if(opt.bar)bar='<div class="tc-bar bottom'+(td?' todo':'')+'">'+(td?'<span class="tc-dot" aria-hidden="true"></span>':'')+'<span class="grow">'+(td?'<span class="vh">需要你處理：</span>':'')+esc(barText(t,S.me))+'</span>'+(opt.role&&role?'<span class="bar-role">'+role+'</span>':'')+'</div>';
   return '<div class="card task">'+
@@ -786,7 +801,7 @@ function taskCard(t,opt){
     '<div class="tc-row"><div class="tc-main">'+
       '<div class="tc-place">'+esc(t.building)+'</div>'+
       '<div class="tc-g">'+genderText(t.gender)+'</div>'+
-    '</div><div class="tc-side"><div class="tc-bottom">'+(opt.own&&own?'<span class="pill s-ownt">我發的</span>':'')+(myBid?'<span class="pill s-bid">你已出價 NT$ '+money(myBid.price)+'</span>':'')+(opt.own&&isBlackPoster(t)?'<span class="pill s-bad">你的黑名單</span>':'')+
+    '</div><div class="tc-side"><div class="tc-bottom">'+(opt.own&&own?'<span class="pill s-ownt">我是本體</span>':'')+(myBid?'<span class="pill s-bid">你已出價 NT$ '+money(myBid.price)+'</span>':'')+(opt.own&&isBlackPoster(t)?'<span class="pill s-bad">你的黑名單</span>':'')+
       '<span class="price">'+(price?'NT$ '+money(price):'<span class="muted">自由出價</span>')+'</span></div></div></div></div>'+bar+'</div>';
 }
 /* 備註超過兩行才顯示「展開」 */
@@ -854,7 +869,7 @@ function sortSheet(){
     return '<button class="opt-row'+(on?' on':'')+'" role="radio" aria-checked="'+on+'" data-act="pickSort" data-k="'+k+'" data-v="'+dir+'"><span>'+l+'</span>'+(on?'<span class="tm-check">✓</span>':'')+'</button>';}).join('')+'</div>';
 }
 
-/* 我的案件：上方「待你處理」不分身分；下方用「我接的／我發的」切換，依狀態分組 */
+/* 我的案件：上方「待你處理」不分身分；下方用「我是替身／我是本體」切換，依狀態分組 */
 function mineGroups(id){
   return {
     work:[
@@ -885,7 +900,7 @@ function mineView(){
     ?'<section class="grp" aria-label="待你處理"><h2 class="grp-h">待你處理<span class="badge">'+todos.length+'</span></h2>'+todos.map(t=>taskCard(t,{bar:true,role:true})).join('')+'</section>'
     :'<p class="small muted">目前沒有需要你處理的事。</p>')+
   '<h2 class="grp-h">全部案件</h2>'+
-  '<div class="seg" role="tablist">'+[['work','我接的'],['own','我發的']].map(([v,l])=>'<button role="tab" aria-selected="'+(k===v)+'" class="'+(k===v?'on':'')+'" data-act="seg" data-k="mineRole" data-v="'+v+'">'+l+'<span class="muted small">'+cnt(v)+'</span></button>').join('')+'</div>'+
+  '<div class="seg" role="tablist">'+[['work','我是替身'],['own','我是本體']].map(([v,l])=>'<button role="tab" aria-selected="'+(k===v)+'" class="'+(k===v?'on':'')+'" data-act="seg" data-k="mineRole" data-v="'+v+'">'+l+'<span class="muted small">'+cnt(v)+'</span></button>').join('')+'</div>'+
   (groups||none);
 }
 
@@ -978,24 +993,31 @@ function profileForm(m){
   const req='<span class="req">必填</span>',opt='<span class="opt">選填</span>';
   return '<form data-form="profile" class="stack profile-form" novalidate><h3>編輯資料</h3>'+
     '<div class="field"><label for="m-name">姓名 '+req+'</label><input id="m-name" name="name" maxlength="20" value="'+esc(m.name)+'"></div>'+
-    '<div class="field"><span class="lbl">學號</span><b class="num">'+esc(m.sid)+'</b><span class="small muted">從學校信箱取得，不能修改。</span></div>'+
+    '<div class="field"><span class="lbl">學號</span><b class="num">'+esc(m.sid)+'</b></div>'+
     '<div class="field"><span class="lbl" id="m-g">性別 '+req+'</span><div class="checks" role="radiogroup" aria-labelledby="m-g">'+[['男','男'],['女','女']].map(([x,l],i)=>'<label for="m-g'+i+'"><input type="radio" id="m-g'+i+'" name="gender" value="'+x+'"'+((m.gender||'')===x?' checked':'')+'>'+l+'</label>').join('')+'</div>'+
       '</div>'+
     '<div class="field"><label for="m-cls">系級 '+opt+'</label><input id="m-cls" name="cls" maxlength="12" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="例如 資工2A" value="'+esc(m.cls||'')+'"></div>'+
     '<div class="two"><button class="btn ghost" type="button" data-act="cancelEdit">取消</button><button class="btn" type="submit">儲存</button></div></form>';
 }
+/* 收款方式：銀行轉帳、LINE Pay（收款碼圖片），至少設定一種才能出價 */
+function hasPay(x){return !!(x&&(x.bank||x.linepay));}
+function payList(x){return [x.bank?'銀行轉帳 ****'+x.bank.acct.slice(-4):'',x.linepay?'LINE Pay':''].filter(Boolean).join('、');}
 function bankView(){
-  const m=me(),b=m.bank||{code:'',acct:'',name:m.name};
+  const m=me(),b=m.bank||{code:'',acct:'',name:m.name},lp=m.linepay,set='<span class="pill s-good">已設定</span>';
   return '<div class="row"><button class="btn ghost sm" data-act="backMe">← 我的</button></div>'+
   '<div class="sec-head"><h1>收款方式</h1></div>'+
-  (m.bank?'<section class="card"><div class="row between"><span class="muted">銀行帳戶</span><b>'+m.bank.code+' '+(BANKS[m.bank.code]||'')+' <span class="mono">****'+esc(m.bank.acct.slice(-4))+'</span></b></div></section>':'<div class="banner warn">你還沒設定收款方式，設定後才能出價。</div>')+
-  '<form data-form="bank" class="card stack" novalidate><h2>'+(m.bank?'修改銀行帳戶':'設定銀行帳戶')+'</h2>'+
+  (hasPay(m)?'':'<div class="banner warn">你還沒設定收款方式，設定後才能出價。</div>')+
+  '<p class="small muted">只有在本體驗收後，才會顯示給那位本體。</p>'+
+  '<form data-form="bank" class="card stack" novalidate><div class="row between"><h2>銀行轉帳</h2>'+(m.bank?set:'')+'</div>'+
     '<div class="field"><label for="b-code">銀行</label><select id="b-code" name="code"><option value="">請選擇銀行</option>'+Object.keys(BANKS).map(k=>'<option value="'+k+'"'+(k===b.code?' selected':'')+'>'+k+' '+BANKS[k]+'</option>').join('')+'</select></div>'+
     '<div class="field"><label for="b-acct">帳號</label><input id="b-acct" name="acct" inputmode="numeric" value="'+esc(b.acct)+'"></div>'+
     '<div class="field"><label for="b-name">戶名</label><input id="b-name" name="bname" value="'+esc(b.name)+'"><span class="small muted">必須和你的姓名「'+esc(m.name)+'」相同。</span></div>'+
-    '<p class="small muted">只有在本體驗收後，才會顯示給那位本體。</p>'+
     '<button class="btn block" type="submit">儲存</button>'+
-    (m.bank?'<button class="btn danger block" type="button" data-act="removeBank">移除收款方式</button>':'')+'</form>';
+    (m.bank?'<button class="btn quiet" type="button" data-act="removeBank">移除</button>':'')+'</form>'+
+  '<section class="card stack"><div class="row between"><h2>LINE Pay</h2>'+(lp?set:'')+'</div>'+
+    (lp?'<img class="qr" src="'+lp.qr+'" alt="你的 LINE Pay 收款碼" data-act="viewImg">':'')+
+    '<label class="btn block'+(lp?' ghost':'')+'" for="lp-f">'+(lp?'換一張收款碼':'上傳收款碼')+'<input class="vh" id="lp-f" type="file" accept="image/*" data-upload="linepay"></label>'+
+    (lp?'<button class="btn quiet" type="button" data-act="removeLinePay">移除</button>':'')+'</section>';
 }
 function profileView(){
   const m=me();
@@ -1013,14 +1035,14 @@ function tagsView(){
 }
 function historyList(id){return S.tasks.filter(t=>(t.poster===id||t.assignee===id)&&t.status==='closed');}
 function cancelledList(id){return S.tasks.filter(t=>(t.poster===id||t.assignee===id)&&t.status==='cancelled');}
-/* 過去的案件：已完成和已取消合成一頁，上面切換，下面再用「全部／我接的／我發的」篩選 */
+/* 過去的案件：已完成和已取消合成一頁，上面切換，下面再用「全部／我是替身／我是本體」篩選 */
 function pastView(){
   const id=S.me,kind=ui.pastKind==='cancelled'?'cancelled':'history',done=historyList(id),cc=cancelledList(id),all=kind==='cancelled'?cc:done,sg=ui.histSeg||'all';
   const list=all.filter(t=>sg==='all'||(sg==='work'?t.assignee===id:t.poster===id)).sort((a,b)=>b.start-a.start);
   return '<div class="row"><button class="btn ghost sm" data-act="backMe">← 我的</button></div>'+
   '<div class="sec-head"><h1>過去的案件</h1></div>'+
   '<div class="seg" role="tablist">'+[['history','已完成',done.length],['cancelled','已取消',cc.length]].map(([k,l,n])=>'<button role="tab" aria-selected="'+(kind===k)+'" class="'+(kind===k?'on':'')+'" data-act="seg" data-k="pastKind" data-v="'+k+'">'+l+'<span class="muted small">'+n+'</span></button>').join('')+'</div>'+
-  '<div class="chips" role="group" aria-label="依身分篩選">'+[['all','全部'],['work','我接的'],['post','我發的']].map(([k,l])=>'<button class="chip'+(sg===k?' on':'')+'" aria-pressed="'+(sg===k)+'" data-act="seg" data-k="histSeg" data-v="'+k+'">'+l+'</button>').join('')+'</div>'+
+  '<div class="chips" role="group" aria-label="依身分篩選">'+[['all','全部'],['work','我是替身'],['post','我是本體']].map(([k,l])=>'<button class="chip'+(sg===k?' on':'')+'" aria-pressed="'+(sg===k)+'" data-act="seg" data-k="histSeg" data-v="'+k+'">'+l+'</button>').join('')+'</div>'+
   (list.length?list.map(t=>taskCard(t,{bar:true,role:true})).join(''):empty('還沒有紀錄',kind==='cancelled'?'取消的案件會出現在這裡。':'完成的案件會出現在這裡。'));
 }
 function favList(){const ids=S.favs[S.me]||[];return S.tasks.filter(t=>ids.indexOf(t.id)>=0);}
@@ -1041,7 +1063,7 @@ function meView(){
   const row=(act,title,sub)=>'<button class="card linkrow" data-act="'+act+'"><span class="grow"><b>'+title+'</b><span class="small muted">'+sub+'</span></span><span class="chev" aria-hidden="true">›</span></button>';
   return suspendBanner(m)+'<h1 class="vh">我的</h1>'+
   '<button class="card linkrow me-card" data-act="profile"><span class="grow">'+idBlock(m,true).replace(/<div/g,'<span').replace(/<\/div>/g,'</span>')+'</span><span class="chev" aria-hidden="true">›</span></button>'+
-  row('bankPage','收款方式',b?b.code+' '+(BANKS[b.code]||'')+' ****'+esc(b.acct.slice(-4)):'還沒設定，出價前要先設定')+
+  row('bankPage','收款方式',esc(payList(m))||'還沒設定，出價前要先設定')+
   row('favs','收藏',fn+' 筆')+
   row('past','過去的案件','已完成 '+hn+' 筆、已取消 '+cn+' 筆')+
   row('tagsPage','標記的人',Object.keys(S.tags[S.me]||{}).length+' 人')+
@@ -1230,11 +1252,11 @@ function nextStep(t,r){
     if(r==='poster')return card('收到的出價（'+t.offers.length+'）',(t.matchNote?'<div class="banner warn">'+esc(t.matchNote)+'</div>':'')+
       (t.offers.length?'<div>'+t.offers.slice().sort((a,b)=>a.price-b.price).map((o,i)=>offerRow(t,o,i,true)).join('')+'</div>':'<p class="small muted">還沒有人出價。</p>'),t.offers.length>0);
     if(!m)return card('出價','<button class="btn block" data-act="login" data-why="登入後才能出價或接受本體標價。">登入後出價</button>',true);
-    const mine=t.offers.find(o=>o.user===m.id),took=mine&&t.budget&&mine.price===t.budget,ok=!suspended(m)&&genderOk(t,m)&&!!m.bank;
+    const mine=t.offers.find(o=>o.user===m.id),took=mine&&t.budget&&mine.price===t.budget,ok=!suspended(m)&&genderOk(t,m)&&hasPay(m);
     let b=mine?'<div class="banner info center">你目前的出價 <b class="price">NT$ '+money(mine.price)+'</b><br><span class="small">等本體選人，選中後會通知你確認接案。</span></div>':'';
     if(suspended(m))b+='<div class="banner bad">你目前停權中，'+fmtTime(m.suspendedUntil)+' 後才能出價。</div>';
     else if(!genderOk(t,m))b+='<div class="banner warn">這個案件'+gLabel(t.gender)+'，'+(m.gender?'你沒辦法出價。':'你的個人資料沒有填性別，所以沒辦法出價。')+'</div>';
-    else if(!m.bank)b+='<p class="small muted">出價前要先設定收款方式。</p><button class="btn block" data-act="setupPay" data-id="'+t.id+'">設定收款方式</button>';
+    else if(!hasPay(m))b+='<p class="small muted">出價前要先設定收款方式。</p><button class="btn block" data-act="setupPay" data-id="'+t.id+'">設定收款方式</button>';
     else{
       if(t.budget)b+='<button class="btn block" data-act="acceptPrice" data-id="'+t.id+'"'+(took?' disabled':'')+'>'+(took?'已接受本體標價':'接受本體標價')+'</button>';
       b+='<button class="btn block'+(t.budget?' ghost':'')+'" data-act="openBid" data-id="'+t.id+'">'+(mine?'修改出價':'自己出價')+'</button>';
@@ -1275,17 +1297,26 @@ function nextStep(t,r){
   }
   if(t.status==='confirmed'){
     const b=w.bank,autoNote=t.autoConfirmed?'<p class="small muted">'+(r==='poster'?'你沒有在 3 天內驗收，已自動驗收完成。':'本體沒有在 3 天內驗收，已自動驗收完成。')+'</p>':'';
-    if(r==='poster'&&b)return card('付款給替身',autoNote+payBanner(t,r)+'<div class="bank"><div><span class="small muted">銀行</span><b>'+b.code+' '+(BANKS[b.code]||'')+'</b></div><div><span class="small muted">帳號</span><b class="mono">'+esc(b.acct)+'</b></div><div><span class="small muted">戶名</span><b>'+esc(b.name)+'</b></div><div><span class="small muted">金額</span><b class="price">NT$ '+money(t.price)+'</b></div></div>'+
-      '<button class="btn ghost sm" data-act="copy" data-v="'+esc(b.acct)+'">複製帳號</button>'+
-      '<p class="small muted">只匯到這裡顯示的帳戶。對方私下要求改帳號的話，請先確認清楚再匯款。</p>'+
-      '<form data-form="pay" data-id="'+t.id+'" class="stack" novalidate><div class="field"><label for="l5">你的匯款帳號末五碼</label><input id="l5" name="last5" inputmode="numeric" maxlength="5" placeholder="12345"></div><button class="btn block" type="submit">我已付款</button></form>',true);
-    if(r==='poster')return card('付款給替身',autoNote+payBanner(t,r)+'<p>替身沒有提供收款方式，請和替身約定用現金、電子支付或其他方式付款 <b class="price">NT$ '+money(t.price)+'</b>。</p>'+
-      '<form data-form="pay" data-id="'+t.id+'" class="stack" novalidate><div class="field"><span class="lbl" id="pw">付款方式</span><div class="checks" role="radiogroup" aria-labelledby="pw">'+PAYWAYS.map((x,i)=>'<label for="pw'+i+'"><input type="radio" id="pw'+i+'" name="method" value="'+x+'">'+x+'</label>').join('')+'</div></div><button class="btn block" type="submit">我已付款</button></form>',true);
-    if(r==='worker')return card('等本體付款',autoNote+payBanner(t,r)+'<p class="small">本體已驗收，會付款 NT$ '+money(t.price)+' 給你。'+(b?'':'你沒有提供收款方式，請和本體約定付款方式。')+'</p>',false);
+    if(r==='poster'){
+      const lp=w.linepay,ways=[b?'bank':'',lp?'linepay':''].filter(Boolean),opts=ways.length?ways:['bank','linepay'],WN={bank:'銀行轉帳',linepay:'LINE Pay'};
+      let body=autoNote+payBanner(t,r)+'<div class="row between pc-row"><span class="muted">金額</span><b class="price">NT$ '+money(t.price)+'</b></div>';
+      if(b)body+='<div class="payway"><b>銀行轉帳</b><div class="bank"><div><span class="small muted">銀行</span><b>'+b.code+' '+(BANKS[b.code]||'')+'</b></div><div><span class="small muted">帳號</span><b class="mono">'+esc(b.acct)+'</b></div><div><span class="small muted">戶名</span><b>'+esc(b.name)+'</b></div></div>'+
+        '<button class="btn ghost sm" data-act="copy" data-v="'+esc(b.acct)+'">複製帳號</button></div>';
+      if(lp)body+='<div class="payway"><b>LINE Pay</b><img class="qr" src="'+lp.qr+'" alt="'+esc(w.name)+'的 LINE Pay 收款碼" data-act="viewImg"><span class="small muted">用 LINE Pay 掃描收款碼付款。</span></div>';
+      if(!ways.length)body+='<p>替身還沒設定收款方式，請在留言板跟替身確認。</p>';
+      body+='<p class="small muted">只付款到這裡顯示的收款方式。對方私下要求改用其他帳號或收款碼的話，請先確認清楚再付款。</p>'+
+        '<form data-form="pay" data-id="'+t.id+'" class="stack payform" novalidate>'+
+        (opts.length>1?'<div class="field"><span class="lbl" id="pw">你用哪一種付款</span><div class="checks" role="radiogroup" aria-labelledby="pw">'+opts.map((x,i)=>'<label for="pw'+i+'"><input type="radio" id="pw'+i+'" name="method" value="'+x+'">'+WN[x]+'</label>').join('')+'</div></div>'
+          :'<input type="hidden" name="method" value="'+opts[0]+'">')+
+        (opts.indexOf('bank')>=0?'<div class="field l5"><label for="l5">你的匯款帳號末五碼</label><input id="l5" name="last5" inputmode="numeric" maxlength="5"></div>':'')+
+        '<button class="btn block" type="submit">我已付款</button></form>';
+      return card('付款給替身',body,true);
+    }
+    if(r==='worker')return card('等本體付款',autoNote+payBanner(t,r)+'<p class="small">本體已驗收，會付款 NT$ '+money(t.price)+' 給你。'+(hasPay(w)?'':'你沒有提供收款方式，請和本體約定付款方式。')+'</p>',false);
     return '';
   }
   if(t.status==='paid'){
-    const how=t.payment.last5?'匯款，帳號末五碼 <b class="mono">'+esc(t.payment.last5)+'</b>':'用「'+esc(t.payment.method)+'」付款';
+    const how=t.payment.last5?'匯款，帳號末五碼 <b class="mono">'+esc(t.payment.last5)+'</b>':'用 '+esc(t.payment.method)+' 付款';
     if(r==='worker')return card('確認收款',payBanner(t,r)+'<p>本體表示已'+how+'，金額 <b class="price">NT$ '+money(t.price)+'</b>。</p>'+
       '<button class="btn block" data-act="received" data-id="'+t.id+'">我已收款</button><p class="small muted">還沒收到的話，先在留言板跟本體確認。</p>',true);
     if(r==='poster')return card('等替身確認收款',payBanner(t,r)+'<p class="small">你已'+how+'，等替身確認收款。</p>',false);
@@ -1293,7 +1324,7 @@ function nextStep(t,r){
   }
   if(t.status==='closed'){
     const pb=r==='viewer'?'':photoBlock(t,false);
-    return '<div class="banner info">案件已完成'+(t.payment?'（'+(t.payment.last5?'匯款末五碼 '+esc(t.payment.last5):esc(t.payment.method)+'付款')+'）':'')+'。</div>'+(pb?'<section class="card">'+pb+'</section>':'');
+    return '<div class="banner info">案件已完成'+(t.payment?'（'+(t.payment.last5?'匯款末五碼 '+esc(t.payment.last5):'用 '+esc(t.payment.method)+' 付款')+'）':'')+'。</div>'+(pb?'<section class="card">'+pb+'</section>':'');
   }
   if(t.status==='cancelled'){
     let h='<div class="banner">'+esc(endReason(t,r))+'</div>';
@@ -1480,7 +1511,7 @@ function loginSheet(md){
       '<div class="row between"><button class="link-btn" data-act="loginBack">換一個信箱</button><button class="link-btn" data-act="loginResend">重新寄送</button></div>';
   else
     h+='<p>第一次登入，請填基本資料。</p><form data-form="loginProfile" class="stack" novalidate>'+
-      '<div class="field"><span class="lbl">學號</span><b class="num">'+esc(L.sid)+'</b><span class="small muted">從學校信箱取得，不能修改。</span></div>'+
+      '<div class="field"><span class="lbl">學號</span><b class="num">'+esc(L.sid)+'</b></div>'+
       '<div class="field"><label for="lp-name">姓名</label><input id="lp-name" name="name" maxlength="20" autocomplete="name"></div>'+
       '<div class="field"><span class="lbl" id="lp-g">性別</span><div class="checks" role="radiogroup" aria-labelledby="lp-g">'+['男','女'].map((x,i)=>'<label for="lp-g'+i+'"><input type="radio" id="lp-g'+i+'" name="gender" value="'+x+'">'+x+'</label>').join('')+'</div></div>'+
       '<div class="field"><label for="lp-cls">系級 <span class="opt">選填</span></label><input id="lp-cls" name="cls" maxlength="12" autocapitalize="characters" autocomplete="off" spellcheck="false"></div>'+
@@ -1594,14 +1625,15 @@ const A={
   profile(){go('#profile');},
   bankPage(){go('#bank');},
   tagsPage(){go('#tags');},
-  removeBank(){ask('移除收款方式？','移除後要重新設定才能出價。已經在進行的案件，本體驗收時要和你另外約定付款方式。','移除',()=>{me().bank=null;save();toast('已移除收款方式');},true);},
+  removeBank(){ask('移除銀行轉帳？',me().linepay?'':'移除後沒有任何收款方式，要重新設定才能出價。','移除',()=>{me().bank=null;save();toast('已移除銀行轉帳');},true);},
+  removeLinePay(){ask('移除 LINE Pay？',me().bank?'':'移除後沒有任何收款方式，要重新設定才能出價。','移除',()=>{me().linepay=null;save();toast('已移除 LINE Pay');},true);},
   /* 出價前要先設定收款方式：設定好後自動回到原本的案件 */
   setupPay(d){ui.payReturn=d.id;go('#bank');},
   open(d){go('#task-'+d.id);},
   back(){return goBack(TAB_HASH[ui.tab]||'#browse');},
   filter(d){ui.filter=d.v;},
   seg(d){ui[d.k]=d.v;},
-  acceptPrice(d){const m=me(),t=T(d.id);if(suspended(m))return toast('停權中不能出價');if(!genderOk(t,m))return toast('這個案件有指定性別，你沒辦法出價');if(!m.bank)return toast('出價前要先設定收款方式');const ex=t.offers.find(o=>o.user===m.id);if(ex){ex.price=t.budget;ex.at=now();}else{t.offers.push({id:nid('o'),user:m.id,price:t.budget,msg:'',at:now()});notify(t.poster,'有人接受你的標價',t.id);}save();toast('已接受本體標價，等本體選人');},
+  acceptPrice(d){const m=me(),t=T(d.id);if(suspended(m))return toast('停權中不能出價');if(!genderOk(t,m))return toast('這個案件有指定性別，你沒辦法出價');if(!hasPay(m))return toast('出價前要先設定收款方式');const ex=t.offers.find(o=>o.user===m.id);if(ex){ex.price=t.budget;ex.at=now();}else{t.offers.push({id:nid('o'),user:m.id,price:t.budget,msg:'',at:now()});notify(t.poster,'有人接受你的標價',t.id);}save();toast('已接受本體標價，等本體選人');},
   withdrawOffer(d){const t=T(d.id);t.offers=t.offers.filter(o=>o.user!==S.me);ui.modal=null;save();toast('已撤回出價');},
   choose(d){const t=T(d.id),o=t.offers.find(x=>x.id===d.oid);
     ask('選擇'+u(o.user).name+'作為你的替身（NT$ '+money(o.price)+'）？','','選擇',()=>{t.status='pending';t.assignee=o.user;t.price=o.price;t.pendingAt=now();t.matchNote=null;notify(o.user,'本體選了你，請在 '+fmtTime(deadline(t))+' 前確認接案',t.id);save();toast('已通知'+u(o.user).name+'確認接案');});},
@@ -1683,7 +1715,7 @@ const A={
 /* ---------- 表單 ---------- */
 const F={
   offer(f,d){
-    const m=me();if(suspended(m))return toast('停權中不能出價');if(!genderOk(T(d.id),m))return toast('這個案件有指定性別，你沒辦法出價');if(!m.bank)return toast('出價前要先設定收款方式');
+    const m=me();if(suspended(m))return toast('停權中不能出價');if(!genderOk(T(d.id),m))return toast('這個案件有指定性別，你沒辦法出價');if(!hasPay(m))return toast('出價前要先設定收款方式');
     const raw=v(f,'price'),price=Math.round(Number(raw));
     if(!raw||!(price>0))return ferr(f.elements.price,'請輸入出價金額');
     const t=T(d.id),msg='',ex=t.offers.find(o=>o.user===m.id);
@@ -1707,8 +1739,10 @@ const F={
   },
   pay(f,d){
     const t=T(d.id);
-    if(f.elements.last5){const x=v(f,'last5');if(!/^\d{5}$/.test(x))return ferr(f.elements.last5,'請輸入 5 位數字');t.payment={last5:x,method:'匯款',at:now()};}
-    else{const c=f.querySelector('input[name=method]:checked');if(!c)return ferr(f.elements.method,'請選擇付款方式');t.payment={last5:null,method:c.value,at:now()};}
+    const sel=f.querySelector('input[name=method]:checked')||f.querySelector('input[name=method][type=hidden]');
+    if(!sel)return ferr(f.querySelector('input[name=method]'),'請選擇付款方式');
+    if(sel.value==='bank'){const x=v(f,'last5');if(!/^\d{5}$/.test(x))return ferr(f.elements.last5,'請輸入 5 位數字');t.payment={last5:x,method:'銀行轉帳',at:now()};}
+    else t.payment={last5:null,method:'LINE Pay',at:now()};
     t.status='paid';notify(t.assignee,'本體已付款 NT$ '+money(t.price)+'，收到後請按「我已收款」',t.id);save();toast('已通知替身確認收款');
   },
   /* 登入第 1 步：輸入學校信箱（只要打學號，也接受貼上整個信箱） */
@@ -1833,6 +1867,9 @@ document.addEventListener('change',async e=>{
   const out=[];let bad=0;
   for(const file of files){try{out.push(await shrink(file));}catch(err){bad++;}}
   /* 打掃證明直接存進案件；留言照片和結束案件的照片先放草稿，按送出才存 */
+  if(kind==='linepay'){if(!out.length)return toast('讀不到這張圖片');me().linepay={qr:out[0],at:now()};save();
+    if(ui.payReturn){const rid=ui.payReturn;ui.payReturn=null;toast('收款方式已儲存，現在可以出價了');goBack('#task-'+rid);render();return;}
+    render();toast('已儲存 LINE Pay 收款碼');return;}
   if(kind==='cimg'){ui.cimg[id]=(ui.cimg[id]||[]).concat(out);render();}
   else if(kind==='endnote'){if(ui.endDraft)ui.endDraft.photos=ui.endDraft.photos.concat(out);renderModal();}
   else{const t=T(id);out.forEach(src=>t.photos.push({src,at:now()}));save();render();}
