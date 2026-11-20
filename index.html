@@ -46,10 +46,17 @@ p{margin:0}
 .vh{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0)}
 
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
-header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;min-height:61px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--line)}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;min-height:61px;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--line)}
 .brand{font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--accent);letter-spacing:.06em;line-height:1.2}
 .brand.big{font-size:44px}
 .clock{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+/* 標題欄固定一排，不換行 */
+.hd-brand{flex:1;min-width:0;white-space:nowrap}
+.hd-brand .brand,.hd-brand .clock{overflow:hidden;text-overflow:ellipsis}
+.hd-act{flex:none;display:flex;align-items:center;gap:8px}
+.demo-btn{padding:6px 10px}
+.clock .sim{display:inline-block;margin-right:4px;padding:0 5px;border-radius:4px;background:var(--sun-soft);color:var(--warn);font-weight:700}
+@media (max-width:360px){header.top{padding:10px 12px;gap:6px}header.top .icon-btn{width:36px;height:36px}.hd-act{gap:4px}.hd-brand .brand{font-size:20px}}
 .acct{display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:4px 12px 4px 4px;font:inherit;font-size:14px;color:var(--ink);cursor:pointer;min-height:40px}
 
 main{flex:1;padding:16px 16px 104px;display:flex;flex-direction:column;gap:12px}
@@ -437,7 +444,6 @@ label.btn{display:flex;align-items:center;justify-content:center}
 .acct-row{appearance:none;font:inherit;color:inherit;text-align:left;display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;border:1px solid var(--line);background:var(--surface);cursor:pointer}
 .acct-row.on{border-color:var(--accent);background:var(--accent-soft)}
 
-header.top .grow{min-width:0}
 /* 我的案件 */
 .grp{display:flex;flex-direction:column;gap:10px}
 .grp-h{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:700;color:var(--ink);margin:4px 0 0}
@@ -770,11 +776,13 @@ window.addEventListener('hashchange',()=>{
 
 /* ---------- 畫面 ---------- */
 function headerView(){
-  const m=me(),demo='<button class="btn ghost sm" data-act="openDemo">示範工具</button>';
-  /* 標題欄每一頁都一樣（品牌、鈴鐺、示範工具）；案件詳情頁在最左邊多一個返回箭頭 */
-  return '<header class="top">'+(ui.view==='detail'?'<button class="icon-btn" data-act="back" aria-label="返回">'+IC.back+'</button>':'')+'<div class="grow"><div class="brand">替身掃者</div><div class="clock">'+(S.clockOffset?'模擬時間 ':'')+fmtTime(now())+'</div></div>'+
-  (m?'<button class="icon-btn bell" data-act="openNotes" aria-label="通知'+(unreadNotes()?'，'+unreadNotes()+' 則未讀':'')+'">'+IC.bell+(unreadNotes()?'<span class="nbadge hdr">'+unreadNotes()+'</span>':'')+'</button>':'<button class="btn sm" data-act="login">登入</button>')+
-  demo+'</header>';
+  const m=me(),n=m?unreadNotes():0;
+  /* 標題欄只有一排：左邊是返回（只在案件詳情頁）、品牌和時間；右邊是鈴鐺（未登入時是「登入」）和示範工具。
+     螢幕太窄時時間會用「…」省略，不會換行把標題欄撐高 */
+  return '<header class="top">'+(ui.view==='detail'?'<button class="icon-btn" data-act="back" aria-label="返回">'+IC.back+'</button>':'')+
+  '<div class="hd-brand"><div class="brand">替身掃者</div><div class="clock">'+(S.clockOffset?'<span class="sim">模擬</span>':'')+fmtTime(now())+'</div></div>'+
+  '<div class="hd-act">'+(m?'<button class="icon-btn bell" data-act="openNotes" aria-label="通知'+(n?'，'+n+' 則未讀':'')+'">'+IC.bell+(n?'<span class="nbadge hdr">'+n+'</span>':'')+'</button>':'<button class="btn sm" data-act="login">登入</button>')+
+  '<button class="btn ghost sm demo-btn" data-act="openDemo">示範工具</button></div></header>';
 }
 function tabsView(){
   const m=me();
