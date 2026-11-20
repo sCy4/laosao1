@@ -22,7 +22,10 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
 
   // 淺色模式：手機設成深色也維持淺色
   await fresh('u1');
-  ok((await js(() => getComputedStyle(document.body).backgroundColor)) === 'rgb(237, 242, 240)', '手機是深色模式時，背景仍是淺色');
+  // 方案C 把底色換成馬尼拉紙色（#f3ede2），所以不再比對舊的色碼，改成檢查「亮度夠高」＝仍是淺色
+  const bgc = await js(() => getComputedStyle(document.body).backgroundColor);
+  const lum = (() => { const v = (bgc.match(/\d+/g) || []).slice(0, 3).map(Number).map(c => { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); }); return v.length === 3 ? 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2] : 0; })();
+  ok(lum > 0.8, '手機是深色模式時，背景仍是淺色（' + bgc + '）');
   // 日曆刪除
   ok(!(await js(() => !!document.querySelector('[data-act="openBcal"]'))) && (await js(() => document.querySelectorAll('.toolbar .tool').length)) === 2, '日曆按鈕已刪除，只剩排序和篩選');
   // 發案頁的 24 小時時鐘
