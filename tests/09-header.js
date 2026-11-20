@@ -23,6 +23,25 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
     await act('openDemo'); await act('ff', { v: '60' }); await act('close'); await p.waitForTimeout(200); await check('案件詳情＋模擬時間');
     await p.close();
   }
+  // 示範工具不在標題欄，在每一頁最下面，捲到底時不會被下方分頁擋住
+  {
+    const p = await (await b.newContext({ viewport: { width: 360, height: 640 } })).newPage();
+    await p.goto(B + '#browse'); await p.evaluate(() => { localStorage.clear(); localStorage.setItem('swaptime-intro-v1', '1'); }); await p.reload(); await p.waitForTimeout(500);
+    await p.evaluate(() => { const el = document.createElement('button'); el.dataset.act = 'pick'; el.dataset.id = 'u2'; document.body.appendChild(el); el.click(); el.remove(); }); await p.waitForTimeout(300);
+    for (const h of ['#browse', '#post', '#mine', '#me', '#bank', '#task-t1', '#task-t6']) {
+      await p.evaluate(h => { location.hash = h; }, h); await p.waitForTimeout(300);
+      await p.evaluate(() => window.scrollTo(0, 1e6)); await p.waitForTimeout(150);
+      const r = await p.evaluate(() => {
+        const d = document.querySelector('main .demo-entry button'); if (!d) return { missing: true };
+        const br = d.getBoundingClientRect(), tab = document.querySelector('nav.tabs').getBoundingClientRect();
+        return { inHeader: !!document.querySelector('header [data-act="openDemo"]'), clear: br.bottom <= tab.top && br.top >= 0 };
+      });
+      ok(!r.missing && !r.inHeader && r.clear, h + '：示範工具在頁面最下面，捲到底看得到，不在標題欄');
+    }
+    await p.click('main .demo-entry button'); await p.waitForTimeout(200);
+    ok(await p.evaluate(() => (document.querySelector('.sheet') || {}).innerText || '').then(t => t.includes('切換帳號')), '點了打開示範工具');
+    await p.close();
+  }
   console.log(fails ? fails + ' FAILED' : 'ALL PASSED');
   await b.close();
 })();

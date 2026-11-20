@@ -54,7 +54,7 @@ header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;min-height
 .hd-brand{flex:1;min-width:0;white-space:nowrap}
 .hd-brand .brand,.hd-brand .clock{overflow:hidden;text-overflow:ellipsis}
 .hd-act{flex:none;display:flex;align-items:center;gap:8px}
-.demo-btn{padding:6px 10px}
+.demo-entry{margin-top:auto;padding-top:16px;border-top:1px dashed var(--line);display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
 .clock .sim{display:inline-block;margin-right:4px;padding:0 5px;border-radius:4px;background:var(--sun-soft);color:var(--warn);font-weight:700}
 @media (max-width:360px){header.top{padding:10px 12px;gap:6px}header.top .icon-btn{width:36px;height:36px}.hd-act{gap:4px}.hd-brand .brand{font-size:20px}}
 .acct{display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:4px 12px 4px 4px;font:inherit;font-size:14px;color:var(--ink);cursor:pointer;min-height:40px}
@@ -777,12 +777,11 @@ window.addEventListener('hashchange',()=>{
 /* ---------- 畫面 ---------- */
 function headerView(){
   const m=me(),n=m?unreadNotes():0;
-  /* 標題欄只有一排：左邊是返回（只在案件詳情頁）、品牌和時間；右邊是鈴鐺（未登入時是「登入」）和示範工具。
-     螢幕太窄時時間會用「…」省略，不會換行把標題欄撐高 */
+  /* 標題欄只有一排：左邊是返回（只在案件詳情頁）、品牌和時間；右邊是鈴鐺（未登入時是「登入」）。
+     示範工具不放這裡，放在每一頁內容的最下面。螢幕太窄時時間會用「…」省略，不會換行把標題欄撐高 */
   return '<header class="top">'+(ui.view==='detail'?'<button class="icon-btn" data-act="back" aria-label="返回">'+IC.back+'</button>':'')+
   '<div class="hd-brand"><div class="brand">替身掃者</div><div class="clock">'+(S.clockOffset?'<span class="sim">模擬</span>':'')+fmtTime(now())+'</div></div>'+
-  '<div class="hd-act">'+(m?'<button class="icon-btn bell" data-act="openNotes" aria-label="通知'+(n?'，'+n+' 則未讀':'')+'">'+IC.bell+(n?'<span class="nbadge hdr">'+n+'</span>':'')+'</button>':'<button class="btn sm" data-act="login">登入</button>')+
-  '<button class="btn ghost sm demo-btn" data-act="openDemo">示範工具</button></div></header>';
+  '<div class="hd-act">'+(m?'<button class="icon-btn bell" data-act="openNotes" aria-label="通知'+(n?'，'+n+' 則未讀':'')+'">'+IC.bell+(n?'<span class="nbadge hdr">'+n+'</span>':'')+'</button>':'<button class="btn sm" data-act="login">登入</button>')+'</div></header>';
 }
 function tabsView(){
   const m=me();
@@ -1638,7 +1637,8 @@ function render(){
   if(ui.view==='detail')body=detailView();
   else if(!S.me&&ui.tab!=='browse')body=gateView(ui.tab);
   else body=({browse:browseView,post:postView,mine:mineView,me:meView}[ui.tab]||browseView)();
-  app.innerHTML=headerView()+'<main>'+body+'</main>'+tabsView()+modalView()+dlgView();
+  /* 示範工具只在原型裡用，放在每一頁內容的最下面，不佔標題欄 */
+  app.innerHTML=headerView()+'<main>'+body+'<div class="demo-entry"><button class="btn ghost sm" data-act="openDemo">示範工具</button><span class="small muted">原型才有，正式版不會出現</span></div></main>'+tabsView()+modalView()+dlgView();
   if(ui.top){window.scrollTo(0,0);ui.top=false;}
   fixNotes();
   centerTimeCols();
