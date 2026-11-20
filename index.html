@@ -10,7 +10,7 @@
 <style>
 :root{
   /* 替身掃者：宿舍綠為主色、時間暖黃標示金額與待辦；單欄手機版，頂部帳號列＋底部分頁 */
-  --bg:#edf2f0; --surface:#ffffff; --ink:#15302a; --muted:#5a6d67; --line:#d5dfdb;
+  --bg:#edf2f0; --surface:#ffffff; --ink:#15302a; --muted:#4b5e58; --line:#d5dfdb;
   --accent:#0d7765; --accent-ink:#ffffff; --accent-soft:#d6eee7;
   --sun:#e3a21a; --sun-soft:#fbeecf; --warn:#8a5703;
   --good:#24804a; --good-soft:#dcf0e3; --bad:#b9382a; --bad-soft:#f7e0db; --info:#2a63a8; --info-soft:#dce8f6;
@@ -31,7 +31,7 @@ h1{font-size:22px;font-weight:700}
 h2{font-size:16px;font-weight:700}
 h3{font-size:14px;font-weight:700;color:var(--muted);margin-top:8px}
 p{margin:0}
-.small{font-size:13px}
+.small{font-size:14px}
 .ink{color:var(--ink)}
 .muted{color:var(--muted)}
 .mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
@@ -49,7 +49,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;min-height:61px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--line)}
 .brand{font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--accent);letter-spacing:.06em;line-height:1.2}
 .brand.big{font-size:44px}
-.clock{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+.clock{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
 .acct{display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:4px 12px 4px 4px;font:inherit;font-size:14px;color:var(--ink);cursor:pointer;min-height:40px}
 
 main{flex:1;padding:16px 16px 104px;display:flex;flex-direction:column;gap:12px}
@@ -186,7 +186,7 @@ nav.tabs .badge{position:absolute;top:4px;left:calc(50% + 8px)}
 .segs i{display:block;width:14px;height:5px;border-radius:3px;background:currentColor;opacity:.22}
 .segs i.on{opacity:1}
 .card.mini{padding:12px 14px;gap:4px}
-.mini-role{font-size:12px;font-weight:700;color:var(--accent)}
+.mini-role{font-size:13px;font-weight:700;color:var(--accent)}
 .mini-name{font-size:16px}
 .people{display:flex;flex-direction:column;gap:8px}
 .range{display:flex;align-items:center;gap:8px}
@@ -208,7 +208,7 @@ nav.tabs .badge{position:absolute;top:4px;left:calc(50% + 8px)}
 .dt-btn:hover{border-color:var(--accent)}
 .scrim.center{align-items:center;padding:16px}
 .sheet.dlg{max-width:360px;border-radius:24px;padding:20px 18px 14px;gap:10px}
-.dlg-title{font-size:13px;color:var(--muted)}
+.dlg-title{font-size:14px;color:var(--muted)}
 .dlg-big{font-size:28px;font-weight:500;font-variant-numeric:tabular-nums}
 .dlg-month{font-size:14px}
 .icon-btn{appearance:none;border:0;background:transparent;color:var(--ink);width:40px;height:40px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer}
@@ -245,7 +245,7 @@ nav.tabs .badge{position:absolute;top:4px;left:calc(50% + 8px)}
 .note.new{border-color:var(--alert)}
 .note.new .note-txt::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--alert);margin-right:6px;vertical-align:middle}
 .note-txt{font-size:14px}
-.note-time{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--muted)}
+.note-time{display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--muted)}
 .paysteps .late{color:var(--warn);font-weight:500}
 .paysteps{display:flex;flex-direction:column;gap:2px;margin-top:4px;font-size:14px}
 .paysteps .ok{color:var(--good);font-weight:700}
@@ -253,7 +253,7 @@ nav.tabs .badge{position:absolute;top:4px;left:calc(50% + 8px)}
 .cmts{display:flex;flex-direction:column;gap:8px;max-height:320px;overflow-y:auto;padding:2px}
 .cmt{max-width:85%;align-self:flex-start;background:var(--bg);border-radius:12px 12px 12px 4px;padding:8px 12px}
 .cmt.mine{align-self:flex-end;background:var(--accent-soft);border-radius:12px 12px 4px 12px}
-.cmt-meta{font-size:11px;color:var(--muted)}
+.cmt-meta{font-size:12px;color:var(--muted)}
 .cmt-txt{font-size:14px;white-space:pre-wrap;overflow-wrap:anywhere}
 .cmt-form{display:flex;gap:8px;align-items:flex-end}
 .cmt-form textarea{flex:1;min-height:44px}
@@ -298,7 +298,9 @@ nav.tabs .badge{position:absolute;top:4px;left:calc(50% + 8px)}
 :focus-visible{outline:3px solid var(--sun);outline-offset:2px}
 
 .field{display:flex;flex-direction:column;gap:6px}
-.field label,.field .lbl{font-size:13px;color:var(--muted);font-weight:500}
+.ferr{margin:2px 0 0;color:var(--bad);font-size:13px;font-weight:700}
+[aria-invalid="true"]{border-color:var(--bad)}
+.field label,.field .lbl{font-size:14px;color:var(--muted);font-weight:500}
 input,select,textarea{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%;min-height:44px}
 textarea{resize:vertical}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -313,7 +315,7 @@ textarea{resize:vertical}
 .banner.warn{background:var(--sun-soft);color:var(--warn);border-color:transparent}
 
 .steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,1fr);gap:2px}
-.steps li{display:flex;flex-direction:column;align-items:center;gap:4px;position:relative;font-size:11px;color:var(--muted);text-align:center}
+.steps li{display:flex;flex-direction:column;align-items:center;gap:4px;position:relative;font-size:12px;color:var(--muted);text-align:center}
 .steps li::before{content:"";position:absolute;top:5px;left:-50%;width:100%;height:2px;background:var(--line);z-index:0}
 .steps li:first-child::before{display:none}
 .steps .dot{width:12px;height:12px;border-radius:50%;background:var(--surface);border:2px solid var(--line);z-index:1}
@@ -339,7 +341,7 @@ textarea{resize:vertical}
 .photos{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .ph{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;background:var(--bg)}
 .ph img{width:100%;height:100%;object-fit:cover;display:block;cursor:zoom-in}
-.ph-time{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.55);color:#fff;font-size:10px;padding:2px 6px;font-variant-numeric:tabular-nums}
+.ph-time{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.55);color:#fff;font-size:11px;padding:2px 6px;font-variant-numeric:tabular-nums}
 .ph-x{position:absolute;top:4px;right:4px;width:28px;height:28px;border-radius:50%;border:0;background:rgba(0,0,0,.6);color:#fff;font-size:16px;cursor:pointer}
 .ph.add{display:flex;align-items:center;justify-content:center;border:2px dashed var(--line);color:var(--accent);font-weight:700;font-size:14px;cursor:pointer;background:transparent}
 .big-photo{width:100%;border-radius:12px;display:block}
@@ -382,6 +384,15 @@ textarea{resize:vertical}
 .login{flex:1;display:flex;flex-direction:column;justify-content:center;gap:24px;padding:40px 24px}
 .login-hero{display:flex;flex-direction:column;gap:8px}
 .lead{font-size:18px}
+.intro{display:flex;flex-direction:column;gap:16px;min-height:280px}
+.intro-hero{text-align:center;padding:16px 0 4px;display:flex;flex-direction:column;gap:6px}
+.intro-roles{display:grid;grid-template-columns:auto 1fr;gap:10px 14px;margin:0;font-size:16px}
+.intro-roles dt{font-weight:700;color:var(--accent)}
+.intro-roles dd{margin:0}
+.intro-list{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:10px;font-size:15px}
+.intro-dots{display:flex;justify-content:center;gap:6px}
+.intro-dots i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.intro-dots i.on{background:var(--accent)}
 .how{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px;counter-reset:s}
 .how li{counter-increment:s;display:grid;grid-template-columns:32px 1fr;column-gap:12px;font-size:14px;color:var(--muted)}
 .how li::before{content:counter(s);grid-row:span 2;width:32px;height:32px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-weight:700;display:flex;align-items:center;justify-content:center}
@@ -433,7 +444,12 @@ header.top .grow{min-width:0}
 .clamp .tc-more{padding:0}
 .exit{display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center;padding:4px 0 8px}
 .btn.quiet{background:transparent;border-color:transparent;color:var(--bad);font-weight:500;font-size:14px;text-decoration:underline;text-underline-offset:3px}
-.toolbar{display:flex;flex-direction:column;gap:8px}
+.toolbar{display:flex;align-items:center;gap:8px}
+.toolbar .search{flex:1;min-width:0}
+.tool{position:relative;flex:none;width:46px;height:46px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--accent)}
+.tool:hover{border-color:var(--accent)}
+.tool.active{border-color:var(--accent);background:var(--accent-soft)}
+.tool .badge{position:absolute;top:-7px;right:-7px;background:var(--accent);color:var(--accent-ink)}
 .search{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:0 12px;color:var(--muted)}
 .search input{border:0;padding:10px 0;background:transparent;min-height:44px}
 .search input:focus{outline:none}
@@ -441,7 +457,7 @@ header.top .grow{min-width:0}
 .sel-sm{width:auto;flex:1;min-height:36px;padding:6px 10px;font-size:14px}
 .btn.active{border-color:var(--accent);background:var(--accent-soft)}
 .btn .badge{margin-left:6px;background:var(--accent);color:var(--accent-ink)}
-#toast{position:fixed;left:50%;bottom:88px;transform:translate(-50%,20px);background:var(--ink);color:var(--surface);padding:10px 16px;border-radius:12px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:30;width:max-content;max-width:calc(100% - 32px);text-align:center}
+#toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 70px);transform:translate(-50%,-12px);background:var(--ink);color:var(--surface);padding:10px 16px;border-radius:12px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:30;width:max-content;max-width:calc(100% - 32px);text-align:center}
 #toast.show{opacity:1;transform:translate(-50%,0)}
 @media (prefers-reduced-motion:reduce){#toast{transition:none}}
 </style>
@@ -475,6 +491,7 @@ const IC={
   kbd:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="2.5" y="6" width="19" height="12" rx="2"/><path d="M6 10h.01M9 10h.01M12 10h.01M15 10h.01M18 10h.01M7 14h10"/></svg>',
   bell:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9"/><path d="M10 20a2.2 2.2 0 0 0 4 0"/></svg>',
   star:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></svg>',
+  tag:'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.4"/></svg>',
   bookmark:'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-6-4.5L6 21z"/></svg>',
   sort:'<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4v16M3 8l4-4 4 4M17 20V4M13 16l4 4 4-4"/></svg>',
   filter:'<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h18l-7 8v6l-4-2v-4z"/></svg>',
@@ -573,6 +590,20 @@ function v(f,n){return f.elements[n].value.trim();}
 function empty(t,s){return '<div class="empty"><b>'+t+'</b><span class="small">'+s+'</span></div>';}
 let tt;
 function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>el.classList.remove('show'),2600);return false;}
+/* 表單錯誤：直接顯示在欄位下方的紅字。找不到欄位時才用畫面上方的提示。 */
+function ferr(el,msg){
+  if(el&&!el.tagName&&el.length)el=el[0];
+  if(!el)return toast(msg);
+  const scope=el.closest('.sheet,section,main')||document;
+  scope.querySelectorAll('.ferr').forEach(x=>x.remove());scope.querySelectorAll('[aria-invalid="true"]').forEach(x=>x.removeAttribute('aria-invalid'));
+  const p=document.createElement('p');p.className='ferr';p.setAttribute('role','alert');p.textContent=msg;
+  const after=el.closest('[data-errafter]'),box=after?null:el.closest('.field');
+  if(box)box.appendChild(p);else (after||el).insertAdjacentElement('afterend',p);
+  if(el.matches('input:not([type=file]):not([type=radio]):not([type=checkbox]),textarea,select')){el.setAttribute('aria-invalid','true');try{el.focus({preventScroll:true});}catch(x){}}
+  p.scrollIntoView({block:'nearest'});
+  return false;
+}
+function clearErr(el){const scope=el&&el.closest&&el.closest('.sheet,section,main');if(!scope||!scope.querySelector('.ferr'))return;scope.querySelectorAll('.ferr').forEach(x=>x.remove());scope.querySelectorAll('[aria-invalid="true"]').forEach(x=>x.removeAttribute('aria-invalid'));}
 function ask(title,body,ok,fn,danger,cancel){ui.modal={type:'confirm',title,body,ok,danger:!!danger,cancel:cancel||'返回'};ui.pending=fn;}
 
 /* 待辦：只算「現在就能做、而且輪到你」的事 */
@@ -638,13 +669,14 @@ function dueAt(t){
 /* ---------- 網址與返回 ----------
    每個畫面都有自己的網址（#browse、#task-t3…），手機的返回鍵、重新整理、分享連結都能正常運作。 */
 const TAB_HASH={browse:'#browse',post:'#post',mine:'#mine',me:'#me'};
-const ME_SUBS=['profile','bank','favs','history','cancelled','tags'];
-const GATE={post:['發案','登入後才能發案。'],mine:['我的案件','登入後才能查看你的案件。'],me:['我的','登入後才能管理個人資料、收款帳戶和收藏。']};
+const ME_SUBS=['profile','bank','favs','past','tags'];
+const GATE={post:['發案','登入後才能發案。'],mine:['我的案件','登入後才能查看你的案件。'],me:['我的','登入後才能管理個人資料、收款方式和收藏。']};
 let navStack=[],applied=null;const scrollMem={};
 function curHash(){return location.hash&&location.hash!=='#'?location.hash:'#browse';}
 function parseHash(h){
   h=String(h||'').replace(/^#/,'');
   if(h.indexOf('task-')===0)return {view:'detail',id:h.slice(5)};
+  if(h==='history'||h==='cancelled')return {view:'list',tab:'me',sub:'past',kind:h};  /* 舊網址照樣能用 */
   if(ME_SUBS.indexOf(h)>=0)return {view:'list',tab:'me',sub:h};
   if(h==='post'||h==='mine'||h==='me')return {view:'list',tab:h,sub:'main'};
   return {view:'list',tab:'browse'};
@@ -664,7 +696,7 @@ function applyRoute(){
     ui.view='detail';ui.detailId=r.id;markSeen(t);
   }else{
     ui.view='list';ui.tab=r.tab;
-    if(r.tab==='me'){ui.meSub=r.sub;ui.editing=false;if(r.sub==='tags')ui.tagMenu=null;}
+    if(r.tab==='me'){ui.meSub=r.sub;ui.editing=false;if(r.kind)ui.pastKind=r.kind;if(r.sub==='tags')ui.tagMenu=null;}
   }
   ui.routed=true;
 }
@@ -707,7 +739,7 @@ function tabsView(){
 }
 function gateView(tab){
   const g=GATE[tab];
-  return '<div class="sec-head"><h1>'+g[0]+'</h1></div><div class="empty"><b>'+g[1]+'</b><span class="small">不用登入也可以瀏覽「接案」頁的案件。</span><button class="btn" data-act="login" data-why="'+g[1]+'">登入</button></div>';
+  return '<h1 class="vh">'+g[0]+'</h1><div class="empty"><b>'+g[1]+'</b><span class="small">不用登入也可以瀏覽「接案」頁的案件。</span><button class="btn" data-act="login" data-why="'+g[1]+'">登入</button></div>';
 }
 function suspendBanner(m){return m&&suspended(m)?'<div class="banner bad">你目前停權中，到 '+fmtTime(m.suspendedUntil)+' 為止不能發案或出價。</div>':'';}
 
@@ -802,12 +834,11 @@ function browseList(){
 function browseView(){
   const m=me(),n=filterCount();
   return suspendBanner(m)+
-  '<div class="sec-head"><h1>接案</h1></div>'+
+  '<h1 class="vh">接案</h1>'+
   '<div class="toolbar"><div class="search">'+IC.search+'<input id="q" type="search" enterkeyhint="search" placeholder="搜尋地點、集合位置、備註" aria-label="搜尋案件" value="'+esc(ui.q)+'"></div>'+
-  '<div class="tb2">'+
-    '<button class="btn ghost sm" data-act="openSort" aria-haspopup="dialog">'+IC.sort+'排序</button>'+
-    '<button class="btn ghost sm '+(n?'active':'')+'" data-act="openFilter" aria-haspopup="dialog">'+IC.filter+'篩選'+(n?'<span class="badge">'+n+'</span>':'')+'</button>'+
-  '</div></div>'+
+  '<button class="icon-btn tool" data-act="openSort" aria-haspopup="dialog" aria-label="排序，目前是'+sortText()+'" title="排序">'+IC.sort+'</button>'+
+  '<button class="icon-btn tool'+(n?' active':'')+'" data-act="openFilter" aria-haspopup="dialog" aria-label="篩選'+(n?'，已套用 '+n+' 個條件':'')+'" title="篩選">'+IC.filter+(n?'<span class="badge">'+n+'</span>':'')+'</button>'+
+  '</div>'+
   '<div id="blist" class="stack">'+browseList()+'</div>';
 }
 function sortSheet(){
@@ -841,7 +872,7 @@ function mineView(){
   const none=k==='work'
     ?'<div class="empty"><b>你目前沒有接的案件</b><span class="small">出價後的案件會出現在這裡。</span><button class="btn ghost sm" data-act="tab" data-v="browse">去看看有哪些案件</button></div>'
     :'<div class="empty"><b>你目前沒有發的案件</b><span class="small">填好日期、時間和地點就能發案。</span><button class="btn ghost sm" data-act="tab" data-v="post">發案</button></div>';
-  return '<div class="sec-head"><h1>我的案件</h1></div>'+
+  return '<h1 class="vh">我的案件</h1>'+
   (todos.length
     ?'<section class="grp" aria-label="待你處理"><h2 class="grp-h">待你處理<span class="badge">'+todos.length+'</span></h2>'+todos.map(t=>taskCard(t,{bar:true,role:true})).join('')+'</section>'
     :'<p class="small muted">目前沒有需要你處理的事。</p>')+
@@ -898,11 +929,11 @@ function parseTime(str){
 function setTime(which,t){
   const pf=ui.pf;
   if(which==='start'){
-    if(!slotOk(pf.date,fromMin(t)))return toast('開工時間至少要在 1 小時後');
-    if(t>=MAXEND)return toast('開工時間太晚了');
+    if(!slotOk(pf.date,fromMin(t)))return '開工時間至少要在 1 小時後';
+    if(t>=MAXEND)return '開工時間太晚了';
     pf.start=fromMin(t);if(toMin(pf.end)<=t)pf.end=fromMin(Math.min(t+60,MAXEND));
   }else{
-    if(t<=toMin(pf.start))return toast('結束時間要晚於開工時間');
+    if(t<=toMin(pf.start))return '結束時間要晚於開工時間';
     pf.end=fromMin(t);
   }
   return true;
@@ -917,7 +948,7 @@ function postView(){
   const d=new Date(pf.date+'T00:00');
   const sum=mdw(d)+(pf.start?' '+pf.start+(pf.end?' 至 '+pf.end+'（'+durLabel(toMin(pf.end)-toMin(pf.start))+'）':''):'');
   const gopts=[['不限','不限'],['限男生','限男'],['限女生','限女']];
-  return '<div class="sec-head"><h1>發案</h1></div>'+
+  return '<h1 class="vh">發案</h1>'+
   '<form data-form="post" class="card stack" novalidate>'+
     '<div class="field"><span class="lbl">日期</span><button type="button" class="dt-btn" data-act="openDate">'+IC.cal+'<span>'+mdw(d)+'</span></button></div>'+
     '<div class="two"><div class="field"><span class="lbl">開工時間</span><button type="button" class="dt-btn" data-act="openTime" data-w="start">'+IC.clock+'<span>'+pf.start+'</span></button></div>'+
@@ -948,15 +979,15 @@ function profileForm(m){
 function bankView(){
   const m=me(),b=m.bank||{code:'',acct:'',name:m.name};
   return '<div class="row"><button class="btn ghost sm" data-act="backMe">← 我的</button></div>'+
-  '<div class="sec-head"><h1>收款帳戶</h1></div>'+
-  (m.bank?'<section class="card"><div class="row between"><span class="muted">目前帳戶</span><b>'+m.bank.code+' '+(BANKS[m.bank.code]||'')+' <span class="mono">****'+esc(m.bank.acct.slice(-4))+'</span></b></div></section>':'<div class="banner warn">你還沒設定收款帳戶。沒有帳戶的話，本體驗收後，雙方要自行約定用現金、電子支付等方式付款。</div>')+
-  '<form data-form="bank" class="card stack" novalidate><h2>'+(m.bank?'修改收款帳戶':'設定收款帳戶')+'</h2>'+
+  '<div class="sec-head"><h1>收款方式</h1></div>'+
+  (m.bank?'<section class="card"><div class="row between"><span class="muted">銀行帳戶</span><b>'+m.bank.code+' '+(BANKS[m.bank.code]||'')+' <span class="mono">****'+esc(m.bank.acct.slice(-4))+'</span></b></div></section>':'<div class="banner warn">你還沒設定收款方式。出價前要先設定，本體驗收後才看得到。</div>')+
+  '<form data-form="bank" class="card stack" novalidate><h2>'+(m.bank?'修改銀行帳戶':'設定銀行帳戶')+'</h2>'+
     '<div class="field"><label for="b-code">銀行</label><select id="b-code" name="code"><option value="">請選擇銀行</option>'+Object.keys(BANKS).map(k=>'<option value="'+k+'"'+(k===b.code?' selected':'')+'>'+k+' '+BANKS[k]+'</option>').join('')+'</select></div>'+
     '<div class="field"><label for="b-acct">帳號</label><input id="b-acct" name="acct" inputmode="numeric" value="'+esc(b.acct)+'"></div>'+
     '<div class="field"><label for="b-name">戶名</label><input id="b-name" name="bname" value="'+esc(b.name)+'"><span class="small muted">必須和你的姓名「'+esc(m.name)+'」相同。</span></div>'+
     '<p class="small muted">只有在本體驗收後，才會顯示給那位本體。</p>'+
-    '<button class="btn block" type="submit">儲存收款帳戶</button>'+
-    (m.bank?'<button class="btn danger block" type="button" data-act="removeBank">移除收款帳戶</button>':'')+'</form>';
+    '<button class="btn block" type="submit">儲存</button>'+
+    (m.bank?'<button class="btn danger block" type="button" data-act="removeBank">移除收款方式</button>':'')+'</form>';
 }
 function profileView(){
   const m=me();
@@ -974,12 +1005,14 @@ function tagsView(){
 }
 function historyList(id){return S.tasks.filter(t=>(t.poster===id||t.assignee===id)&&t.status==='closed');}
 function cancelledList(id){return S.tasks.filter(t=>(t.poster===id||t.assignee===id)&&t.status==='cancelled');}
-function historyView(kind){
-  const id=S.me,all=kind==='cancelled'?cancelledList(id):historyList(id),sg=ui.histSeg;
+/* 過去的案件：已完成和已取消合成一頁，上面切換，下面再用「全部／我接的／我發的」篩選 */
+function pastView(){
+  const id=S.me,kind=ui.pastKind==='cancelled'?'cancelled':'history',done=historyList(id),cc=cancelledList(id),all=kind==='cancelled'?cc:done,sg=ui.histSeg||'all';
   const list=all.filter(t=>sg==='all'||(sg==='work'?t.assignee===id:t.poster===id)).sort((a,b)=>b.start-a.start);
   return '<div class="row"><button class="btn ghost sm" data-act="backMe">← 我的</button></div>'+
-  '<div class="sec-head"><h1>'+(kind==='cancelled'?'已取消':'已完成')+'</h1><span class="small muted">共 '+all.length+' 筆</span></div>'+
-  '<div class="seg" role="tablist">'+[['all','全部'],['work','我接的'],['post','我發的']].map(([k,l])=>'<button role="tab" aria-selected="'+(sg===k)+'" class="'+(sg===k?'on':'')+'" data-act="seg" data-k="histSeg" data-v="'+k+'">'+l+'</button>').join('')+'</div>'+
+  '<div class="sec-head"><h1>過去的案件</h1></div>'+
+  '<div class="seg" role="tablist">'+[['history','已完成',done.length],['cancelled','已取消',cc.length]].map(([k,l,n])=>'<button role="tab" aria-selected="'+(kind===k)+'" class="'+(kind===k?'on':'')+'" data-act="seg" data-k="pastKind" data-v="'+k+'">'+l+'<span class="muted small">'+n+'</span></button>').join('')+'</div>'+
+  '<div class="chips" role="group" aria-label="依身分篩選">'+[['all','全部'],['work','我接的'],['post','我發的']].map(([k,l])=>'<button class="chip'+(sg===k?' on':'')+'" aria-pressed="'+(sg===k)+'" data-act="seg" data-k="histSeg" data-v="'+k+'">'+l+'</button>').join('')+'</div>'+
   (list.length?list.map(t=>taskCard(t,{bar:true,role:true})).join(''):empty('還沒有紀錄',kind==='cancelled'?'取消的案件會出現在這裡。':'完成的案件會出現在這裡。'));
 }
 function favList(){const ids=S.favs[S.me]||[];return S.tasks.filter(t=>ids.indexOf(t.id)>=0);}
@@ -991,19 +1024,18 @@ function favView(){
 }
 function meView(){
   const m=me();
-  if(ui.meSub==='history'||ui.meSub==='cancelled')return historyView(ui.meSub);
+  if(ui.meSub==='past')return pastView();
   if(ui.meSub==='favs')return favView();
   if(ui.meSub==='profile')return profileView();
   if(ui.meSub==='tags')return tagsView();
   if(ui.meSub==='bank')return bankView();
   const b=m.bank,hn=historyList(m.id).length,cn=cancelledList(m.id).length,fn=favList().length;
   const row=(act,title,sub)=>'<button class="card linkrow" data-act="'+act+'"><span class="grow"><b>'+title+'</b><span class="small muted">'+sub+'</span></span><span class="chev" aria-hidden="true">›</span></button>';
-  return suspendBanner(m)+'<div class="sec-head"><h1>我的</h1></div>'+
+  return suspendBanner(m)+'<h1 class="vh">我的</h1>'+
   '<button class="card linkrow me-card" data-act="profile"><span class="grow">'+idBlock(m,true).replace(/<div/g,'<span').replace(/<\/div>/g,'</span>')+'</span><span class="chev" aria-hidden="true">›</span></button>'+
-  row('bankPage','收款帳戶',b?b.code+' '+(BANKS[b.code]||'')+' ****'+esc(b.acct.slice(-4)):'還沒設定')+
+  row('bankPage','收款方式',b?b.code+' '+(BANKS[b.code]||'')+' ****'+esc(b.acct.slice(-4)):'還沒設定，出價前要先設定')+
   row('favs','收藏','你收藏的案件，共 '+fn+' 筆')+
-  row('history','已完成','完成的案件，共 '+hn+' 筆，也可以在這裡標記合作過的人')+
-  row('cancelled','已取消','取消或沒有完成的案件，共 '+cn+' 筆')+
+  row('past','過去的案件','已完成 '+hn+' 筆、已取消 '+cn+' 筆，也可以在這裡標記合作過的人')+
   row('tagsPage','標記的人','你標記過的人，共 '+Object.keys(S.tags[S.me]||{}).length+' 人')+
   '<section class="card"><h2>使用規則</h2><ul class="small" style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px">'+
   '<li>本體：發案、請人打掃的人。替身：接案、去打掃的人。</li>'+
@@ -1106,11 +1138,11 @@ function tagChip(g){
 function tagButton(uid){
   const g=tagOf(uid),open=ui.tagMenu===uid;
   return '<span class="tagwrap"><button class="tagbtn tg-'+(g?g.type:'none')+'" data-act="tagMenu" data-uid="'+uid+'" aria-haspopup="menu" aria-expanded="'+open+'" aria-label="標記'+(g?'，目前是「'+esc(tagText(g))+'」':'')+'">'+
-    '<span class="tg-lbl">'+(g?esc(tagText(g)):'標記')+'</span>'+IC.bookmark+'</button>'+
+    '<span class="tg-lbl">'+(g?esc(tagText(g)):'標記')+'</span>'+IC.tag+'</button>'+
     (open?'<div class="tagmenu" role="menu">'+
       '<button role="menuitemradio" aria-checked="'+(!!g&&g.type==='trust')+'" data-act="setTag" data-uid="'+uid+'" data-type="trust"><span class="tm-dot trust"></span>可信賴'+(g&&g.type==='trust'?'<span class="tm-check">✓</span>':'')+'</button>'+
       '<button role="menuitemradio" aria-checked="'+(!!g&&g.type==='black')+'" data-act="setTag" data-uid="'+uid+'" data-type="black"><span class="tm-dot black"></span>黑名單'+(g&&g.type==='black'?'<span class="tm-check">✓</span>':'')+'</button>'+
-      (ui.tagCustom?'<form data-form="tag" data-uid="'+uid+'" class="tm-custom" novalidate><input name="text" maxlength="30" placeholder="輸入自訂內容" aria-label="自訂標記內容" value="'+esc(g&&g.type==='custom'?g.text:'')+'"><button class="btn sm" type="submit">儲存</button></form>'
+      (ui.tagCustom?'<form data-form="tag" data-uid="'+uid+'" class="tm-custom" data-errafter novalidate><input name="text" maxlength="30" placeholder="輸入自訂內容" aria-label="自訂標記內容" value="'+esc(g&&g.type==='custom'?g.text:'')+'"><button class="btn sm" type="submit">儲存</button></form>'
         :'<button role="menuitemradio" aria-checked="'+(!!g&&g.type==='custom')+'" data-act="tagCustom" data-uid="'+uid+'"><span class="tm-dot custom"></span>'+(g&&g.type==='custom'?'自訂：'+esc(g.text):'自訂內容…')+'</button>')+
       (g?'<button role="menuitem" class="tm-remove" data-act="untag" data-uid="'+uid+'">撤銷標記</button>':'')+
     '</div>':'')+'</span>';
@@ -1133,7 +1165,7 @@ function commentSection(t,r){
       :'<p class="small muted">還沒有留言。可以在這裡約鑰匙怎麼拿、房號、要特別注意的地方，也可以傳照片。</p>')+
     (can?(()=>{const pre=ui.cimg[t.id]||[];
       return (pre.length?'<div class="cmt-pre">'+pre.map((src,i)=>'<div class="ph"><img src="'+src+'" alt="要傳的照片 '+(i+1)+'"><button class="ph-x" data-act="rmCimg" data-id="'+t.id+'" data-i="'+i+'" aria-label="移除這張">×</button></div>').join('')+'</div>':'')+
-      '<form data-form="comment" data-id="'+t.id+'" class="cmt-form" novalidate><label class="cmt-ph icon-btn" for="cmt-f" aria-label="加照片">'+IC.image+'<input class="vh" id="cmt-f" type="file" accept="image/*" multiple data-upload="cimg" data-id="'+t.id+'"></label>'+
+      '<form data-form="comment" data-id="'+t.id+'" class="cmt-form" data-errafter novalidate><label class="cmt-ph icon-btn" for="cmt-f" aria-label="加照片">'+IC.image+'<input class="vh" id="cmt-f" type="file" accept="image/*" multiple data-upload="cimg" data-id="'+t.id+'"></label>'+
       '<textarea id="cmt-in" name="text" rows="2" maxlength="300" placeholder="輸入留言" aria-label="輸入留言">'+esc(ui.cdraft[t.id]||'')+'</textarea><button class="btn" type="submit">送出</button></form>';})()
       :'<p class="small muted">案件已經'+(t.status==='closed'?'完成':'取消')+'，留言板只能查看。</p>')+
   '</section>';
@@ -1190,10 +1222,11 @@ function nextStep(t,r){
     if(r==='poster')return card('收到的出價（'+t.offers.length+'）',(t.matchNote?'<div class="banner warn">'+esc(t.matchNote)+'</div>':'')+
       (t.offers.length?'<div>'+t.offers.slice().sort((a,b)=>a.price-b.price).map((o,i)=>offerRow(t,o,i,true)).join('')+'</div>':'<p class="small muted">還沒有人出價。案件已經顯示在「接案」頁。</p>'),t.offers.length>0);
     if(!m)return card('出價','<button class="btn block" data-act="login" data-why="登入後才能出價或接受本體標價。">登入後出價</button>',true);
-    const mine=t.offers.find(o=>o.user===m.id),took=mine&&t.budget&&mine.price===t.budget,ok=!suspended(m)&&genderOk(t,m);
+    const mine=t.offers.find(o=>o.user===m.id),took=mine&&t.budget&&mine.price===t.budget,ok=!suspended(m)&&genderOk(t,m)&&!!m.bank;
     let b=mine?'<div class="banner info center">你目前的出價 <b class="price">NT$ '+money(mine.price)+'</b><br><span class="small">等本體選人，選中後會通知你確認接案。</span></div>':'';
     if(suspended(m))b+='<div class="banner bad">你目前停權中，'+fmtTime(m.suspendedUntil)+' 後才能出價。</div>';
     else if(!genderOk(t,m))b+='<div class="banner warn">這個案件'+gLabel(t.gender)+'，'+(m.gender?'你沒辦法出價。':'你的個人資料沒有填性別，所以沒辦法出價。')+'</div>';
+    else if(!m.bank)b+='<p class="small muted">出價前要先設定收款方式，本體驗收後才看得到。</p><button class="btn block" data-act="setupPay" data-id="'+t.id+'">設定收款方式</button>';
     else{
       if(t.budget)b+='<button class="btn block" data-act="acceptPrice" data-id="'+t.id+'"'+(took?' disabled':'')+'>'+(took?'已接受本體標價':'接受本體標價')+'</button>';
       b+='<button class="btn block'+(t.budget?' ghost':'')+'" data-act="openBid" data-id="'+t.id+'">'+(mine?'修改出價':'自己出價')+'</button>';
@@ -1238,9 +1271,9 @@ function nextStep(t,r){
       '<button class="btn ghost sm" data-act="copy" data-v="'+esc(b.acct)+'">複製帳號</button>'+
       '<p class="small muted">只匯到這裡顯示的帳戶。對方私下要求改帳號的話，請先確認清楚再匯款。</p>'+
       '<form data-form="pay" data-id="'+t.id+'" class="stack" novalidate><div class="field"><label for="l5">你的匯款帳號末五碼</label><input id="l5" name="last5" inputmode="numeric" maxlength="5" placeholder="12345"></div><button class="btn block" type="submit">我已付款</button></form>',true);
-    if(r==='poster')return card('付款給替身',autoNote+payBanner(t,r)+'<p>替身沒有提供收款帳戶，請和替身約定用現金、電子支付或其他方式付款 <b class="price">NT$ '+money(t.price)+'</b>。</p>'+
+    if(r==='poster')return card('付款給替身',autoNote+payBanner(t,r)+'<p>替身沒有提供收款方式，請和替身約定用現金、電子支付或其他方式付款 <b class="price">NT$ '+money(t.price)+'</b>。</p>'+
       '<form data-form="pay" data-id="'+t.id+'" class="stack" novalidate><div class="field"><span class="lbl" id="pw">付款方式</span><div class="checks" role="radiogroup" aria-labelledby="pw">'+PAYWAYS.map((x,i)=>'<label for="pw'+i+'"><input type="radio" id="pw'+i+'" name="method" value="'+x+'">'+x+'</label>').join('')+'</div></div><button class="btn block" type="submit">我已付款</button></form>',true);
-    if(r==='worker')return card('等本體付款',autoNote+payBanner(t,r)+'<p class="small">本體已驗收，會付款 NT$ '+money(t.price)+' 給你。'+(b?'':'你沒有提供收款帳戶，請和本體約定付款方式。')+'</p>',false);
+    if(r==='worker')return card('等本體付款',autoNote+payBanner(t,r)+'<p class="small">本體已驗收，會付款 NT$ '+money(t.price)+' 給你。'+(b?'':'你沒有提供收款方式，請和本體約定付款方式。')+'</p>',false);
     return '';
   }
   if(t.status==='paid'){
@@ -1334,7 +1367,9 @@ function dateDlg(){
     '<div class="row between dlg-big"><span>'+sel.getFullYear()+'年'+(sel.getMonth()+1)+'月'+sel.getDate()+'日</span><button type="button" class="icon-btn" data-act="dInput" aria-label="'+(g.input?'改用日曆選擇':'手動輸入日期')+'">'+(g.input?IC.cal:IC.pen)+'</button></div>'+
     body+'<div class="dlg-actions">'+(isFilterT(g.target)?'<button type="button" class="btn ghost" data-act="dClear">不限</button><span class="grow"></span>':'')+'<button type="button" class="btn ghost" data-act="dlgClose">取消</button><button type="button" class="btn" data-act="dOk">確定</button></div>';
 }
-function dialHTML(g){
+function dialHTML(g){return '<div class="dial" aria-hidden="true">'+dialInner(g)+'</div>';}
+/* 錶盤裡面的數字、指針（拖曳時只換這些，不換掉手指按著的錶盤本身） */
+function dialInner(g){
   const C=120,RO=92,RI=58,rad=a=>a*Math.PI/180;
   const pos=(a,R)=>'left:'+(C+R*Math.sin(rad(a))).toFixed(1)+'px;top:'+(C-R*Math.cos(rad(a))).toFixed(1)+'px';
   let labels='',ang,R,knob;
@@ -1348,16 +1383,16 @@ function dialHTML(g){
     for(let i=0;i<12;i++)labels+='<span class="dial-n'+(g.m===i*5?' on':'')+'" style="'+pos(i*30,RO)+'">'+pad(i*5)+'</span>';
     ang=g.m*6;R=RO;knob=pad(g.m);
   }
-  return '<div class="dial" aria-hidden="true">'+labels+'<span class="dial-hand" style="top:'+(C-R)+'px;height:'+R+'px;transform:rotate('+ang+'deg)"></span>'+
-    '<span class="dial-knob'+(R===RI?' in':'')+'" style="'+pos(ang,R)+'">'+knob+'</span><span class="dial-c"></span></div>';
+  return labels+'<span class="dial-hand" style="top:'+(C-R)+'px;height:'+R+'px;transform:rotate('+ang+'deg)"></span>'+
+    '<span class="dial-knob'+(R===RI?' in':'')+'" style="'+pos(ang,R)+'">'+knob+'</span><span class="dial-c"></span>';
 }
 function timeDlg(){
   const g=ui.dlg;let head,body;
   if(g.input){
-    head='<div class="tbig"><div class="tbig-in"><input id="dlg-h" inputmode="numeric" maxlength="2" value="'+pad(g.h)+'" aria-label="小時（0 到 23）"><span class="small muted">時</span></div><span class="tcolon">:</span><div class="tbig-in"><input id="dlg-m" inputmode="numeric" maxlength="2" value="'+pad(g.m)+'" aria-label="分鐘（0 到 59）"><span class="small muted">分</span></div></div>';
+    head='<div class="tbig" data-errafter><div class="tbig-in"><input id="dlg-h" inputmode="numeric" maxlength="2" value="'+pad(g.h)+'" aria-label="小時（0 到 23）"><span class="small muted">時</span></div><span class="tcolon">:</span><div class="tbig-in"><input id="dlg-m" inputmode="numeric" maxlength="2" value="'+pad(g.m)+'" aria-label="分鐘（0 到 59）"><span class="small muted">分</span></div></div>';
     body='<p class="small muted center">小時填 0 到 23，分鐘填 0 到 59。</p>';
   }else{
-    head='<div class="tbig"><button type="button" class="tbox'+(g.mode==='h'?' on':'')+'" data-act="tMode" data-v="h" aria-label="選小時">'+pad(g.h)+'</button><span class="tcolon">:</span><button type="button" class="tbox'+(g.mode==='m'?' on':'')+'" data-act="tMode" data-v="m" aria-label="選分鐘">'+pad(g.m)+'</button></div>';
+    head='<div class="tbig" data-errafter><button type="button" class="tbox'+(g.mode==='h'?' on':'')+'" data-act="tMode" data-v="h" aria-label="選小時">'+pad(g.h)+'</button><span class="tcolon">:</span><button type="button" class="tbox'+(g.mode==='m'?' on':'')+'" data-act="tMode" data-v="m" aria-label="選分鐘">'+pad(g.m)+'</button></div>';
     body=dialHTML(g)+'<p class="small muted center">'+(g.mode==='h'?'點或拖曳選小時，內圈是 12 到 23 點。放開後會換選分鐘。':'點或拖曳選分鐘，可以停在任何一分鐘。')+'</p>';
   }
   return '<div class="dlg-title">'+DLG_TITLE[g.target]+'</div>'+head+body+
@@ -1388,7 +1423,31 @@ function dialSet(e){
   let a=Math.atan2(x,-y)*180/Math.PI;if(a<0)a+=360;
   const g=ui.dlg,idx=Math.round(a/30)%12,dist=Math.hypot(x,y)*(240/r.width);
   if(g.mode==='h')g.h=idx+(dist<75?12:0);else g.m=Math.round(a/6)%60;
-  renderDlg();
+  /* 手機上如果把手指按著的元素換掉，放開的訊號就收不到，所以這裡只更新錶盤內容和上方的數字 */
+  el.innerHTML=dialInner(g);
+  const bh=document.querySelector('.tbox[data-v="h"]'),bm=document.querySelector('.tbox[data-v="m"]');
+  if(bh)bh.textContent=pad(g.h);if(bm)bm.textContent=pad(g.m);
+}
+/* 第一次進入（不管有沒有登入）先跑簡短介紹；記在瀏覽器裡，重設示範資料也不會再跳 */
+const INTRO_KEY='swaptime-intro-v1';
+function introSeen(){try{return localStorage.getItem(INTRO_KEY)==='1';}catch(e){return true;}}
+function markIntro(){try{localStorage.setItem(INTRO_KEY,'1');}catch(e){}}
+function introSheet(step){
+  const pages=[
+    '<div class="intro-hero"><div class="brand big">替身掃者</div><p class="lead">同學幫同學打掃寢室。</p></div>'+
+      '<dl class="intro-roles"><dt>本體</dt><dd>發案、請人打掃的人。</dd><dt>替身</dt><dd>接案、去打掃的人。</dd></dl>',
+    '<h2>怎麼進行</h2><ol class="how">'+
+      '<li><b>本體發案，替身出價</b><span>替身可以接受本體標價，也可以自己出價。</span></li>'+
+      '<li><b>本體選替身，替身確認接案</b><span>替身確認後才算接案成功。</span></li>'+
+      '<li><b>替身打掃，本體驗收</b><span>雙方可以在留言板溝通、傳照片。</span></li>'+
+      '<li><b>本體付款，雙方確認後完成</b><span>本體直接付款給替身。</span></li></ol>',
+    '<h2>先知道這些</h2><ul class="intro-list">'+
+      '<li>平台不經手款項，本體直接付款給替身。</li>'+
+      '<li>平台以信任為基礎，不處理糾紛。有事請先在留言板溝通。</li>'+
+      '<li>遇到不守信用的人，可以把對方加入黑名單，只有你自己看得到。</li></ul>'
+  ],last=pages.length-1;
+  return '<div class="intro">'+pages[step]+'</div><div class="intro-dots" aria-label="第 '+(step+1)+' 頁，共 '+(last+1)+' 頁">'+pages.map((_,i)=>'<i class="'+(i===step?'on':'')+'"></i>').join('')+'</div>'+
+    '<div class="row between"><button class="btn ghost" data-act="close">略過</button><button class="btn" data-act="'+(step<last?'introNext':'close')+'">'+(step<last?'下一步':'開始使用')+'</button></div>';
 }
 function modalView(){
   const md=ui.modal;if(!md)return '';
@@ -1400,9 +1459,10 @@ function modalView(){
     '<div class="acct-list">'+S.users.map(x=>'<button class="acct-row '+(x.id===S.me?'on':'')+'" data-act="pick" data-id="'+x.id+'"><div class="grow"><b>'+esc(x.name)+'</b><div class="small muted">'+esc(deptLine(x)||'未填系級')+'</div></div>'+(suspended(x)?'<span class="pill s-bad">停權中</span>':'')+'</button>').join('')+'</div>';
     if(md.type==='demo')inner+='<h3>模擬時間</h3><p class="small">現在是 '+fmtTime(now())+(S.clockOffset?'（已快轉 '+span(S.clockOffset)+'）':'')+'</p>'+
       '<div class="row wrap">'+[[30,'+30 分鐘'],[60,'+1 小時'],[1440,'+1 天'],[2880,'+2 天'],[10080,'+7 天']].map(([n,l])=>'<button class="btn ghost sm" data-act="ff" data-v="'+n+'">'+l+'</button>').join('')+(S.clockOffset?'<button class="btn ghost sm" data-act="nowReset">回到現在</button>':'')+'</div>'+
-      '<h3>資料</h3><div class="row wrap"><button class="btn ghost sm" data-act="reset">重設示範資料</button>'+(S.me?'<button class="btn ghost sm" data-act="logout">登出</button>':'')+'<button class="btn sm" data-act="close">關閉</button></div>';
+      '<h3>資料</h3><div class="row wrap"><button class="btn ghost sm" data-act="reset">重設示範資料</button><button class="btn ghost sm" data-act="showIntro">重看介紹</button>'+(S.me?'<button class="btn ghost sm" data-act="logout">登出</button>':'')+'<button class="btn sm" data-act="close">關閉</button></div>';
   }
   if(md.type==='confirm')inner='<h2>'+esc(md.title)+'</h2>'+(md.body?'<p>'+esc(md.body)+'</p>':'')+'<div class="row end"><button class="btn ghost" data-act="close">'+esc(md.cancel||'返回')+'</button><button class="btn '+(md.danger?'danger-solid':'')+'" data-act="ok">'+esc(md.ok)+'</button></div>';
+  if(md.type==='intro')inner=introSheet(md.step||0);
   if(md.type==='sort')inner=sortSheet();
   if(md.type==='notes')inner=notesSheet();
   if(md.type==='bid'){
@@ -1411,7 +1471,7 @@ function modalView(){
       (mine?'<div class="banner info center">目前出價 <b class="price">NT$ '+money(mine.price)+'</b></div>':'')+
       '<p class="small muted center">本體標價：'+(t.budget?'NT$ '+money(t.budget):'自由出價')+'</p>'+
       '<form data-form="offer" data-id="'+t.id+'" class="stack" novalidate><label class="pc-label" for="op">'+(mine?'新的出價':'你的出價')+'</label>'+
-      '<div class="pc-input"><span>NT$</span><input id="op" name="price" type="number" inputmode="numeric" min="1" step="1" placeholder="'+(t.budget||300)+'" value="'+(mine?mine.price:'')+'"></div>'+
+      '<div class="pc-input"><span>NT$</span><input id="op" name="price" type="number" inputmode="numeric" min="1" step="1" placeholder="輸入金額" value="'+(mine?mine.price:'')+'"></div>'+
       '<button class="btn block" type="submit">'+(mine?'更新出價':'送出出價')+'</button>'+
       (mine?'<button class="btn danger block" type="button" data-act="withdrawOffer" data-id="'+t.id+'">撤回出價</button>':'')+
       '<button class="btn ghost block" type="button" data-act="close">關閉</button>'+
@@ -1486,23 +1546,26 @@ const A={
   openNotes(){const mine=myNotes();ui.noteFresh=mine.filter(n=>!n.read).map(n=>n.id);mine.forEach(n=>{n.read=true;});save();ui.modal={type:'notes'};},
   openNote(d){const n=(S.notes||[]).find(x=>x.id===d.id);ui.modal=null;if(n&&n.taskId&&T(n.taskId))go('#task-'+n.taskId);},
   pickSort(d){ui.sort=d.k;ui.dir=d.v;ui.modal=null;},
-  cancelled(){ui.histSeg='all';go('#cancelled');},
   favs(){go('#favs');},
   fav(d){if(!S.me){ui.modal={type:'pick',why:'登入後才能收藏案件。'};return;}S.favs[S.me]=S.favs[S.me]||[];const a=S.favs[S.me],i=a.indexOf(d.id);if(i>=0){a.splice(i,1);toast('已取消收藏');}else{a.push(d.id);toast('已加入收藏，可在「我的 → 收藏」找到');}save();},
   openBid(d){ui.modal={type:'bid',id:d.id};},
   editProfile(){ui.editing=true;},
   cancelEdit(){ui.editing=false;},
-  history(){ui.histSeg='all';go('#history');},
+  past(){ui.histSeg='all';ui.pastKind='history';go('#past');},
+  introNext(){if(ui.modal)ui.modal.step=(ui.modal.step||0)+1;},
+  showIntro(){ui.modal={type:'intro',step:0};},
   backMe(){return goBack('#me');},
   profile(){go('#profile');},
   bankPage(){go('#bank');},
   tagsPage(){go('#tags');},
-  removeBank(){ask('移除收款帳戶？','移除後，本體驗收時要和你自行約定付款方式。','移除',()=>{me().bank=null;save();toast('已移除收款帳戶');},true);},
+  removeBank(){ask('移除收款方式？','移除後要重新設定才能出價。已經在進行的案件，本體驗收時要和你另外約定付款方式。','移除',()=>{me().bank=null;save();toast('已移除收款方式');},true);},
+  /* 出價前要先設定收款方式：設定好後自動回到原本的案件 */
+  setupPay(d){ui.payReturn=d.id;go('#bank');},
   open(d){go('#task-'+d.id);},
   back(){return goBack(TAB_HASH[ui.tab]||'#browse');},
   filter(d){ui.filter=d.v;},
   seg(d){ui[d.k]=d.v;},
-  acceptPrice(d){const m=me(),t=T(d.id);if(suspended(m))return toast('停權中不能出價');if(!genderOk(t,m))return toast('這個案件有指定性別，你沒辦法出價');const ex=t.offers.find(o=>o.user===m.id);if(ex){ex.price=t.budget;ex.at=now();}else{t.offers.push({id:nid('o'),user:m.id,price:t.budget,msg:'',at:now()});notify(t.poster,'有人接受你的標價',t.id);}save();toast('已接受本體標價，等本體選人');},
+  acceptPrice(d){const m=me(),t=T(d.id);if(suspended(m))return toast('停權中不能出價');if(!genderOk(t,m))return toast('這個案件有指定性別，你沒辦法出價');if(!m.bank)return toast('出價前要先設定收款方式');const ex=t.offers.find(o=>o.user===m.id);if(ex){ex.price=t.budget;ex.at=now();}else{t.offers.push({id:nid('o'),user:m.id,price:t.budget,msg:'',at:now()});notify(t.poster,'有人接受你的標價',t.id);}save();toast('已接受本體標價，等本體選人');},
   withdrawOffer(d){const t=T(d.id);t.offers=t.offers.filter(o=>o.user!==S.me);ui.modal=null;save();toast('已撤回出價');},
   choose(d){const t=T(d.id),o=t.offers.find(x=>x.id===d.oid);
     ask('選擇'+u(o.user).name+'作為你的替身（NT$ '+money(o.price)+'）？','','選擇',()=>{t.status='pending';t.assignee=o.user;t.price=o.price;t.pendingAt=now();t.matchNote=null;notify(o.user,'本體選了你，請在 '+fmtTime(deadline(t))+' 前確認接案',t.id);save();toast('已通知'+u(o.user).name+'確認接案');});},
@@ -1530,7 +1593,7 @@ const A={
   dMonth(d){const p=ui.dlg.month.split('-').map(Number),nd=new Date(p[0],p[1]-1+Number(d.v),1);ui.dlg.month=nd.getFullYear()+'-'+pad(nd.getMonth()+1);},
   dPick(d){ui.dlg.sel=d.v;},
   dInput(){const g=ui.dlg;if(g.input){const v2=parseDateIn(g.target);if(v2){g.sel=v2;g.month=v2.slice(0,7);}}g.input=!g.input;},
-  dOk(){const g=ui.dlg;let ds=g.sel;if(g.input){ds=parseDateIn(g.target);if(!ds)return toast('請輸入今天到 60 天內的日期，例如 2026/11/20');}
+  dOk(){const g=ui.dlg;let ds=g.sel;if(g.input){ds=parseDateIn(g.target);if(!ds)return ferr(document.getElementById('dlg-date'),'請輸入今天到 60 天內的日期，例如 2026/11/20');}
     if(g.target==='post'){const pf=ui.pf;pf.date=ds;pf.month=ds.slice(0,7);
       if(!slotOk(pf.date,pf.start)){const f=firstSlot(pf.date);if(f){pf.start=f;pf.end=fromMin(Math.min(toMin(f)+60,MAXEND));}}}
     else if(ui.fd)ui.fd[g.target]=ds;
@@ -1542,9 +1605,9 @@ const A={
     ui.dlg={kind:'time',target:k,h:Math.floor(t/60),m:t%60,mode:'h',input:false};},
   tMode(d){ui.dlg.mode=d.v;},
   tInput(){const g=ui.dlg;if(g.input){const r=readTimeIn();if(r)Object.assign(g,r);}g.input=!g.input;},
-  tOk(){const g=ui.dlg;if(g.input){const r=readTimeIn();if(!r)return toast('小時請填 0 到 23，分鐘請填 0 到 59');Object.assign(g,r);}
+  tOk(){const g=ui.dlg;if(g.input){const r=readTimeIn();if(!r)return ferr(document.getElementById('dlg-h'),'小時請填 0 到 23，分鐘請填 0 到 59');Object.assign(g,r);}
     const v=g.h*60+g.m;
-    if(g.target==='start'||g.target==='end'){const res=setTime(g.target,v);if(res!==true){renderDlg();return false;}}
+    if(g.target==='start'||g.target==='end'){const res=setTime(g.target,v);if(res!==true)return ferr(document.querySelector('.d-layer .tbig'),res);}
     else if(ui.fd)ui.fd[g.target]=v;
     ui.dlg=null;},
   pickTime(d){
@@ -1584,9 +1647,9 @@ const A={
 /* ---------- 表單 ---------- */
 const F={
   offer(f,d){
-    const m=me();if(suspended(m))return toast('停權中不能出價');if(!genderOk(T(d.id),m))return toast('這個案件有指定性別，你沒辦法出價');
+    const m=me();if(suspended(m))return toast('停權中不能出價');if(!genderOk(T(d.id),m))return toast('這個案件有指定性別，你沒辦法出價');if(!m.bank)return toast('出價前要先設定收款方式');
     const raw=v(f,'price'),price=Math.round(Number(raw));
-    if(!raw||!(price>0))return toast('請輸入出價金額');
+    if(!raw||!(price>0))return ferr(f.elements.price,'請輸入出價金額');
     const t=T(d.id),msg='',ex=t.offers.find(o=>o.user===m.id);
     if(ex){ex.price=price;ex.msg=msg;ex.at=now();toast('已更新出價');}
     else{t.offers.push({id:nid('o'),user:m.id,price,msg,at:now()});notify(t.poster,'有人出價 NT$ '+money(price),t.id);toast('已送出出價，等本體選人');}
@@ -1594,52 +1657,54 @@ const F={
   },
   post(f){
     const m=me(),pf=ui.pf;if(suspended(m))return toast('停權中不能發案');
-    if(!pf.date||!pf.start||!pf.end)return toast('請選日期、開工和結束時間');
+    if(!pf.date||!pf.start||!pf.end)return ferr(f.querySelector('[data-act="openDate"]'),'請選日期、開工和結束時間');
     const start=new Date(pf.date+'T'+pf.start).getTime(),end=new Date(pf.date+'T'+pf.end).getTime();
-    if(!(end>start))return toast('結束時間要晚於開工時間');
-    if(!(start>now()+H))return toast('開工時間至少要在 1 小時後');
-    if(!v(f,'building'))return toast('請填地點');
-    if(!v(f,'meet'))return toast('請填集合位置');
-    const g=f.querySelector('input[name=gender]:checked');if(!g)return toast('請選擇替身性別');
+    if(!(end>start))return ferr(f.querySelector('[data-w="end"]'),'結束時間要晚於開工時間');
+    if(!(start>now()+H))return ferr(f.querySelector('[data-w="start"]'),'開工時間至少要在 1 小時後');
+    if(!v(f,'building'))return ferr(f.elements.building,'請填地點');
+    if(!v(f,'meet'))return ferr(f.elements.meet,'請填集合位置');
+    const g=f.querySelector('input[name=gender]:checked');if(!g)return ferr(f.elements.gender,'請選擇替身性別');
     const bs=v(f,'budget');let budget=null;
-    if(bs){budget=Math.round(Number(bs));if(!(budget>=50&&budget<=5000))return toast('標價請在 NT$ 50 到 5,000 之間');}
+    if(bs){budget=Math.round(Number(bs));if(!(budget>=50&&budget<=5000))return ferr(f.elements.budget,'標價請在 NT$ 50 到 5,000 之間');}
     const t={id:nid('t'),poster:m.id,building:v(f,'building'),meet:v(f,'meet'),gender:g.value,start,end,budget,note:v(f,'note'),status:'open',offers:[],assignee:null,price:null,photos:[],createdAt:now()};
     S.tasks.unshift(t);ui.pf=pfdef();save();ui.mineRole='own';go('#mine',true);go('#task-'+t.id);toast('已發布，同學可以開始出價');
   },
   pay(f,d){
     const t=T(d.id);
-    if(f.elements.last5){const x=v(f,'last5');if(!/^\d{5}$/.test(x))return toast('請輸入 5 位數字');t.payment={last5:x,method:'匯款',at:now()};}
-    else{const c=f.querySelector('input[name=method]:checked');if(!c)return toast('請選擇付款方式');t.payment={last5:null,method:c.value,at:now()};}
+    if(f.elements.last5){const x=v(f,'last5');if(!/^\d{5}$/.test(x))return ferr(f.elements.last5,'請輸入 5 位數字');t.payment={last5:x,method:'匯款',at:now()};}
+    else{const c=f.querySelector('input[name=method]:checked');if(!c)return ferr(f.elements.method,'請選擇付款方式');t.payment={last5:null,method:c.value,at:now()};}
     t.status='paid';notify(t.assignee,'本體已付款 NT$ '+money(t.price)+'，收到後請按「我已收款」',t.id);save();toast('已通知替身確認收款');
   },
   profile(f){
     const m=me(),name=v(f,'name'),sid=v(f,'sid').toUpperCase(),g=f.querySelector('input[name=gender]:checked');
-    if(!name)return toast('請填姓名');
-    if(!/^[A-Z]\d{8}$/.test(sid))return toast('學號格式是一個英文字母加八個數字，例如 S15330124');
-    if(!g||!g.value)return toast('請選擇性別');
-    if(m.bank&&m.bank.name!==name)return toast('姓名要和收款帳戶的戶名相同，請先到「收款帳戶」修改或移除');
+    if(!name)return ferr(f.elements.name,'請填姓名');
+    if(!/^[A-Z]\d{8}$/.test(sid))return ferr(f.elements.sid,'學號格式是一個英文字母加八個數字，例如 S15330124');
+    if(!g||!g.value)return ferr(f.elements.gender,'請選擇性別');
+    if(m.bank&&m.bank.name!==name)return ferr(f.elements.name,'姓名要和收款方式的戶名相同，請先到「收款方式」修改或移除');
     Object.assign(m,{name,sid,gender:g.value,cls:v(f,'cls').toUpperCase()});
     ui.editing=false;save();toast('資料已更新');
   },
   bank(f){
     const m=me(),code=v(f,'code'),acct=v(f,'acct').replace(/[\s-]/g,''),bname=v(f,'bname');
-    if(!code)return toast('請選擇銀行');
-    if(!/^\d{10,16}$/.test(acct))return toast('帳號請輸入 10 到 16 位數字');
-    if(bname!==m.name)return toast('戶名必須和姓名「'+m.name+'」相同');
-    m.bank={code,acct,name:bname};save();toast('收款帳戶已儲存');
+    if(!code)return ferr(f.elements.code,'請選擇銀行');
+    if(!/^\d{10,16}$/.test(acct))return ferr(f.elements.acct,'帳號請輸入 10 到 16 位數字');
+    if(bname!==m.name)return ferr(f.elements.bname,'戶名必須和姓名「'+m.name+'」相同');
+    m.bank={code,acct,name:bname};save();
+    if(ui.payReturn){const id=ui.payReturn;ui.payReturn=null;toast('收款方式已儲存，現在可以出價了');return goBack('#task-'+id);}
+    toast('收款方式已儲存');
   },
   filter(f){
     const fd=ui.fd||ui.f,from=fd.from,to=fd.to,tmin=fd.tmin,tmax=fd.tmax,pmin=v(f,'pmin'),pmax=v(f,'pmax');
-    if(tmin!==''&&tmax!==''&&Number(tmax)<=Number(tmin))return toast('最晚結束時間要晚於最早開工時間');
-    if(from&&to&&to<from)return toast('最晚日期不能早於最早日期');
-    if(pmin!==''&&pmax!==''&&Number(pmax)<Number(pmin))return toast('最高標價不能低於最低標價');
+    if(tmin!==''&&tmax!==''&&Number(tmax)<=Number(tmin))return ferr(f.querySelector('[data-w="tmax"]'),'最晚結束時間要晚於最早開工時間');
+    if(from&&to&&to<from)return ferr(f.querySelector('[data-w="to"]'),'最晚日期不能早於最早日期');
+    if(pmin!==''&&pmax!==''&&Number(pmax)<Number(pmin))return ferr(f.elements.pmax,'最高標價不能低於最低標價');
     const genders=Array.from(f.querySelectorAll('input[name=g]:checked')).map(x=>x.value);
-    if(!genders.length)return toast('至少勾選一種替身性別');
+    if(!genders.length)return ferr(f.elements.g,'至少勾選一種替身性別');
     ui.f={from,to,tmin,tmax,pmin,pmax,genders};ui.fd=null;ui.modal=null;
   },
   comment(f,d){
     const t=T(d.id),text=v(f,'text'),imgs=(ui.cimg[t.id]||[]).slice();
-    if(!text&&!imgs.length)return toast('請輸入留言或加上照片');
+    if(!text&&!imgs.length)return ferr(f.elements.text,'請輸入留言或加上照片');
     if(CMT_OPEN.indexOf(t.status)<0)return toast('這個案件的留言板已經關閉');
     t.comments=t.comments||[];t.comments.push({id:nid('c'),user:S.me,text,imgs,at:now()});
     notifyCmt(S.me===t.poster?t.assignee:t.poster,t,me(),text,imgs.length);
@@ -1649,15 +1714,15 @@ const F={
   notdone(f,d){
     const t=T(d.id),dr=ui.endDraft||{text:'',photos:[]},text=v(f,'text');
     if(!(t.status==='assigned'||t.status==='done')||now()<t.end+24*H)return toast('現在不能結束案件');
-    if(!text)return toast('請寫下原因');
-    if(!dr.photos.length)return toast('請至少附上 1 張照片');
+    if(!text)return ferr(f.elements.text,'請寫下原因');
+    if(!dr.photos.length)return ferr(f.querySelector('#nd-f'),'請至少附上 1 張照片');
     t.status='cancelled';t.cancelKind='notdone';t.cancelAt=now();t.cancelReason='本體結束了案件：替身未完成';
     t.endNote={text,photos:dr.photos.slice(),at:now()};
     notify(t.assignee,'本體結束了案件，表示你未完成，請到案件裡查看原因',t.id);
     ui.modal=null;ui.endDraft=null;save();toast('已結束案件');
   },
   tag(f,d){
-    const text=v(f,'text');if(!text)return toast('請輸入自訂內容');
+    const text=v(f,'text');if(!text)return ferr(f.elements.text,'請輸入自訂內容');
     S.tags[S.me]=S.tags[S.me]||{};S.tags[S.me][d.uid]={type:'custom',text,at:now()};
     ui.tagMenu=null;ui.tagCustom=false;save();toast('已儲存標記');
   }
@@ -1689,6 +1754,7 @@ document.addEventListener('submit',e=>{
   if(F[f.dataset.form](f,f.dataset)!==false)render();
 });
 document.addEventListener('input',e=>{
+  clearErr(e.target);
   const el=e.target,pf=el.form&&el.form.dataset.form==='post';
   if(el.id==='m-sid'||el.id==='m-cls'){const p=el.selectionStart,up=el.value.toUpperCase();if(up!==el.value){el.value=up;try{el.setSelectionRange(p,p);}catch(x){}}return;}
   if(el.id==='cmt-in'&&el.form){ui.cdraft[el.form.dataset.id]=el.value;return;}
@@ -1703,7 +1769,7 @@ document.addEventListener('change',async e=>{
   const el=e.target;
   if(el.id==='sort'){ui.sort=el.value;render();return;}
   if(el.form&&el.form.dataset.form==='post'&&el.name==='gender'){ui.pf.gender=el.value;return;}
-  if(el.classList.contains('tb-input')){const t=parseTime(el.value);if(t===null){toast('請輸入像 14:35 或 1435 的時間');}else setTime(el.dataset.w,t);render();return;}if(!el.dataset||!el.dataset.upload)return;
+  if(el.classList.contains('tb-input')){const t=parseTime(el.value);if(t===null){toast('請輸入像 14:35 或 1435 的時間');}else{const r=setTime(el.dataset.w,t);if(r!==true)toast(r);}render();return;}if(!el.dataset||!el.dataset.upload)return;
   const files=Array.from(el.files||[]),kind=el.dataset.upload,id=el.dataset.id;if(!files.length)return;
   const out=[];let bad=0;
   for(const file of files){try{out.push(await shrink(file));}catch(err){bad++;}}
@@ -1713,12 +1779,16 @@ document.addEventListener('change',async e=>{
   else{const t=T(id);out.forEach(src=>t.photos.push({src,at:now()}));save();render();}
   if(bad)toast('有 '+bad+' 張讀不到');else if(kind==='photos')toast('已上傳 '+out.length+' 張');
 });
-document.addEventListener('pointerdown',e=>{if(e.target.closest&&e.target.closest('.dial')){ui.drag=true;e.preventDefault();dialSet(e);}});
+document.addEventListener('pointerdown',e=>{const d=e.target.closest&&e.target.closest('.dial');if(!d)return;ui.drag=true;e.preventDefault();try{d.setPointerCapture(e.pointerId);}catch(x){}dialSet(e);});
 document.addEventListener('pointermove',e=>{if(ui.drag)dialSet(e);});
-document.addEventListener('pointerup',()=>{if(!ui.drag)return;ui.drag=false;if(ui.dlg&&ui.dlg.mode==='h'){ui.dlg.mode='m';renderDlg();}});
+/* 放開手指：選完小時就自動換選分鐘（跟 Google 日曆一樣） */
+function dialEnd(){if(!ui.drag)return;ui.drag=false;if(ui.dlg&&ui.dlg.mode==='h'){ui.dlg.mode='m';renderDlg();}}
+document.addEventListener('pointerup',dialEnd);
+document.addEventListener('pointercancel',dialEnd);
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.target.id==='dlg-date'||e.target.id==='dlg-h'||e.target.id==='dlg-m')){e.preventDefault();A[e.target.id==='dlg-date'?'dOk':'tOk']();render();return;}if(e.key==='Enter'&&e.target.classList&&e.target.classList.contains('tb-input')){e.preventDefault();e.target.blur();return;}if(e.key!=='Escape')return;if(ui.tagMenu){ui.tagMenu=null;ui.tagCustom=false;render();}else if(ui.dlg){ui.dlg=null;render();}else if(ui.modal){ui.modal=null;ui.pending=null;ui.dlg=null;render();}});
 
 navStack=[curHash()];applied=curHash();applyRoute();
+if(!introSeen()){ui.modal={type:'intro',step:0};markIntro();}
 render();
 })();
 </script>
