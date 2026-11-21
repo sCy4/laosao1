@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700..900;1,700..900&family=Jost:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Zhi+Mang+Xing&text=%E5%94%B0%E5%92%9A%E5%8F%AE%E7%A0%B0%E5%95%AA%E5%92%BB%EF%BC%81%E2%80%94&display=swap" rel="stylesheet">
 <style>
 :root{
   /* 方案 I：高級時裝 × 漫畫。深靛藍為主色、香檳金點綴、象牙白底；粗黑框線、硬陰影、網點。
@@ -505,16 +506,17 @@ label.btn{display:flex;align-items:center;justify-content:center}
 /* =====================================================================
    方案 I：高級時裝 × 漫畫（雜誌式的取捨）
    - 時裝雜誌當骨架、漫畫當爆點：日常畫面用細線和留白；漫畫手法只在詳情頁頂端、閃屏、第一次進入的封面
-   - 線條分級：3px 粗線只給刊頭、分節開頭、下方分頁；案件卡片 2px 墨框；資料用 1px 細線
-   - 硬陰影只給主要按鈕（現在要按的那一顆）；主要按鈕一律深靛藍
-   - 詳情頁頂端是黑色封面格，超大日期數字用階段色（召喚替身螢光綠、打掃鈷藍、驗收洋紅、付款金、完成象牙白），被斜切邊裁掉一角
-   - 輪到你：卡片最後一行紅色 ◆＋粗字；最急的那一張整張反黑當頭條
+   - 線條只有兩種：3px 粗線（刊頭、案件卡片、分節開頭、下方分頁）和 1px 細線（輸入框、資料表）
+   - 主要按鈕是黑底象牙字，不用偏移陰影；按下去才位移並換成螢光綠。深靛藍只用在品牌時刻（封面）
+   - 詳情頁頂端是黑色封面格：直排「11月」、超大日期數字（階段色）、圓形星期印章、角落的標價框，斜切邊裁掉數字一角
+   - Didone 數字只用在日期；金額一律無襯線
+   - 輪到你：卡片橫條黑底白字＋紅色 ◆，全站同一種樣子
+   - 音效字用筆刷字（Zhi Mang Xing，只載入用得到的幾個字）
    - 字：數字用高反差的 Playfair Display，中文標題用思源黑體 Black，介面用 Jost＋思源黑體；24px 以下的數字用無襯線
    - 整個畫面的反轉配色只在重大動作的閃屏；第一次進入是一張雜誌封面
    ===================================================================== */
 body{background:var(--bg);font-family:var(--font-body);font-feature-settings:"lnum" 1}
 p,dd,li,.cmt-txt{text-wrap:pretty}
-.clock{font-feature-settings:"lnum" 1,"halt" 1}
 h1,h2{font-family:var(--font-display);font-weight:900;letter-spacing:.02em}
 h1{font-size:30px;line-height:1.15}
 h2{font-size:20px;line-height:1.3}
@@ -525,12 +527,12 @@ p .price,.banner .price,.cmt-txt .price{font-family:var(--font-body);font-size:i
 :focus-visible{outline:3px solid var(--cobalt);outline-offset:2px}
 .badge,.slot small,.ph-time,.req,.opt{font-size:12px}
 .link-btn,.tc-more{color:var(--accent);text-decoration-thickness:1.5px}
-header.top svg,main svg,.sheet svg{stroke-width:2.8;stroke-linecap:square;stroke-linejoin:miter}
+header.top svg,main svg,.sheet svg{stroke-width:3;stroke-linecap:square;stroke-linejoin:miter}
 .tool svg{display:none}
 
 /* 標題欄：刊頭，粗細雙線 */
 body::before{background:var(--surface)}
-header.top{min-height:60px;padding:8px 16px;background:var(--surface);border-bottom:3px solid var(--ink);box-shadow:0 2px 0 var(--surface),0 3px 0 var(--ink)}
+header.top{min-height:60px;padding:8px 16px;background:var(--surface);border-bottom:3px solid var(--ink);box-shadow:none}
 .brand{font-family:var(--font-display);font-weight:900;color:var(--ink);letter-spacing:0;line-height:1.05}
 .hd-brand .brand{font-size:26px}
 .clock{font-size:13px;font-weight:500;letter-spacing:.04em;line-height:1.35;color:var(--muted)}
@@ -544,22 +546,22 @@ header.top .icon-btn{border-radius:0;color:var(--ink)}
 nav.tabs{background:var(--surface);border-top:3px solid var(--ink);box-shadow:0 -8px 0 var(--bg)}
 nav.tabs button{flex-direction:row;justify-content:center;gap:6px;padding:0 0 env(safe-area-inset-bottom,0px);min-height:54px;font-size:15px;font-weight:700;letter-spacing:.04em;color:var(--muted)}
 nav.tabs svg{display:none}
-nav.tabs button.on{background:var(--ink);color:var(--surface)}
+nav.tabs button.on{background:transparent;color:var(--ink);box-shadow:inset 0 5px 0 var(--ink);font-weight:900}
 nav.tabs button.on::before{display:none}
 .badge{border-radius:0;min-width:20px;height:20px}
-nav.tabs .badge{position:absolute;top:7px;right:7px;left:auto;min-width:18px;height:18px;padding:0 4px;letter-spacing:0}
-nav.tabs button+button{box-shadow:inset 1px 0 0 var(--line)}
+nav.tabs .badge{position:absolute;top:0;right:0;left:auto;min-width:18px;height:18px;padding:0 4px;letter-spacing:0}
 nav.tabs button{padding-top:6px}
-nav.tabs button.on .badge{box-shadow:0 0 0 2px var(--surface)}
+
 
 /* 版面：格與格之間是固定的白縫 */
 main{gap:16px}
 #blist{gap:10px}
 #blist>.small:first-child{display:flex;align-items:center;gap:10px;color:var(--ink);font-weight:600;margin-bottom:-2px}
 #blist>.small:first-child::after{content:"";flex:1;min-width:16px;height:1px;background:var(--ink)}
+#blist:has(>.card.task)::after,.grp:last-of-type:has(>.card.task)::after{content:"";align-self:center;width:9px;height:9px;margin-top:6px;background:var(--ink)}
 
 /* 案件卡片：漫畫的格。左邊日期欄鋪網點、放大數字；右邊時間、地點、標價 */
-.card{border:2px solid var(--ink);border-radius:0;background:var(--surface);padding:16px;box-shadow:none}
+.card{border:3px solid var(--ink);border-radius:0;background:var(--surface);padding:16px;box-shadow:none}
 .card.task{padding:0}
 .card.task:hover{border-color:var(--ink)}
 .tc-open{border-radius:0}
@@ -579,13 +581,10 @@ main{gap:16px}
 .tc-bottom{gap:8px}
 .tc-bar{padding:9px 16px;font-size:13px}
 .tc-bar.bottom{border-radius:0;background:var(--surface);color:var(--muted);font-weight:600;border-top:1px solid var(--ink)}
-.tc-bar.bottom.todo{background:transparent;color:var(--ink);font-weight:700;border-top-color:var(--ink)}
-.tc-dot{width:9px;height:9px;border-radius:0;transform:rotate(45deg);background:var(--alert)}
+.tc-bar.bottom.todo{background:var(--ink);color:var(--surface);font-weight:700;border-top-color:var(--ink)}
+.tc-dot{width:11px;height:11px;border-radius:0;transform:rotate(45deg);background:var(--alert)}
 section[aria-label="待你處理"]>.grp-h .badge{display:none}
-section[aria-label="待你處理"]>.card.task:first-of-type{background:var(--ink);color:var(--surface)}
-section[aria-label="待你處理"]>.card.task:first-of-type .tc-d{background:#1d1b16;border-right-color:#4a463c}
-section[aria-label="待你處理"]>.card.task:first-of-type :is(.tc-place,.favbtn,.tc-bar.todo,.price,.price .muted){color:var(--surface)}
-section[aria-label="待你處理"]>.card.task:first-of-type .tc-bar{border-top-color:#4a463c}
+
 .bar-role{font-weight:600;font-size:12px;letter-spacing:.04em;opacity:1}
 /* 待你處理的第一件（最急）放大成主角格 */
 .favbtn{border-radius:0;color:var(--ink)}
@@ -601,26 +600,26 @@ section[aria-label="待你處理"]>.card.task:first-of-type .tc-bar{border-top-c
 .s-open,.s-assigned,.s-wait,.s-good,.s-bad,.s-off{background:transparent}
 .s-off{color:var(--muted)}
 .pill.s-good,.pill.s-assigned{color:var(--ink)}
-.offer .pill{padding:2px 8px;font-size:13px}
+.offer .pill{padding:2px 8px;font-size:13px;border:0;background:#ece3cf}
 .pill.s-ownt{background:var(--ink);color:var(--surface);border-color:var(--ink)}
-.pill.s-bid{background:transparent;color:var(--accent);border:0;padding:0;font-size:13px}
+.pill.s-bid{background:transparent;color:var(--ink);border:0;padding:0;font-size:13px;font-weight:700}
 
 /* 按鈕：主要按鈕才有硬陰影；滑過時浮起微斜並出現放射速度線；按下去換成螢光綠；次要按鈕只有底線 */
-.btn{border:2px solid var(--ink);border-radius:0;background:var(--accent);color:var(--accent-ink);box-shadow:none;letter-spacing:.04em;transition:transform .1s cubic-bezier(.3,1.7,.5,1),box-shadow .1s}
-.btn:not(.sm):not(.ghost):not(.quiet):not(.danger):not(.danger-solid):not(:disabled){border-width:2px;box-shadow:4px 4px 0 var(--ink)}
+.btn{border:2px solid var(--ink);border-radius:0;background:var(--ink);color:var(--surface);box-shadow:none;letter-spacing:.04em;transition:transform .1s cubic-bezier(.3,1.7,.5,1),box-shadow .1s}
+.btn:not(.sm):not(.ghost):not(.quiet):not(.danger):not(.danger-solid):not(:disabled){border-width:2px}
 .cmt-form .btn:not(:disabled){border-width:2px;box-shadow:none}
-.btn.sm{background:var(--accent);color:var(--surface);min-height:38px;padding:6px 14px}
+.btn.sm{background:var(--ink);color:var(--surface);min-height:38px;padding:6px 14px}
 .btn.ghost,.btn.danger,.btn.ghost.sm{background:transparent;color:var(--ink);border:0;border-bottom:2px solid var(--ink);padding-left:4px;padding-right:4px}
 .btn.danger{color:var(--bad)}
 .btn.ghost.block{width:auto;align-self:center;min-width:120px}
 .btn.danger-solid{background:var(--bad);color:#fff;border-color:var(--ink)}
-.btn.quiet{border:0;box-shadow:none;background:transparent;color:var(--bad);letter-spacing:0}
+.btn.quiet{border:0;box-shadow:none;background:transparent;color:var(--muted);letter-spacing:0}
 .btn:disabled{opacity:1;background:transparent;color:#857d6b;border-color:#b5ad98;box-shadow:none}
 @media (hover:hover){
-  .btn:not(.quiet):not(:disabled):hover{transform:translate(-2px,-2px) skewX(-5deg)}
-  .btn:not(.sm):not(.ghost):not(.quiet):not(.danger):not(.danger-solid):not(:disabled):hover{box-shadow:6px 6px 0 var(--ink);background-image:repeating-conic-gradient(from 0deg at 50% 50%,rgba(255,252,244,.26) 0deg 3deg,transparent 3deg 11deg)}
-  .btn.ghost:not(:disabled):hover,.btn.danger:not(:disabled):hover{background:var(--ink);color:var(--surface)}
-  .btn.sm:not(.ghost):not(:disabled):hover{background:var(--ink)}
+  .btn:not(.quiet):not(:disabled):hover{transform:translate(-2px,-2px) skewX(-5deg);box-shadow:4px 4px 0 var(--lime)}
+  .btn:not(.sm):not(.ghost):not(.quiet):not(.danger):not(.danger-solid):not(:disabled):hover{background-image:repeating-conic-gradient(from 0deg at 50% 50%,rgba(255,252,244,.26) 0deg 3deg,transparent 3deg 11deg)}
+  .btn.ghost:not(:disabled):hover,.btn.danger:not(:disabled):hover{background:var(--ink);color:var(--surface);box-shadow:none}
+
   .card.task{transition:transform .12s cubic-bezier(.3,1.7,.5,1),box-shadow .12s}
   .card.task:hover{transform:translate(-3px,-3px);box-shadow:4px 4px 0 var(--ink)}
   .card.linkrow:not(.me-card):hover{background:var(--ink);color:var(--surface)}
@@ -635,22 +634,26 @@ section[aria-label="待你處理"]>.card.task:first-of-type .tc-bar{border-top-c
 .card.task:active{transform:translate(2px,2px)}
 
 /* 表單：只有底線；欄位名稱是不加字距的小字 */
-input,select,textarea{border:0;border-bottom:2px solid var(--ink);border-radius:0;background:transparent;padding:6px 2px;min-height:40px}
-textarea{border-top:1px solid var(--line)}
-input:focus,select:focus,textarea:focus{outline:none;border-bottom-color:var(--cobalt);box-shadow:0 2px 0 var(--cobalt)}
+input,select,textarea{border:1px solid var(--ink);border-radius:0;background:var(--surface);padding:8px 10px;min-height:44px}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--cobalt);box-shadow:0 0 0 1px var(--cobalt)}
 .field{gap:4px}
-.field label,.field .lbl{font-size:13px;color:var(--muted);font-weight:500;letter-spacing:.02em}
+.field label,.field .lbl{font-size:13px;color:var(--ink);font-weight:700}
 .req,.opt{border-radius:0;background:transparent;border:0;padding:0;margin-left:6px;font-weight:500}
 .req{color:var(--bad)}.opt{color:var(--muted)}
-.mail-in{border:0;border-bottom:2px solid var(--ink);border-radius:0;background:transparent;padding-right:2px}
-.mail-in:focus-within{outline:none;border-bottom-color:var(--cobalt);box-shadow:0 2px 0 var(--cobalt)}
+.mail-in{border:1px solid var(--ink);border-radius:0;background:var(--surface);padding-right:10px}
+.mail-in input{border:0}
+.mail-in:focus-within{outline:none;border-color:var(--cobalt);box-shadow:0 0 0 1px var(--cobalt)}
 .code-in{font-family:var(--font-display);font-size:34px}
 .pc-input input{font-family:var(--font-display);font-size:36px;font-weight:700}
-.dt-btn{border:0;border-bottom:2px solid var(--ink);border-radius:0;background:transparent;box-shadow:none;padding:8px 2px;font-weight:600}
+.dt-btn{border:1px solid var(--ink);border-radius:0;background:var(--surface);box-shadow:none;padding:8px 10px;font-weight:600}
 .dt-btn svg{color:var(--ink)}
 form[data-form="post"] .two+p.small{margin-top:-16px}
 form[data-form="post"] .dt-btn{font-family:var(--font-display);font-size:22px;font-weight:900;min-height:52px}
-form[data-form="post"].stack{gap:18px}
+form[data-form="post"].stack{gap:16px;counter-reset:sec}
+form[data-form="post"].card{border-top:0!important;padding-top:0!important}
+form[data-form="post"]>:is(.field:first-child,.field:has(#p-b),.field:has([aria-labelledby="p-g"]),.field:has(#p-budget)){counter-increment:sec;border-top:3px solid var(--ink);padding-top:10px;margin-top:8px}
+form[data-form="post"]>.field:first-child{margin-top:0}
+form[data-form="post"]>:is(.field:first-child,.field:has(#p-b),.field:has([aria-labelledby="p-g"]),.field:has(#p-budget))>:first-child::before{content:counter(sec,decimal-leading-zero);font-family:var(--font-display);font-weight:900;font-size:22px;margin-right:10px;vertical-align:-2px}
 /* 二選一、三選一：一排文字，選中反黑，不放單選圓點 */
 .checks{gap:0}
 .checks label{position:relative;border:1px solid var(--ink);border-radius:0;margin-left:-1px;padding:8px 16px;font-size:15px;font-weight:600;color:var(--ink);background:transparent}
@@ -661,11 +664,11 @@ form[data-form="post"].stack{gap:18px}
 .checks label:has(input:focus-visible){outline:3px solid var(--cobalt);outline-offset:2px;z-index:1}
 .ferr{color:var(--bad)}
 /* 工具列：搜尋只有底線，排序、篩選是文字按鈕 */
-.toolbar{gap:4px;align-items:stretch;border-bottom:2px solid var(--ink)}
-.search{border:0;border-radius:0;background:transparent;color:var(--ink);box-shadow:none;padding:0 4px 0 0}
+.toolbar{gap:0;align-items:stretch;border:1px solid var(--ink);background:var(--surface)}
+.search{border:0;border-radius:0;background:transparent;color:var(--ink);box-shadow:none;padding:0 4px 0 12px}
 .search input{min-height:44px;border:0}
 .search:focus-within{outline:3px solid var(--cobalt);outline-offset:0}
-.tool{width:auto;height:46px;padding:0 6px;gap:5px;border:0;border-radius:0;color:var(--ink);box-shadow:none;background:transparent;font:inherit;font-size:14px;font-weight:700}
+.tool{width:auto;height:46px;padding:0 12px;gap:5px;border:0;border-left:1px solid var(--ink);border-radius:0;color:var(--ink);box-shadow:none;background:transparent;font:inherit;font-size:14px;font-weight:700}
 .tool svg{width:16px;height:16px}
 .tool.active{background:var(--ink);color:var(--surface)}
 .tool .badge{position:static;background:var(--lime);color:var(--ink);margin-left:1px}
@@ -688,9 +691,9 @@ form[data-form="post"].stack{gap:18px}
 
 /* 進度條：一條細的章節索引；完成＝墨色字，目前＝階段色底，還沒到＝灰字 */
 .steps{counter-reset:st;gap:0;margin:0 -16px -10px;padding:0 16px;background:var(--ink);border-bottom:1px solid #3a372f}
-.steps li{counter-increment:st;align-items:flex-start;text-align:left;gap:1px;padding:7px 6px 7px;font-size:12px;font-weight:600;color:#8d8778}
+.steps li{counter-increment:st;align-items:flex-start;text-align:left;gap:1px;padding:7px 6px 7px;font-size:12px;font-weight:600;color:#b3ad9e}
 .steps li::before,.steps li:first-child::before{display:none}
-.steps .dot,.steps li.past .dot,.steps li.cur .dot{width:auto;height:auto;border:0;border-radius:0;transform:none;background:none;box-shadow:none;margin:0;font-family:var(--font-body);font-style:normal;font-weight:600;font-size:12px;line-height:1;color:inherit}
+.steps .dot,.steps li.past .dot,.steps li.cur .dot{width:auto;height:auto;border:0;border-radius:0;transform:none;background:none;box-shadow:none;margin:0;font-family:var(--font-display);font-style:normal;font-weight:900;font-size:15px;line-height:1;color:inherit}
 .steps .dot::before{content:counter(st,decimal-leading-zero)}
 .steps li.past{color:var(--surface)}
 .steps li.cur{background:var(--stg-bg,var(--ink));color:var(--stg-ink,var(--surface));font-weight:700}
@@ -704,29 +707,29 @@ form[data-form="post"].stack{gap:18px}
 .stg-off{--stg-bg:#e2dccd;--stg-ink:var(--ink);--stg-num:#bdb5a3}
 .card.sum{padding:0;gap:0;border:0;background:transparent;overflow:visible;margin:0 -16px}
 .card.sum>.pill{align-self:flex-start;margin:0 16px 10px}
-.sum-top{position:relative;overflow:hidden;display:grid;grid-template-columns:auto auto auto minmax(0,1fr);grid-template-areas:"m m m m" "n y w t" "n y w p";column-gap:0;align-items:end;padding:12px 16px 28px;background:var(--ink);color:var(--surface);clip-path:polygon(0 0,100% 0,100% calc(100% - 28px),0 100%)}
+.sum-top{position:relative;overflow:hidden;display:grid;grid-template-columns:auto auto auto minmax(0,1fr);grid-template-areas:"m n w t" "m n w p";column-gap:0;align-items:end;padding:16px 16px 22px;background:var(--ink);color:var(--surface);clip-path:polygon(0 0,100% 0,100% 100%,0 calc(100% - 30px))}
 .sum-top .grow,.sum-top .sum-date{display:contents}
 .sum-date>*{font-weight:900}
-.sum-date .dm{grid-area:m;font-size:16px;margin-bottom:6px;padding-right:44px;min-height:26px}
+.sum-date .dm{grid-area:m;align-self:end;writing-mode:vertical-rl;font-size:17px;letter-spacing:.1em;margin:0 6px 4px -2px}
 .sum-date .dnum{grid-area:n;align-self:end;font-family:var(--font-display);font-weight:900;font-size:100px;line-height:.78;letter-spacing:-.04em;color:var(--stg-num,var(--surface));margin:0 6px 0 -3px}
-.sum-date .dday{grid-area:y;font-size:18px;margin-bottom:-2px}
-.sum-date .dw{grid-area:w;font-size:18px;margin:0 14px -2px 0}
-.sum-time{grid-area:t;align-self:start;display:flex;flex-direction:column;gap:0;margin-top:0;padding-left:12px;border-left:1px solid #4a463c;font-size:16px;font-weight:600;white-space:nowrap}
+.sum-date .dday,.sum-date .dw .pa{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.sum-date .dw{grid-area:w;align-self:end;margin-bottom:4px!important;display:flex;align-items:center;justify-content:center;width:34px;height:34px;margin:0 12px 0 2px;border:2px solid currentColor;border-radius:50%;font-size:16px;color:var(--stg-num,var(--surface))}
+.sum-time{grid-area:t;align-self:start;display:flex;flex-direction:column;gap:0;margin-top:0;padding-right:34px;font-size:16px;font-weight:600;white-space:nowrap}
 .sum-time .small{font-size:14px;font-weight:500}
 .sum-top .muted{color:inherit}
-.sum-price,.card.sum.has-fav .sum-price{grid-area:p;flex-direction:row;flex-wrap:wrap;align-items:baseline;column-gap:8px;margin-top:6px;padding:0 0 0 12px;border-left:1px solid #4a463c}
+.sum-price,.card.sum.has-fav .sum-price{grid-area:p;justify-self:start;flex-direction:column;align-items:flex-start;gap:0;margin-top:10px;padding:5px 10px 6px;border:1px solid #6d675a}
 .sum-price .small{font-size:13px;font-weight:500;color:#cfc8b8}
-.sum-price .price{font-family:var(--font-body);font-size:24px;font-weight:600;line-height:1.1}
-@media (max-width:360px){.sum-date .dnum{font-size:84px}.sum-date .dday,.sum-date .dw{font-size:16px}.sum-date .dw{margin-right:10px}.sum-time{font-size:14px}.sum-price .price{font-size:21px}}
-.card.sum .favbtn{top:3px;right:8px;color:var(--surface)}
+.sum-price .price{font-family:var(--font-body);font-size:22px;font-weight:600;line-height:1.1}
+@media (max-width:360px){.sum-date .dnum{font-size:80px}.sum-date .dw{width:30px;height:30px;font-size:14px;margin-right:8px}.sum-time{font-size:14px;padding-right:30px}.sum-price .price{font-size:19px}}
+.card.sum .favbtn{top:10px;right:8px;color:var(--surface)}
 .card.sum .favbtn.on{color:var(--surface)}
 .card.sum .favbtn.on svg path{fill:currentColor}
 .card.sum .favbtn svg{width:26px;height:26px;stroke-width:2.2}
 .card.sum .facts{padding:4px 16px 0}
-.facts{gap:0 16px;font-size:14px}
+.facts{gap:0;font-size:14px}
 .facts dt,.facts dd{padding:3px 0;border-top:1px solid var(--ink)}
 .facts dt:first-of-type,.facts dd:first-of-type{border-top:0}
-.facts dt{color:var(--muted);font-size:13px;font-weight:500}
+.facts dt{color:var(--ink);font-size:12px;font-weight:700;padding-right:16px}
 
 /* 你的下一步：全頁唯一加框的區塊；輪到你時標題前有紅色菱形。其他區塊不加框，3px 粗線開頭 */
 .card:not(.task):not(.linkrow):not(.sum):not(.next){border:0;border-top:3px solid var(--ink);background:transparent;padding:12px 0 0}
@@ -746,10 +749,11 @@ main:has(>.card.sum){gap:10px}
 .paysteps>.late::before{display:none}
 .offer{border-top:1px solid var(--ink);padding:14px 0}
 .offer:first-of-type{border-top:0;padding-top:4px}
-.offer .price{font-size:26px;line-height:1}
+.offer .price{font-family:var(--font-body);font-size:22px;font-weight:600;line-height:1}
 .offer-side{gap:10px}
 .offer-side .btn.sm{min-width:96px}
-.pc-big{font-family:var(--font-display);font-weight:700}
+.pc-big{font-family:var(--font-body);font-weight:600}
+.pc-row .price{font-family:var(--font-body);font-weight:600}
 .card.mini{padding:12px 0 0}
 .mini-role{font-size:13px;font-weight:500;color:var(--muted)}
 
@@ -796,7 +800,7 @@ main:has(>.card.sum){gap:10px}
 
 /* 我的：個人資料是封面格（深靛藍、網點邊），下面是細線分隔的清單，件數放大 */
 .card.linkrow.me-card{position:relative;background:transparent;color:var(--ink);border:0;border-top:3px solid var(--ink);padding:16px 2px 6px}
-.me-card .id-name{font-family:var(--font-display);font-weight:900;font-size:34px;letter-spacing:.04em}
+.card.linkrow.me-card .idblock .id-name{font-family:var(--font-display);font-weight:900;font-size:40px;letter-spacing:.02em;line-height:1.1}
 .me-card .idline{font-family:var(--font-body);font-variant-numeric:tabular-nums;color:var(--muted)}
 .card.linkrow:not(.me-card) .chev{display:inline;font-family:var(--font-body);font-size:22px;color:var(--muted)}
 .card.linkrow.me-card .chev{display:inline;font-size:22px;color:var(--muted)}
@@ -805,8 +809,9 @@ main:has(>.card.sum){gap:10px}
 .card.linkrow:not(.me-card) .grow>b{font-family:var(--font-display);font-size:19px;font-weight:900}
 .cnt{font-family:var(--font-body);font-size:20px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1;margin-right:1px}
 main>section.card:has(>ul.small){padding-top:14px}
-main section.card ul.small{list-style:none;padding:0!important;gap:0!important;font-size:15px}
-main section.card ul.small li{padding:10px 0;border-top:1px solid var(--ink);line-height:1.7}
+main section.card ul.small{list-style:none;padding:0!important;gap:0!important;font-size:15px;counter-reset:rule}
+main section.card ul.small li{counter-increment:rule;display:grid;grid-template-columns:34px 1fr;padding:10px 0;border-top:1px solid var(--ink);line-height:1.7}
+main section.card ul.small li::before{content:counter(rule,decimal-leading-zero);font-family:var(--font-display);font-weight:900;font-size:16px;line-height:1.6}
 main section.card ul.small li:first-child{border-top:0}
 .empty b{font-family:var(--font-display);font-weight:900;font-size:20px}
 .demo-entry{border-top:1px dashed var(--ink)}
@@ -851,10 +856,9 @@ main section.card ul.small li:first-child{border-top:0}
 .intro-hero{position:relative}
 .intro-hero::after{content:"掃";content:"掃"/"";flex:1;min-height:150px;margin-top:8px;overflow:hidden;display:flex;justify-content:flex-end;align-items:flex-end;
   font-family:var(--font-display);font-weight:900;font-size:min(78vw,300px);line-height:.78;color:var(--lime);text-indent:0;
-  border:0;clip-path:polygon(0 0,100% 0,100% 100%,0 calc(100% - 44px));
-  background:var(--accent)}
-.intro-hero::before{content:"唰！";content:"唰！"/"";position:absolute;z-index:1;left:10px;top:calc(min(21vw,84px) + 92px);transform:rotate(-8deg);font-family:var(--font-display);font-weight:900;font-size:min(24vw,96px);line-height:1;color:var(--surface);
-  text-shadow:3px 0 var(--ink),-3px 0 var(--ink),0 3px var(--ink),0 -3px var(--ink),3px 3px var(--ink),-3px -3px var(--ink),3px -3px var(--ink),-3px 3px var(--ink),7px 7px 0 var(--ink)}
+  border:0;background:var(--accent)}
+.intro-hero::before{content:"唰——";content:"唰——"/"";position:absolute;z-index:1;left:4px;top:calc(min(21vw,84px) + 70px);transform:rotate(-10deg);font-family:"Zhi Mang Xing",var(--font-display);font-weight:400;font-size:min(30vw,116px);line-height:1;color:var(--surface);
+  text-shadow:3px 3px 0 var(--ink),-2px -2px 0 var(--ink),2px -2px 0 var(--ink),-2px 2px 0 var(--ink)}
 .intro-roles{grid-template-columns:1fr 1fr;grid-template-rows:auto auto;grid-auto-flow:column;gap:6px 16px;font-size:15px;border-top:1px solid var(--ink);padding-top:12px}
 .intro-roles dd:last-of-type{border-left:0}
 .intro-roles dt:nth-of-type(2),.intro-roles dd:nth-of-type(2){padding-left:16px;border-left:1px solid var(--ink)}
@@ -862,7 +866,7 @@ main section.card ul.small li:first-child{border-top:0}
 .intro-roles dt{align-self:center;justify-self:start;padding:1px 10px;background:var(--ink);color:var(--surface);font-family:var(--font-display);font-weight:900}
 .intro-roles dt{background:none!important;color:var(--ink)!important;padding:0!important;font-size:22px}
 .how li::before{border-radius:0;background:transparent;border:2px solid var(--ink);color:var(--ink);font-family:var(--font-display);font-style:italic;font-weight:700;font-size:18px}
-.intro-dots i{border-radius:0;width:18px;height:3px;background:var(--muted)}
+.intro-dots i{border-radius:0;width:26px;height:4px;background:var(--line)}
 .intro-dots i.on{background:var(--ink)}
 
 /* 提示訊息：螢光綠反轉、彈跳進場，消失時直接切掉（不淡出） */
@@ -885,7 +889,7 @@ main.fx-in{animation:fxPage .26s cubic-bezier(.7,0,.2,1) backwards}
 .fx-sfx{z-index:26;display:flex;align-items:center;justify-content:center}
 .fx-sfx::before{content:"";position:absolute;inset:0;background:repeating-conic-gradient(from 0deg at 50% 50%,rgba(10,10,10,.6) 0deg 1.3deg,transparent 1.3deg 8deg);
   -webkit-mask-image:radial-gradient(circle at 50% 50%,transparent 28%,#000 78%);mask-image:radial-gradient(circle at 50% 50%,transparent 28%,#000 78%)}
-.fx-sfx b{position:relative;font-family:var(--font-display);font-weight:900;font-size:min(28vw,128px);line-height:1;color:var(--surface);text-shadow:2px 0 var(--ink),-2px 0 var(--ink),0 2px var(--ink),0 -2px var(--ink),2px 2px var(--ink),-2px -2px var(--ink),2px -2px var(--ink),-2px 2px var(--ink),8px 8px 0 var(--ink);white-space:nowrap;animation:fxPop .64s cubic-bezier(.2,1.6,.4,1) both}
+.fx-sfx b{position:relative;font-family:"Zhi Mang Xing",var(--font-display);font-weight:400;font-size:min(34vw,150px);line-height:1;color:var(--surface);text-shadow:2px 0 var(--ink),-2px 0 var(--ink),0 2px var(--ink),0 -2px var(--ink),2px 2px var(--ink),-2px -2px var(--ink),2px -2px var(--ink),-2px 2px var(--ink),8px 8px 0 var(--ink);white-space:nowrap;animation:fxPop .64s cubic-bezier(.2,1.6,.4,1) both}
 @keyframes fxWipe{0%{clip-path:polygon(0 0,0 0,-30% 100%,-30% 100%)}14%,72%{clip-path:polygon(0 0,130% 0,100% 100%,-30% 100%)}100%{clip-path:polygon(130% 0,130% 0,100% 100%,100% 100%)}}
 @keyframes fxPop{0%{transform:scale(2.2) rotate(-20deg)}16%{transform:scale(.94) rotate(-8deg)}24%,100%{transform:scale(1) rotate(-10deg)}}
 @media (prefers-reduced-motion:reduce){
@@ -1216,7 +1220,7 @@ function favBtn(id,withText){
   return '<button class="favbtn'+(on?' on':'')+(withText?' txt':'')+'" data-act="fav" data-id="'+id+'" aria-pressed="'+on+'" aria-label="'+(on?'取消收藏':'收藏這個案件')+'">'+IC.star+(withText?'<span>'+(on?'已收藏':'收藏')+'</span>':'')+'</button>';
 }
 /* 方案 I：日期的「日」放大成斜體襯線數字（文字內容不變，仍是「11月19日（四）」） */
-function dayHTML(d){return '<span class="dm">'+(d.getMonth()+1)+'月</span><b class="dnum" data-d="'+d.getDate()+'">'+d.getDate()+'</b><span class="dday">日</span><span class="dw">（'+'日一二三四五六'[d.getDay()]+'）</span>';}
+function dayHTML(d){return '<span class="dm">'+(d.getMonth()+1)+'月</span><b class="dnum" data-d="'+d.getDate()+'">'+d.getDate()+'</b><span class="dday">日</span><span class="dw"><span class="pa">（</span>'+'日一二三四五六'[d.getDay()]+'<span class="pa">）</span></span>';}
 /* 方案 I：金額的「NT$」縮小上標（文字內容仍是「NT$ 400」） */
 function ntd(n){return '<span class="cur">NT$</span> '+money(n);}
 function cardDate(t){return dayHTML(new Date(t.start));}
