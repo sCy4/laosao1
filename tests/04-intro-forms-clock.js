@@ -36,7 +36,10 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
   await act('fav', { id: 't2' });
   ok((await js(() => Math.round(document.getElementById('toast').getBoundingClientRect().top))) < 150, '提示訊息出現在畫面上方');
   await go('#task-t3');
-  ok((await js(() => document.querySelector('.tagbtn svg path').getAttribute('d'))).startsWith('M20.6'), '標記按鈕改成標籤圖示');
+  // 資訊卡裡的標記改成低調的文字按鈕「標記」（沒有圖示，不會和收藏的星號混淆）；「標記的人」頁的按鈕仍是標籤圖示
+  ok(await js(() => { const b = document.querySelector('.card.mini .taglink'); return !!b && b.textContent === '標記' && !b.querySelector('svg') && !document.querySelector('.card.mini .tagbtn'); }), '資訊卡的標記是低調的文字按鈕「標記」');
+  await act('setTag', { uid: 'u2', type: 'trust' }); await go('#tags');
+  ok((await js(() => document.querySelector('.tagbtn svg path').getAttribute('d'))).startsWith('M20.6'), '標記的人頁的按鈕仍是標籤圖示');
 
   // 表單錯誤顯示在欄位下方
   await go('#post'); await p.click('form[data-form="post"] button[type="submit"]'); await W();

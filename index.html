@@ -158,6 +158,13 @@ nav.tabs .badge{position:absolute;top:4px;left:calc(50% + 8px)}
 .tm-remove{color:var(--bad)!important;border-top:1px solid var(--line)!important;border-radius:0 0 8px 8px!important}
 .tm-custom{display:flex;gap:6px;padding:6px}
 .tm-custom input{min-height:36px;padding:6px 10px}
+/* 資訊卡裡的標記：平常一個低調的「標記」，按了才出現說明和選項 */
+.tagline{margin-top:8px}
+.tagline .tagwrap{display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px;font-size:14px}
+.taglink{appearance:none;border:0;background:none;padding:6px 0;font:inherit;font-size:14px;font-weight:700;color:var(--ink);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.tagline .tagmenu{position:static;flex-basis:100%;max-width:340px;margin-top:2px;box-shadow:none}  /* 在原位往下展開，不浮在別的內容上 */
+.tm-note{margin:0;padding:6px 10px 8px;line-height:1.5;border-bottom:1px solid var(--line)}
+.tagmenu{scroll-margin:80px 0 96px}
 .card.mini{overflow:visible}
 .tc-title{font-size:17px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tc-sub{font-size:15px;color:var(--muted);font-variant-numeric:tabular-nums}
@@ -817,6 +824,7 @@ main:has(>.card.sum){gap:10px}
 .tagmenu>button{border-radius:0}
 .tm-dot{border-radius:0;transform:rotate(45deg)}
 .tm-remove{border-top:1px solid var(--ink)!important;border-radius:0!important}
+.tm-note{border-bottom-color:var(--ink)}
 
 /* 我的案件：欄目標題＋細線；階段分組前面是階段編號 */
 .grp{gap:10px}
@@ -1658,14 +1666,24 @@ function tagChip(g){
 function tagButton(uid){
   const g=tagOf(uid),open=ui.tagMenu===uid;
   return '<span class="tagwrap"><button class="tagbtn tg-'+(g?g.type:'none')+'" data-act="tagMenu" data-uid="'+uid+'" aria-haspopup="menu" aria-expanded="'+open+'" aria-label="標記'+(g?'，目前是「'+esc(tagText(g))+'」':'')+'">'+
-    '<span class="tg-lbl">'+(g?esc(tagText(g)):'標記')+'</span>'+IC.tag+'</button>'+
-    (open?'<div class="tagmenu" role="menu">'+
+    '<span class="tg-lbl">'+(g?esc(tagText(g)):'標記')+'</span>'+IC.tag+'</button>'+(open?tagMenuHTML(uid,g,''):'')+'</span>';
+}
+/* 資訊卡裡的標記：平常只有一個低調的「標記」，按了才出現說明和選項；標記後寫「你的標記［可信賴］ 更改」 */
+function tagLine(uid,who){
+  const g=tagOf(uid),open=ui.tagMenu===uid;
+  const note=who==='本體'?'只有你看得到。之後打開這位本體的案件時會提醒你；標成黑名單的本體，案件在接案頁會自動隱藏。':'只有你看得到。之後這位替身出價時會提醒你。';
+  return '<div class="tagline"><span class="tagwrap">'+(g?'<span class="muted">你的標記</span>'+tagChip(g):'')+
+    '<button class="taglink" data-act="tagMenu" data-uid="'+uid+'" aria-haspopup="menu" aria-expanded="'+open+'" aria-label="'+(g?'更改標記，目前是「'+esc(tagText(g))+'」':'標記這位'+who)+'">'+(g?'更改':'標記')+'</button>'+
+    (open?tagMenuHTML(uid,g,note):'')+'</span></div>';
+}
+function tagMenuHTML(uid,g,note){
+  return '<div class="tagmenu" role="menu">'+(note?'<p class="tm-note small muted">'+note+'</p>':'')+
       '<button role="menuitemradio" aria-checked="'+(!!g&&g.type==='trust')+'" data-act="setTag" data-uid="'+uid+'" data-type="trust"><span class="tm-dot trust"></span>可信賴'+(g&&g.type==='trust'?'<span class="tm-check">✓</span>':'')+'</button>'+
       '<button role="menuitemradio" aria-checked="'+(!!g&&g.type==='black')+'" data-act="setTag" data-uid="'+uid+'" data-type="black"><span class="tm-dot black"></span>黑名單'+(g&&g.type==='black'?'<span class="tm-check">✓</span>':'')+'</button>'+
       (ui.tagCustom?'<form data-form="tag" data-uid="'+uid+'" class="tm-custom" data-errafter novalidate><input name="text" maxlength="30" placeholder="輸入自訂內容" aria-label="自訂標記內容" value="'+esc(g&&g.type==='custom'?g.text:'')+'"><button class="btn sm" type="submit">儲存</button></form>'
         :'<button role="menuitemradio" aria-checked="'+(!!g&&g.type==='custom')+'" data-act="tagCustom" data-uid="'+uid+'"><span class="tm-dot custom"></span>'+(g&&g.type==='custom'?'自訂：'+esc(g.text):'自訂內容…')+'</button>')+
       (g?'<button role="menuitem" class="tm-remove" data-act="untag" data-uid="'+uid+'">撤銷標記</button>':'')+
-    '</div>':'')+'</span>';
+    '</div>';
 }
 const CMT_OPEN=['assigned','done','confirmed','paid'];
 function unread(t){
@@ -1691,8 +1709,8 @@ function commentSection(t,r){
   '</section>';
 }
 function personCard(title,x,self){
-  return '<section class="card mini"><div class="row between"><span class="mini-role">'+title+'</span>'+(self?'<span class="small muted">你</span>':tagButton(x.id))+'</div>'+
-  idBlock(x)+'</section>';
+  return '<section class="card mini"><div class="row between"><span class="mini-role">'+title+'</span>'+(self?'<span class="small muted">你</span>':'')+'</div>'+
+  idBlock(x)+(self?'':tagLine(x.id,title))+'</section>';
 }
 function offerRow(t,o,i,canChoose){
   const x=u(o.user),sus=suspended(x),g=tagOf(x.id);
@@ -1766,7 +1784,7 @@ function nextStep(t,r){
     }
     if(r==='poster'){
       const re=canUn?'你現在可以改選別人。':'1 小時後你能改選別人（還剩 '+span(unAt-now())+'）。';
-      return card('等替身確認','<div class="chosen"><div class="row between">'+idBlock(w)+tagButton(w.id)+'</div><div class="row between"><span class="small muted">成交價</span><b class="price">'+ntd(t.price)+'</b></div></div>'+
+      return card('等替身確認','<div class="chosen">'+idBlock(w)+tagLine(w.id,'替身')+'<div class="row between"><span class="small muted">成交價</span><b class="price">'+ntd(t.price)+'</b></div></div>'+
         '<p>'+re+esc(w.name)+'將在 '+dl+' 前確認接案或婉拒（還剩 '+left+'）。</p>'+
         '<button class="btn ghost block" data-act="unchoose" data-id="'+t.id+'"'+(canUn?'':' disabled')+'>改選別人</button>',false);
     }
@@ -2110,6 +2128,7 @@ function render(){
   fixNotes();
   centerTimeCols();
   document.querySelectorAll('.cmts').forEach(c=>{c.scrollTop=c.scrollHeight;});
+  if(ui.tagScroll){ui.tagScroll=false;const m=document.querySelector('.tagmenu');if(m)m.scrollIntoView({block:'nearest'});}  /* 打開標記選單時，捲到整個選單都看得到 */
   if(ui.tagCustom){const i=document.querySelector('.tm-custom input');if(i&&document.activeElement!==i)i.focus();}
   const af=document.querySelector('.sheet [data-autofocus]');if(af&&document.activeElement!==af){try{af.focus({preventScroll:true});}catch(x){}}
   if(S.me)saveDraft();
@@ -2194,7 +2213,7 @@ const A={
   requestPay(d){const t=T(d.id);if(now()<t.start)return toast('開工時間到了才能按「打掃完成」');t.status='done';t.requestedAt=now();notify(t.poster,'替身打掃完成了，請驗收',t.id);save();fx('magenta','啪！');toast('已通知本體驗收');},
   confirmDone(d){const t=T(d.id);ask('驗收完成？','確認後會顯示替身的收款方式，請盡快付款 NT$ '+money(t.price)+'。','驗收完成',()=>{t.status='confirmed';t.confirmedAt=now();notify(t.assignee,'本體驗收完成，接下來會付款 NT$ '+money(t.price),t.id);save();fx('gold','叮！');});},
   received(d){const t=T(d.id);ask('確認已收款？','確認後案件就完成了。','確認',()=>{t.status='closed';t.closedAt=now();notify(t.poster,'替身已確認收款，案件完成',t.id);save();fx('indigo','叮咚！');toast('案件完成了');});},
-  tagMenu(d){ui.tagMenu=ui.tagMenu===d.uid?null:d.uid;ui.tagCustom=false;},
+  tagMenu(d){ui.tagMenu=ui.tagMenu===d.uid?null:d.uid;ui.tagCustom=false;ui.tagScroll=!!ui.tagMenu;},
   tagCustom(){ui.tagCustom=true;},
   setTag(d){S.tags[S.me]=S.tags[S.me]||{};S.tags[S.me][d.uid]={type:d.type,text:'',at:now()};ui.tagMenu=null;save();toast('已標記為「'+(d.type==='trust'?'可信賴':'黑名單')+'」');},
   untag(d){const mine=S.tags[S.me]||{};delete mine[d.uid];ui.tagMenu=null;ui.tagCustom=false;save();toast('已撤銷標記');},
