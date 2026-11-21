@@ -13,7 +13,8 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
       const r = await p.evaluate(() => {
         const h = document.querySelector('header.top'), brand = h.querySelector('.brand');
         const mids = Array.from(h.querySelectorAll('.icon-btn, .btn, .hd-brand')).map(e => { const r = e.getBoundingClientRect(); return r.top + r.height / 2; });
-        return { h: h.getBoundingClientRect().height, sw: document.documentElement.scrollWidth, cut: brand.scrollWidth > brand.clientWidth, spread: Math.max(...mids) - Math.min(...mids) };
+        /* 下一層頁面（案件詳情）沒有品牌名，只檢查一排和沒有左右捲動 */
+        return { h: h.getBoundingClientRect().height, sw: document.documentElement.scrollWidth, cut: !!brand && brand.scrollWidth > brand.clientWidth, spread: Math.max(...mids) - Math.min(...mids) };
       });
       ok(r.h <= 66 && r.sw <= w && !r.cut && r.spread <= 4, w + 'px ' + label + '：標題欄一排（高 ' + Math.round(r.h) + 'px）');
     };

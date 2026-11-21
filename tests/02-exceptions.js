@@ -28,11 +28,23 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
 
   // B. 標題欄
   await go('#task-t3');
-  ok(await js(() => !!document.querySelector('header [data-act="back"]') && !!document.querySelector('header [data-act="openNotes"]') && !document.querySelector('header [data-act="fav"]')), '詳情頁標題欄有返回和鈴鐺，沒有收藏');
-  ok(await js(() => !!document.querySelector('.card.sum [data-act="fav"]')), '收藏星號在摘要卡上');
-  await act('openNotes'); ok(await js(() => !!document.querySelector('.sheet .notes')), '在詳情頁可以打開通知'); await act('close');
+  /* 仿 Google Play：詳情頁標題欄是「返回＋⋮」，沒有品牌名和鈴鐺；收藏和分享在 ⋮ 選單裡 */
+  ok(await js(() => !!document.querySelector('header [data-act="back"]') && !!document.querySelector('header [data-act="moreMenu"]') && !document.querySelector('header .brand') && !document.querySelector('header [data-act="openNotes"]')), '詳情頁標題欄是返回＋⋮，沒有品牌名和鈴鐺');
+  ok(await js(() => !document.querySelector('.card.sum [data-act="fav"]')), '收藏不在摘要卡上');
+  await act('moreMenu');
+  ok(await js(() => Array.from(document.querySelectorAll('.moremenu [role="menuitem"]')).map(b => b.textContent).join('/')) === '分享/收藏', '⋮ 選單有「分享」「收藏」');
+  await act('fav', { id: 't3' }); await act('moreMenu');
+  ok(await js(() => document.querySelector('.moremenu [data-act="fav"]').textContent) === '取消收藏' && (await js(() => !!JSON.parse(localStorage.getItem('swaptime-proto-v1')).favs[JSON.parse(localStorage.getItem('swaptime-proto-v1')).me].includes('t3'))), '從選單收藏後，選單改成「取消收藏」');
+  await act('share', { id: 't3' }); await W(400);
+  const shared = await js(() => (document.getElementById('share-text') || {}).value || (document.getElementById('toast').classList.contains('show') ? document.getElementById('toast').textContent : ''));
+  ok(/已複製連結/.test(shared) || (/替身掃者｜\d+月\d+日（.）\d\d:\d\d 至 \d\d:\d\d・/.test(shared) && shared.includes('#task-t3')), '分享：不能用系統分享時，複製連結或顯示可以複製的文字');
+  await act('close');
+  await go('#me'); ok(await js(() => !!document.querySelector('header .brand') && !!document.querySelector('header [data-act="openNotes"]')), '主分頁標題欄是品牌名＋鈴鐺');
+  await go('#bank'); ok(await js(() => !!document.querySelector('header [data-act="backMe"]') && !document.querySelector('header .brand')), '「我的」下一層頁面的標題欄和案件詳情一樣（返回，沒有品牌名）');
   await act('logout'); await go('#task-t1');
-  ok(await js(() => !document.querySelector('[data-act="fav"]')) && (await main()).includes('登入後出價'), '未登入：詳情頁沒有收藏，保留「登入後出價」');
+  await act('moreMenu');
+  ok(await js(() => !document.querySelector('[data-act="fav"]')) && (await js(() => !!document.querySelector('.moremenu [data-act="share"]'))) && (await main()).includes('登入後出價'), '未登入：選單只有分享，沒有收藏，保留「登入後出價」');
+  ok(await js(() => !document.querySelector('.steps') && !document.querySelector('.sum-role')), '未登入：沒有進度條，也沒有「我是本體／我是替身」');
   await go('#browse'); ok(await js(() => !document.querySelector('[data-act="fav"]')), '未登入：接案頁沒有收藏星號');
 
   // C. 過了開工時間的案件自動取消

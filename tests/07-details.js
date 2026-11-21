@@ -159,6 +159,21 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
   await p.click('[data-act="seg"][data-v="own"]'); await W();
   ok((await main()).includes('你目前沒有當本體的案件'), '我是本體空白：「你目前沒有當本體的案件」');
 
+  // E. 替身看得到本體資料（確認接案後才有）、本體／替身的視覺區分、換頁沒有特效
+  await fresh('u1'); await go('#task-t11');
+  ok(!(await js(() => !!document.querySelector('.sum-who'))) && (await js(() => (document.querySelector('.sum-role') || {}).textContent)) === '我是替身', '替身確認接案前：頂端沒有本體資料，右上角是「我是替身」');
+  await js(() => document.querySelector('[data-act="acceptMatch"]').click()); await W(300);
+  const who = await js(() => (document.querySelector('.sum-who') || {}).innerText || '');
+  ok(who.includes('本體') && who.includes('陳怡君') && /S\d{8}/.test(who), '替身確認接案後：日期時間下面有本體資料 → ' + who.replace(/\n/g, ' '));
+  ok(await js(() => !document.querySelector('.card.mini .idline')), '下方的本體卡只留名字和標記，不重複學號等資料');
+  await go('#mine');
+  ok(await js(() => { const c = document.querySelector('[data-act="open"][data-id="t11"]').closest('.card.task'); return c.classList.contains('is-worker') && c.querySelector('.tc-r').textContent === '替身' && c.querySelector('.tc-who').textContent === '本體 陳怡君'; }), '我的案件：替身的卡片日期欄標「替身」，地點下面有「本體 陳怡君」');
+  ok(await js(() => { const c = Array.from(document.querySelectorAll('.card.task.is-poster')); return c.length > 0 && c.every(x => x.querySelector('.tc-r').textContent === '本體' && !x.querySelector('.tc-who')) && getComputedStyle(c[0].querySelector('.tc-d')).backgroundColor === 'rgb(10, 10, 10)'; }), '我的案件：本體的卡片日期欄是黑底、標「本體」，不顯示替身資料');
+  ok(!(await js(() => document.querySelector('main').classList.contains('fx-in'))), '換頁沒有特效');
+  await go('#me'); await p.click('[data-act="editProfile"]'); await W();
+  ok(!(await main()).includes('出價時，本體會看到這些資料'), '編輯資料頁沒有「出價時，本體會看到這些資料。」');
+  await fresh('u1'); await go('#task-t8');
+  ok(await js(() => { const s = Array.from(document.querySelectorAll('.paysteps > span')); return s.length >= 2 && getComputedStyle(s[0], '::before').height === '4px'; }), '付款進度用和頂端一樣的線段');
   ok(errs.length === 0, 'no console errors ' + JSON.stringify(errs));
   console.log(fails ? fails + ' FAILED' : 'ALL PASSED');
   await b.close();

@@ -55,7 +55,7 @@ const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); if (!c) fails++
   await p.evaluate(() => document.querySelector('section[aria-label="待你處理"] [data-act="open"][data-id="t11"]').click()); await W();
   ok((await hash()) === '#task-t11', 'open t11 -> #task-t11');
   ok(await visibleInFirstScreen('[data-act="acceptMatch"]') === true, '確認接案 button visible on first screen: ' + await visibleInFirstScreen('[data-act="acceptMatch"]'));
-  ok(await p.isVisible('header [data-act="back"]') && await p.isVisible('header [data-act="openNotes"]'), 'detail header has 返回 + 鈴鐺');
+  ok(await p.isVisible('header [data-act="back"]') && await p.isVisible('header [data-act="moreMenu"]') && !(await p.$('header .brand')), 'detail header（仿 Google Play）: 返回 + ⋮，沒有品牌名');
   ok(await p.$eval('nav.tabs [data-v="mine"]', e => e.classList.contains('on')), 'tab 我的案子 stays highlighted on detail');
   await shot('04-detail-t11-worker');
   await p.goBack(); await W(300);

@@ -541,9 +541,15 @@ header.top{min-height:60px;padding:8px 16px;background:var(--surface);border-bot
 header.top .icon-btn{border-radius:0;color:var(--ink)}
 .nbadge{min-width:22px;height:22px;top:-9px;right:-9px;padding:0 5px;border:2px solid var(--bg);border-radius:0;background:var(--alert);color:#fff;font-size:12px}
 .nbadge.hdr{top:3px;right:1px;min-width:20px;height:20px;padding:0 4px;border-width:0}
-/* 標題欄左邊固定預留返回鍵的位置 */
-.hd-back{flex:none;width:40px;height:40px;margin-left:-8px;display:flex}
-@media (max-width:360px){.hd-back{width:36px;margin-left:-6px}}
+/* 下一層頁面的標題欄：左邊返回鍵、右邊 ⋮（案件詳情） */
+header.top.sub{justify-content:flex-start}
+header.top.sub>.icon-btn:first-child{margin-left:-8px}
+.morewrap{position:relative;flex:none;margin-right:-8px}
+.moremenu{position:absolute;right:0;top:calc(100% + 6px);z-index:8;min-width:168px;display:flex;flex-direction:column;background:var(--surface);border:3px solid var(--ink)}
+.moremenu>button{appearance:none;display:flex;align-items:center;gap:10px;min-height:48px;padding:10px 14px;border:0;background:none;font:inherit;font-size:15px;font-weight:600;color:var(--ink);text-align:left;cursor:pointer}
+.moremenu>button+button{border-top:1px solid var(--ink)}
+.moremenu>button.on svg path{fill:currentColor}
+@media (hover:hover){.moremenu>button:hover{background:var(--lime)}}
 
 /* 下方分頁：只有文字，選中的分頁整塊反黑 */
 nav.tabs{background:var(--surface);border-top:3px solid var(--ink);box-shadow:0 -8px 0 var(--bg)}
@@ -573,6 +579,11 @@ main{gap:16px}
 .tc-d{grid-column:1;grid-row:1/3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:12px 0;border-right:1px solid var(--ink);
   background:#f1e9d6;font-family:var(--font-display);font-weight:900;line-height:1;text-align:center}
 .tc-d .dm,.tc-d .dw{font-family:var(--font-body);font-size:12px;font-weight:600}
+.tc-d{background:var(--surface)}
+.card.task.is-worker .tc-d{background:#f1e9d6}
+.card.task.is-poster .tc-d{background:var(--ink);color:var(--surface);border-right-color:var(--ink)}
+.tc-r{font-family:var(--font-body);font-size:12px;font-weight:800;letter-spacing:.06em;margin-bottom:2px}
+.tc-who{font-size:14px;font-weight:600;color:var(--ink)}
 .tc-d .dnum{font-size:46px;line-height:.86;padding-bottom:2px}
 .tc-d .dday{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 .dnum{font-family:var(--font-display);font-style:normal;font-weight:700;letter-spacing:-.02em}
@@ -714,7 +725,7 @@ main>.card.sum:first-child{margin-top:-16px}
 .card.sum{padding:0;gap:0;border:0;background:transparent;overflow:visible;margin:0 -16px}
 .card.sum>.pill{align-self:flex-start;margin:16px 16px 10px}
 .sum-top{position:relative;display:flex;flex-direction:column;gap:0;padding:12px 16px 14px;background:var(--ink);color:var(--surface)}
-.sum-top .grow{display:flex;flex-direction:column;gap:6px;padding-right:44px}
+.sum-top .grow{align-self:stretch;display:flex;flex-direction:column;gap:6px}
 .sum-date{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:8px;font-weight:900;line-height:1;color:var(--surface)}
 .sum-date .dm{flex-basis:100%;margin-bottom:4px;font-size:15px;font-weight:700;color:#d9d3c4}
 .sum-date .dnum{font-family:var(--font-display);font-weight:900;font-size:62px;line-height:.82;letter-spacing:-.02em;margin-left:-2px}
@@ -730,10 +741,14 @@ main>.card.sum:first-child{margin-top:-16px}
 .sum-price .price .cur{vertical-align:.5em;font-size:12px;margin-right:4px}
 .sum-price .price .muted{font-size:20px;font-weight:500;color:rgba(255,252,244,.72)}
 @media (max-width:360px){.sum-date .dnum{font-size:54px}.sum-time{font-size:19px}.sum-price .price{font-size:26px}.steps li{font-size:12px}}
-.card.sum .favbtn{top:8px;right:8px;color:var(--surface)}
-.card.sum .favbtn.on{color:var(--surface)}
-.card.sum .favbtn.on svg path{fill:currentColor}
-.card.sum .favbtn svg{width:24px;height:24px;stroke-width:2.6}
+.sum-role{position:absolute;top:12px;right:16px;padding:2px 8px;font-size:13px;font-weight:700;line-height:1.4;border:1.5px solid var(--surface)}
+.sum-role.is-poster{background:var(--surface);color:var(--ink)}
+.sum-role.is-worker{background:transparent;color:var(--surface)}
+.sum-who{align-self:stretch;display:flex;flex-wrap:wrap;align-items:baseline;column-gap:8px;row-gap:2px;margin-top:2px;padding-top:8px;border-top:1px solid #4a463c;font-size:14px}
+.sum-who-l{color:rgba(255,252,244,.72)}
+.sum-who-n{font-size:18px;font-weight:700}
+.sum-who .idline{font-size:14px;color:rgba(255,252,244,.72)}
+.sum-who .idline .dot{color:#6d675a}
 .card.sum .facts{padding:4px 16px 0}
 .facts{gap:0;font-size:14px}
 .facts dt,.facts dd{padding:3px 0;border-top:1px solid var(--ink)}
@@ -750,12 +765,15 @@ main:has(>.card.sum){gap:10px}
 .card.next>h2:first-child{display:flex;align-items:center;gap:10px;font-size:20px}
 .card.next .banner.info{border:0;padding:0;text-align:left;font-size:15px}
 .chosen,.bank{background:transparent;border:0;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);border-radius:0;padding:12px 0}
-.chosen.paysteps{flex-direction:row;flex-wrap:wrap;align-items:center;gap:8px;padding:0;margin-top:0;font-size:14px;border:0}
-.paysteps>span{padding:3px 8px;font-weight:600;color:var(--muted);border:1px solid transparent}
-.paysteps>span+span::before{content:"";display:inline-block;width:18px;height:1px;background:var(--ink);vertical-align:middle;margin:0 10px 0 -27px}
-.paysteps>span+span{margin-left:20px}
-.paysteps .ok{background:var(--ink);color:var(--surface);border-color:var(--ink)}
-.paysteps>.late{flex-basis:100%;margin-left:0;border:0;padding:0;color:var(--warn)}
+.chosen.paysteps{display:grid;grid-template-columns:1fr 1fr;gap:0 4px;padding:0;margin-top:0;font-size:14px;border:0}
+.paysteps>span{position:relative;padding:10px 0 0;font-weight:600;color:var(--muted)}
+.paysteps>span::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:var(--line)}
+.paysteps>span:first-child:not(.ok),.paysteps>span.ok+span:not(.late){color:var(--ink);font-weight:800}
+.paysteps>span:first-child:not(.ok)::before,.paysteps>span.ok+span:not(.late)::before{background:var(--gold)}  /* 現在進行到的那一步：和頂端進度條一樣用付款階段的金色 */
+.paysteps .ok{color:var(--ink)}
+.paysteps .ok::before{background:var(--ink)}
+.paysteps .ok::after{content:" ✓";content:" ✓"/"";font-weight:800}
+.paysteps>.late{grid-column:1/-1;padding:6px 0 0;color:var(--warn);font-weight:500}
 .paysteps>.late::before{display:none}
 .offer{border-top:1px solid var(--ink);padding:14px 0}
 .offer:first-of-type{border-top:0;padding-top:4px}
@@ -810,7 +828,7 @@ main:has(>.card.sum){gap:10px}
 
 /* 我的：個人資料是封面格（深靛藍、網點邊），下面是細線分隔的清單，件數放大 */
 .card.me-card{position:relative;background:transparent;color:var(--ink);border:0;border-top:3px solid var(--ink);padding:16px 56px 6px 2px}
-.me-edit{position:absolute;top:18px;right:0;appearance:none;border:0;background:none;padding:6px 2px;min-height:32px;font:inherit;font-size:14px;color:var(--muted);text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px;cursor:pointer}
+.me-edit{position:absolute;top:22px;right:0;appearance:none;border:0;background:none;padding:6px 2px;min-height:32px;font:inherit;font-size:14px;color:var(--muted);text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px;cursor:pointer}
 .me-edit:hover{color:var(--ink)}
 .card.me-card .idblock .id-name{font-family:var(--font-display);font-weight:900;font-size:40px;letter-spacing:.02em;line-height:1.1}
 .me-card .idline{font-family:var(--font-body);font-variant-numeric:tabular-nums;color:var(--muted)}
@@ -885,11 +903,9 @@ main section.card ul.small li:first-child{border-top:0}
   transform:translate(-50%,-16px) skewX(-12deg);transition:transform .18s cubic-bezier(.2,1.8,.4,1),opacity 0s}
 #toast.show{transform:translate(-50%,0) rotate(-1.5deg)}
 
-/* 換頁：斜切掃入；彈出視窗：衝上來後停格一瞬間 */
-main.fx-in{animation:fxPage .26s cubic-bezier(.7,0,.2,1) backwards}
-@keyframes fxPage{0%{clip-path:polygon(0 0,0 0,-20% 100%,-20% 100%)}100%{clip-path:polygon(0 0,140% 0,120% 100%,0 100%)}}
-.m-layer .sheet.fx-in{animation:fxSlam .34s cubic-bezier(.2,1.2,.35,1) backwards}
-@keyframes fxSlam{0%{transform:translateY(70%) skewY(3deg)}50%{transform:translateY(-8px) skewY(-.8deg)}72%{transform:translateY(-8px) skewY(-.8deg)}100%{transform:none}}
+/* 彈出視窗：一般的快速滑上來（換頁沒有特效） */
+.m-layer .sheet.fx-in{animation:sheetUp .2s cubic-bezier(.2,.8,.2,1) backwards}
+@keyframes sheetUp{0%{transform:translateY(100%)}100%{transform:none}}
 .d-layer .sheet.fx-in{animation:fxStamp .1s steps(3,end) backwards}
 @keyframes fxStamp{0%{clip-path:inset(0 0 100% 0)}100%{clip-path:inset(0)}}
 /* 重大動作（發布、出價、選人、確認接案、打掃完成、驗收、付款、收款）後的閃屏：
@@ -905,7 +921,7 @@ main.fx-in{animation:fxPage .26s cubic-bezier(.7,0,.2,1) backwards}
 @keyframes fxPop{0%{transform:scale(2.2) rotate(-20deg)}16%{transform:scale(.94) rotate(-8deg)}24%,100%{transform:scale(1) rotate(-10deg)}}
 @media (prefers-reduced-motion:reduce){
   .fx-flash,.fx-sfx{display:none}
-  main.fx-in,.sheet.fx-in,.btn,.card.task,.favbtn,#toast{animation:none;transition:none}
+  .sheet.fx-in,.btn,.card.task,.favbtn,#toast{animation:none;transition:none}
 }
 </style>
 </head>
@@ -948,6 +964,8 @@ const IC={
   clip:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9zM9 12h6M9 16h4"/></svg>',
   back:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>',
   image:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M21 16l-5-5-8 8"/></svg>',
+  more:'<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><rect x="10" y="3" width="4" height="4"/><rect x="10" y="10" width="4" height="4"/><rect x="10" y="17" width="4" height="4"/></svg>',
+  share:'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5M5 13v8h14v-8"/></svg>',
   shield:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6z"/></svg>'
 };
 
@@ -1160,7 +1178,7 @@ function markSeen(t){
 }
 function applyRoute(){
   const r=parseHash(curHash());
-  ui.modal=null;ui.pending=null;ui.dlg=null;ui.tagMenu=null;ui.tagCustom=false;
+  ui.modal=null;ui.pending=null;ui.dlg=null;ui.tagMenu=null;ui.tagCustom=false;ui.moreMenu=false;
   if(r.view==='detail'){
     const t=T(r.id);
     if(!ui.routed&&t&&S.me&&role(t,S.me)!=='viewer')ui.tab='mine';
@@ -1200,13 +1218,18 @@ window.addEventListener('hashchange',()=>{
 /* ---------- 畫面 ---------- */
 function headerView(){
   const m=me(),n=m?unreadNotes():0;
-  /* 標題欄只有一排：左邊固定預留返回鍵的位置，品牌名不會因為有沒有返回鍵而移動；
-     案件詳情和「我的」下一層頁面（收款方式、收藏、過去的案件、標記的人、編輯資料）才有返回鍵。
-     右邊是鈴鐺（未登入時是「登入」）。示範工具不放這裡，放在每一頁內容的最下面。螢幕太窄時時間會用「…」省略，不會換行 */
-  const sub=ui.view==='list'&&ui.tab==='me'&&S.me&&ui.meSub&&ui.meSub!=='main';
-  const back=ui.view==='detail'?'<button class="icon-btn" data-act="back" aria-label="返回">'+IC.back+'</button>'
-    :sub?'<button class="icon-btn" data-act="backMe" aria-label="返回我的">'+IC.back+'</button>':'';
-  return '<header class="top"><span class="hd-back">'+back+'</span>'+
+  /* 仿 Google Play：四個主分頁的標題欄是刊頭（左邊品牌名和時間，右邊鈴鐺；未登入時是「登入」）；
+     下一層頁面（案件詳情、「我的」底下的頁面）是工具列：左邊返回鍵、沒有品牌名；案件詳情右邊是「⋮」，選單裡有分享和收藏。
+     標題欄固定一排；示範工具不放這裡，放在每一頁內容的最下面。螢幕太窄時時間會用「…」省略，不會換行 */
+  const detail=ui.view==='detail',sub=ui.view==='list'&&ui.tab==='me'&&S.me&&ui.meSub&&ui.meSub!=='main';
+  if(detail||sub){
+    const t=detail?T(ui.detailId):null,fav=t&&S.me&&isFav(t.id);
+    const more=t?'<span class="morewrap"><button class="icon-btn" data-act="moreMenu" aria-haspopup="menu" aria-expanded="'+!!ui.moreMenu+'" aria-label="更多">'+IC.more+'</button>'+
+      (ui.moreMenu?'<div class="moremenu" role="menu"><button role="menuitem" data-act="share" data-id="'+t.id+'">'+IC.share+'<span>分享</span></button>'+
+        (S.me?'<button role="menuitem" class="'+(fav?'on':'')+'" data-act="fav" data-id="'+t.id+'">'+IC.star+'<span>'+(fav?'取消收藏':'收藏')+'</span></button>':'')+'</div>':'')+'</span>':'';
+    return '<header class="top sub"><button class="icon-btn" data-act="'+(detail?'back':'backMe')+'" aria-label="'+(detail?'返回':'返回我的')+'">'+IC.back+'</button><span class="grow"></span>'+more+'</header>';
+  }
+  return '<header class="top">'+
   '<div class="hd-brand"><div class="brand">替身掃者</div><div class="clock">'+(S.clockOffset?'<span class="sim">模擬</span>':'')+fmtTime(now())+'</div></div>'+
   '<div class="hd-act">'+(m?'<button class="icon-btn bell" data-act="openNotes" aria-label="通知'+(n?'，'+n+' 則未讀':'')+'">'+IC.bell+(n?'<span class="nbadge hdr">'+n+'</span>':'')+'</button>':'<button class="btn sm" data-act="login">登入</button>')+'</div></header>';
 }
@@ -1251,15 +1274,16 @@ function taskCard(t,opt){
   const chosen=t.status==='pending'&&t.assignee===S.me;
   const myBid=(t.status==='open'||t.status==='pending')&&!own&&!chosen?t.offers.find(o=>o.user===S.me):null;
   const price=t.price||t.budget;
-  const role=own?'我是本體':(t.assignee===S.me||t.offers.some(o=>o.user===S.me))?'我是替身':'';
+  const role=!S.me?'':own?'我是本體':(t.assignee===S.me||t.offers.some(o=>o.user===S.me))?'我是替身':'';
   let bar='';
   if(opt.bar)bar='<div class="tc-bar bottom'+(td?' todo':'')+'">'+(td?'<span class="tc-dot" aria-hidden="true"></span>':'')+'<span class="grow">'+(td?'<span class="vh">需要你處理：</span>':'')+esc(barText(t,S.me))+'</span>'+(opt.role&&role?'<span class="bar-role">'+role+'</span>':'')+'</div>';
-  return '<div class="card task">'+
+  const rk=own?'is-poster':role?'is-worker':'',boss=t.assignee===S.me&&S.me&&t.status!=='pending'?u(t.poster):null;
+  return '<div class="card task'+(rk?' '+rk:'')+'">'+
     '<button class="tc-open" data-act="open" data-id="'+t.id+'" aria-label="查看 '+dateLabel(t)+esc(t.building)+' 的案件"></button>'+
     favBtn(t.id)+(unread(t)?'<span class="nbadge" aria-label="'+unread(t)+' 則新留言">'+unread(t)+'</span>':'')+
-    '<div class="tc-body"><div class="tc-date"><span class="tc-d">'+cardDate(t)+'</span><span class="tc-time">'+cardTime(t)+'</span></div>'+
+    '<div class="tc-body"><div class="tc-date"><span class="tc-d">'+(rk?'<span class="tc-r">'+(own?'本體':'替身')+'</span>':'')+cardDate(t)+'</span><span class="tc-time">'+cardTime(t)+'</span></div>'+
     '<div class="tc-row"><div class="tc-main">'+
-      '<div class="tc-place">'+esc(t.building)+'</div>'+
+      '<div class="tc-place">'+esc(t.building)+'</div>'+(boss?'<div class="tc-who">本體 '+esc(boss.name)+'</div>':'')+
       (t.gender==='不限'?'':'<div class="tc-g">'+genderText(t.gender)+'</div>')+
     '</div><div class="tc-side"><div class="tc-bottom">'+(opt.own&&own?'<span class="pill s-ownt">我是本體</span>':'')+(myBid?'<span class="pill s-bid">你已出價 NT$ '+money(myBid.price)+'</span>':'')+(opt.own&&isBlackPoster(t)?'<span class="pill s-bad">你的黑名單</span>':'')+
       '<span class="price">'+(price?ntd(price):'<span class="muted">自由出價</span>')+'</span></div></div></div></div>'+bar+'</div>';
@@ -1489,7 +1513,7 @@ function profileView(){
   const m=me();
   /* 從「我的」按「編輯」直接進到這裡，一打開就是編輯表單 */
   return '<div class="sec-head"><h1>編輯資料</h1></div>'+
-  '<section class="card">'+profileForm(m)+'<p class="small muted">出價時，本體會看到這些資料。</p></section>';
+  '<section class="card">'+profileForm(m)+'</section>';
 }
 function tagsView(){
   const mine=S.tags[S.me]||{},ids=Object.keys(mine).filter(id=>u(id)).sort((a,b)=>mine[b].at-mine[a].at);
@@ -1666,7 +1690,8 @@ function commentSection(t,r){
       :'<p class="small muted">案件已經'+(t.status==='closed'?'完成':'取消')+'，留言板只能查看。</p>')+
   '</section>';
 }
-function personCard(title,x,self){
+function personCard(title,x,self,compact){
+  if(compact)return '<section class="card mini"><div class="row between"><span class="row"><span class="mini-role">'+title+'</span><b class="mini-name">'+esc(x.name)+'</b></span>'+tagButton(x.id)+'</div></section>';
   return '<section class="card mini"><div class="row between"><span class="mini-role">'+title+'</span>'+(self?'<span class="small muted">你</span>':tagButton(x.id))+'</div>'+
   idBlock(x)+'</section>';
 }
@@ -1697,9 +1722,13 @@ function summaryCard(t){
   const note=!t.note?'<span class="muted">無</span>'
     :clamp?'<div class="clamp'+(exp?' open':'')+'"><span class="clamp-txt">'+esc(t.note)+'</span><button class="tc-more" data-act="toggleNote" data-id="'+t.id+'" aria-expanded="'+exp+'">'+(exp?'收合':'展開')+'</button></div>'
     :esc(t.note);
-  return '<section class="card sum stg-'+stg(t)+(S.me?' has-fav':'')+'" aria-label="案件摘要">'+favBtn(t.id)+
+  const me_=S.me,mine=t.poster===me_?'poster':(t.assignee===me_||t.offers.some(o=>o.user===me_))&&me_?'worker':'';
+  const who=me_&&t.assignee===me_&&t.status!=='pending'?u(t.poster):null;  /* 替身確認接案後才看得到本體資料 */
+  return '<section class="card sum stg-'+stg(t)+'" aria-label="案件摘要">'+
     (t.status==='cancelled'?'<span class="pill s-off" style="align-self:flex-start">已取消</span>':'')+
-    '<div class="sum-top" data-d="'+new Date(t.start).getDate()+'"><div class="grow"><div class="sum-date">'+dayHTML(new Date(t.start))+'</div><div class="sum-time"><span>'+hhmm(t.start)+' 至 '+hhmm(t.end)+'</span>'+(live?'<span class="small muted">'+when(t)+'</span>':'')+'</div></div>'+
+    '<div class="sum-top" data-d="'+new Date(t.start).getDate()+'"><div class="grow"><div class="sum-date">'+dayHTML(new Date(t.start))+'</div><div class="sum-time"><span>'+hhmm(t.start)+' 至 '+hhmm(t.end)+'</span>'+(live?'<span class="small muted">'+when(t)+'</span>':'')+'</div>'+
+    (who?'<div class="sum-who"><span class="sum-who-l">本體</span><b class="sum-who-n">'+esc(who.name)+'</b>'+idLine(who)+'</div>':'')+'</div>'+
+    (mine?'<span class="sum-role '+(mine==='poster'?'is-poster':'is-worker')+'">'+(mine==='poster'?'我是本體':'我是替身')+'</span>':'')+
     '<div class="sum-price"><span class="small muted">'+pl+'</span><b class="price">'+pv+'</b></div></div>'+
     '<dl class="facts"><dt>地點</dt><dd>'+esc(t.building)+'</dd><dt>集合位置</dt><dd>'+esc(t.meet)+'</dd><dt>替身性別</dt><dd>'+genderText(t.gender)+'</dd><dt>備註</dt><dd>'+note+'</dd></dl></section>';
 }
@@ -1849,7 +1878,7 @@ function detailView(){
   out.push(nextStep(t,r));
   if(r==='viewer'){const g=tagOf(t.poster);if(g)out.push('<div class="banner warn row wrap">你標記過這位本體：'+tagChip(g)+'</div>');}
   out.push(commentSection(t,r));
-  if(w&&r!=='viewer'&&t.status!=='pending')out.push(r==='poster'?personCard('替身',w,false):personCard('本體',p,false));
+  if(w&&r!=='viewer'&&t.status!=='pending')out.push(r==='poster'?personCard('替身',w,false):personCard('本體',p,false,true));
   out.push(exitArea(t,r));
   return out.join('');
 }
@@ -2055,6 +2084,7 @@ function modalView(){
       (dr.photos.length>=END_MAX?'':'<label class="ph add" for="nd-f">＋ 加照片<input class="vh" id="nd-f" type="file" accept="image/*" multiple data-upload="endnote" data-id="'+t.id+'"></label>')+'</div></div>'+
       '<div class="row end"><button type="button" class="btn ghost" data-act="close">返回</button><button class="btn danger-solid" type="submit">結束案件</button></div></form>';
   }
+  if(md.type==='share')inner='<h2>分享案件</h2><p class="small muted">複製下面的文字，貼給朋友。</p><textarea id="share-text" rows="4" readonly data-autofocus onfocus="this.select()">'+esc(md.text)+'</textarea><div class="row end"><button class="btn" data-act="close">關閉</button></div>';
   if(md.type==='photo')inner='<img src="'+md.src+'" alt="放大的照片" class="big-photo"><div class="row end"><button class="btn ghost" data-act="close">關閉</button></div>';
   return '<div class="scrim m-layer" data-act="scrim"><div class="sheet" role="dialog" aria-modal="true">'+inner+'</div></div>';
 }
@@ -2073,7 +2103,6 @@ function render(){
   const k={p:[ui.view,ui.tab,ui.detailId,ui.meSub,ui.mineRole,ui.pastKind,ui.histSeg].join('|'),
     m:ui.modal?[ui.modal.type,ui.modal.step||0,ui.modal.title||''].join('|'):'',d:ui.dlg?ui.dlg.kind+'|'+ui.dlg.target:''};
   const pk=fxKeys||{p:k.p,m:'',d:''};  /* 第一次畫面不播換頁動畫，但第一次進入的介紹視窗會播 */
-  if(k.p!==pk.p)app.querySelector('main').classList.add('fx-in');
   const ms=app.querySelector('.m-layer .sheet'),ds=app.querySelector('.d-layer .sheet');
   if(ms&&k.m!==pk.m)ms.classList.add('fx-in');
   if(ds&&k.d!==pk.d)ds.classList.add('fx-in');
@@ -2121,7 +2150,17 @@ const A={
   openNote(d){const n=(S.notes||[]).find(x=>x.id===d.id);ui.modal=null;if(n&&n.taskId&&T(n.taskId))go('#task-'+n.taskId);},
   pickSort(d){ui.sort=d.k;ui.dir=d.v;ui.modal=null;},
   favs(){go('#favs');},
-  fav(d){if(!S.me){openLogin('登入後才能收藏案件。');return;}S.favs[S.me]=S.favs[S.me]||[];const a=S.favs[S.me],i=a.indexOf(d.id);if(i>=0){a.splice(i,1);toast('已取消收藏');}else{a.push(d.id);toast('已加入收藏，可在「我的 → 收藏」找到');}save();},
+  moreMenu(){ui.moreMenu=!ui.moreMenu;},
+  /* 分享案件：手機會跳出系統的分享選單；不支援時（例如在 artifact 裡）改成複製連結，連複製也不行就顯示文字讓人手動複製 */
+  share(d){const t=T(d.id);ui.moreMenu=false;if(!t)return;
+    const url=location.href.split('#')[0]+'#task-'+t.id;
+    const text='替身掃者｜'+mdw(new Date(t.start))+hhmm(t.start)+' 至 '+hhmm(t.end)+'・'+t.building+'・'+(t.budget?'本體標價 NT$ '+money(t.budget):'自由出價');
+    const show=()=>{ui.modal={type:'share',text:text+'\n'+url};render();};
+    const copy=()=>{try{navigator.clipboard.writeText(text+'\n'+url).then(()=>toast('已複製連結，可以貼給朋友'),show);}catch(e){show();}};
+    if(navigator.share)navigator.share({title:'替身掃者',text:text,url:url}).catch(err=>{if(!err||err.name!=='AbortError')copy();});
+    else copy();
+  },
+  fav(d){ui.moreMenu=false;if(!S.me){openLogin('登入後才能收藏案件。');return;}S.favs[S.me]=S.favs[S.me]||[];const a=S.favs[S.me],i=a.indexOf(d.id);if(i>=0){a.splice(i,1);toast('已取消收藏');}else{a.push(d.id);toast('已加入收藏，可在「我的 → 收藏」找到');}save();},
   openBid(d){ui.modal={type:'bid',id:d.id};},
   editProfile(){go('#profile');},
   cancelEdit(){return goBack('#me');},
@@ -2345,6 +2384,7 @@ function shrink(file){
 document.addEventListener('click',e=>{
   const el=e.target.closest('[data-act]');
   if(ui.tagMenu&&!e.target.closest('.tagwrap')){ui.tagMenu=null;ui.tagCustom=false;if(!el){render();return;}}
+  if(ui.moreMenu&&!e.target.closest('.morewrap')){ui.moreMenu=false;if(!el){render();return;}}
   if(!el)return;
   const fn=A[el.dataset.act];if(!fn)return;
   if(el.dataset.act!=='scrim'&&el.dataset.act!=='dscrim')e.preventDefault();
@@ -2393,7 +2433,7 @@ document.addEventListener('pointermove',e=>{if(ui.drag)dialSet(e);});
 function dialEnd(){if(!ui.drag)return;ui.drag=false;if(ui.dlg&&ui.dlg.mode==='h'){ui.dlg.mode='m';renderDlg();}}
 document.addEventListener('pointerup',dialEnd);
 document.addEventListener('pointercancel',dialEnd);
-document.addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.target.id==='dlg-date'||e.target.id==='dlg-h'||e.target.id==='dlg-m')){e.preventDefault();A[e.target.id==='dlg-date'?'dOk':'tOk']();render();return;}if(e.key==='Enter'&&e.target.classList&&e.target.classList.contains('tb-input')){e.preventDefault();e.target.blur();return;}if(e.key!=='Escape')return;if(ui.tagMenu){ui.tagMenu=null;ui.tagCustom=false;render();}else if(ui.dlg){ui.dlg=null;render();}else if(ui.modal){ui.modal=null;ui.pending=null;ui.dlg=null;render();}});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.target.id==='dlg-date'||e.target.id==='dlg-h'||e.target.id==='dlg-m')){e.preventDefault();A[e.target.id==='dlg-date'?'dOk':'tOk']();render();return;}if(e.key==='Enter'&&e.target.classList&&e.target.classList.contains('tb-input')){e.preventDefault();e.target.blur();return;}if(e.key!=='Escape')return;if(ui.moreMenu){ui.moreMenu=false;render();}else if(ui.tagMenu){ui.tagMenu=null;ui.tagCustom=false;render();}else if(ui.dlg){ui.dlg=null;render();}else if(ui.modal){ui.modal=null;ui.pending=null;ui.dlg=null;render();}});
 
 navStack=[curHash()];applied=curHash();applyRoute();
 if(S.me)ui.pf=loadDraft(S.me)||ui.pf;
