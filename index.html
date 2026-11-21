@@ -6,7 +6,7 @@
 <title>替身掃者</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,700..900;1,6..96,700..900&family=Jost:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,700..900;1,6..96,700..900&family=Jost:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@500..900&display=swap" rel="stylesheet">
 <style>
 :root{
   /* 方案 I：高級時裝 × 漫畫。深靛藍為主色、香檳金點綴、象牙白底；粗黑框線、硬陰影、網點。
@@ -19,10 +19,8 @@
   --alert:#e0102f; --alert-soft:#ffe1e6; --alert-ink:#a00a22;
   --line-green:#06c755;
   /* 方案 I 專用 */
-  --gold:#d4ad55; --gold-hi:#f6e3a6; --gold-lo:#9c7425; --paper:#efe7d3;
-  --metal:linear-gradient(135deg,#fff4cc 0%,#d9b45a 30%,#f8e6a8 50%,#b88a33 74%,#efd189 100%);
+  --gold:#c9a043; --gold-hi:#f1dc9e; --gold-lo:#8f6a1f; --paper:#efe7d3;
   --lime:#c6ff1a; --magenta:#ff1f8f; --cobalt:#1f4bff;
-  --tone:radial-gradient(#0a0a0a 1.1px,transparent 1.4px) 0 0/4.5px 4.5px;
   --font-display:"Bodoni Moda","Noto Serif TC","Songti TC",serif;
   --font-body:"Jost","Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
   --font-mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
@@ -505,287 +503,352 @@ label.btn{display:flex;align-items:center;justify-content:center}
 @media (prefers-reduced-motion:reduce){#toast{transition:none}}
 
 /* =====================================================================
-   方案 I：高級時裝 × 漫畫
-   - 線條：3～4px 黑框、6px 硬陰影、網點（案件卡片的陰影）、斜線網（加照片）
-   - 字：標題用高反差襯線（Bodoni Moda＋思源宋體），介面用幾何無襯線（Jost＋思源黑體）
-   - 紋章符號：✦ 星、› 箭頭、◆ 菱形當狀態點；香檳金當點綴
-   - 反轉配色只出現在：案件詳情頂端（依階段換色）、重大動作後的閃屏、提示訊息
-   - 內文、表單、日期金額等核心資料一律深字淺底
+   方案 I：高級時裝 × 漫畫（雜誌式的取捨）
+   - 每頁一個主角：詳情頁頂端是整塊階段色的「封面格」，後面一個超大、被裁切的日期數字當圖
+   - 案件卡片是漫畫的「格」：3px 墨框、格與格之間固定白縫；日期欄鋪網點
+   - 其他區塊不加框，只用 3px 粗線開頭、1px 細線分隔；唯一的加框區塊是「你的下一步」
+   - 輸入框只有底線；硬陰影只給主要按鈕；傾斜只留給「你已出價」金色印章
+   - 符號只留菱形：◆ 代表完成或選中，紅色 ◆ 代表輪到你
+   - 字：Bodoni Moda（數字）＋思源宋體 Heavy（標題）；Jost＋思源黑體（介面）。中文不加寬字距
+   - 整個畫面的反轉配色只在重大動作的閃屏；第一次進入是一張雜誌封面
    ===================================================================== */
 body{background:var(--bg);font-family:var(--font-body)}
 h1,h2{font-family:var(--font-display);font-weight:900;letter-spacing:.02em}
-h1{font-size:28px;line-height:1.2}
-h2{font-size:19px;line-height:1.3}
-h3{font-size:13px;letter-spacing:.14em;color:var(--muted)}
-.price{font-family:var(--font-display);font-weight:800;font-variant-numeric:lining-nums tabular-nums;letter-spacing:.01em}
+h1{font-size:30px;line-height:1.15}
+h2{font-size:20px;line-height:1.3}
+h3{font-size:13px;letter-spacing:.04em;color:var(--muted)}
+.price{font-family:var(--font-display);font-weight:700;font-variant-numeric:lining-nums tabular-nums;letter-spacing:.01em;white-space:nowrap}
+.cur{font-family:var(--font-display);font-size:max(12px,.46em);font-weight:700;letter-spacing:.02em;margin-right:.16em}
+p .price,.banner .price,.cmt-txt .price{font-family:var(--font-body);font-size:inherit;font-weight:700;letter-spacing:0}
 :focus-visible{outline:3px solid var(--cobalt);outline-offset:2px}
 .badge,.slot small,.ph-time,.req,.opt{font-size:12px}
+.link-btn,.tc-more{color:var(--accent);text-decoration-thickness:1.5px}
+header.top svg,.tool svg{stroke-width:2.5;stroke-linecap:square;stroke-linejoin:miter}
 
-/* 標題欄：黑色粗底線＋金色滾邊 */
+/* 標題欄：刊頭，粗細雙線 */
 body::before{background:var(--surface)}
-header.top{min-height:60px;padding:8px 16px;background:var(--surface);border-bottom:4px solid var(--ink);box-shadow:0 3px 0 var(--gold)}
-.brand{font-family:var(--font-display);font-weight:900;color:var(--ink);letter-spacing:.1em;line-height:1.15}
-.hd-brand .brand{background:linear-gradient(var(--gold),var(--gold)) 0 calc(100% - 1px)/4.3em 6px no-repeat}
-.hd-brand .brand::after{content:"✦";content:"✦"/"";color:var(--gold-lo);font-size:.55em;vertical-align:.7em;margin-left:3px;letter-spacing:0}
-.clock{font-weight:500;letter-spacing:.04em}
-.clock .sim{border-radius:0;background:var(--metal);color:var(--ink);border:1.5px solid var(--ink);transform:rotate(-3deg)}
-header.top .icon-btn{border:3px solid var(--ink);border-radius:0;background:var(--surface);color:var(--ink);box-shadow:3px 3px 0 var(--ink)}
-@media (max-width:360px){header.top{padding:8px 12px}}
-.nbadge{min-width:28px;height:28px;top:-11px;right:-11px;padding:0 4px;border:0;border-radius:0;background:var(--alert);color:#fff;font-size:12px;
-  clip-path:polygon(50% 0%,59.3% 15.2%,75% 6.7%,75.5% 24.5%,93.3% 25%,84.8% 40.7%,100% 50%,84.8% 59.3%,93.3% 75%,75.5% 75.5%,75% 93.3%,59.3% 84.8%,50% 100%,40.7% 84.8%,25% 93.3%,24.5% 75.5%,6.7% 75%,15.2% 59.3%,0% 50%,15.2% 40.7%,6.7% 25%,24.5% 24.5%,25% 6.7%,40.7% 15.2%)}
-.nbadge.hdr{top:-10px;right:-10px}
+header.top{min-height:60px;padding:8px 16px;background:var(--surface);border-bottom:3px solid var(--ink);box-shadow:0 3px 0 var(--surface),0 4px 0 var(--ink)}
+.brand{font-family:var(--font-display);font-weight:900;color:var(--ink);letter-spacing:.04em;line-height:1.05}
+.hd-brand .brand{font-size:25px}
+.clock{font-size:13px;font-weight:500;letter-spacing:.04em;line-height:1.35;color:var(--muted)}
+.clock .sim{border-radius:0;background:var(--gold);color:var(--ink)}
+@media (max-width:360px){.hd-brand .brand{font-size:22px}}
+header.top .icon-btn{border-radius:0;color:var(--ink)}
+.nbadge{min-width:22px;height:22px;top:-9px;right:-9px;padding:0 5px;border:2px solid var(--bg);border-radius:0;background:var(--alert);color:#fff;font-size:12px}
+.nbadge.hdr{top:0;right:-2px;border-color:var(--surface)}
 
-/* 下方分頁：選中的分頁整塊反黑，上方一個金色倒三角 */
-nav.tabs{background:var(--surface);border-top:4px solid var(--ink)}
-nav.tabs button{font-weight:600;color:var(--muted)}
-nav.tabs button.on{background:var(--ink);color:var(--gold-hi)}
-nav.tabs button.on::before{left:50%;right:auto;width:0;height:0;margin-left:-8px;border-radius:0;background:none;border:8px solid transparent;border-top-color:var(--gold);border-bottom:0}
-.badge{border-radius:0;transform:rotate(-5deg);box-shadow:2px 2px 0 var(--ink)}
-nav.tabs .badge{border:1.5px solid var(--ink)}
+/* 下方分頁：只有文字，選中的分頁整塊反黑 */
+nav.tabs{background:var(--surface);border-top:3px solid var(--ink)}
+nav.tabs button{flex-direction:row;justify-content:center;gap:6px;padding:0 0 env(safe-area-inset-bottom,0px);min-height:54px;font-size:15px;font-weight:700;letter-spacing:.04em;color:var(--muted)}
+nav.tabs svg{display:none}
+nav.tabs button.on{background:var(--ink);color:var(--surface)}
+nav.tabs button.on::before{display:none}
+.badge{border-radius:0;min-width:20px;height:20px}
+nav.tabs .badge{position:static;letter-spacing:0}
+nav.tabs button.on .badge{box-shadow:0 0 0 2px var(--surface)}
 
-/* 主要區塊：大留白 */
-main{gap:18px}
-#blist{gap:22px}
-#blist>.small:first-child{display:flex;align-items:center;gap:8px;color:var(--ink);font-weight:600;letter-spacing:.04em;margin-bottom:-6px}
-#blist>.small:first-child::before{content:"✦";content:"✦"/"";color:var(--gold-lo)}
-#blist>.small:first-child::after{content:"";flex:1;min-width:16px;height:2px;background:var(--ink)}
+/* 版面：格與格之間是固定的白縫 */
+main{gap:16px}
+#blist{gap:14px}
+#blist>.small:first-child{display:flex;align-items:center;gap:10px;color:var(--ink);font-weight:600;margin-bottom:-2px}
+#blist>.small:first-child::after{content:"";flex:1;min-width:16px;height:1px;background:var(--ink)}
 
-/* 卡片：黑框、直角、硬陰影 */
-.card{border:3px solid var(--ink);border-radius:0;background:var(--surface);padding:16px;box-shadow:6px 6px 0 var(--ink)}
-/* 案件卡片：陰影改成漫畫網點（只畫在卡片外面，不蓋到卡片） */
-.card.task{box-shadow:none;padding:0}
-.card.task::before{content:"";position:absolute;inset:-3px;transform:translate(8px,8px);z-index:-1;pointer-events:none;background:var(--tone);
-  clip-path:polygon(calc(100% - 8px) 0,100% 0,100% 100%,0 100%,0 calc(100% - 8px),calc(100% - 8px) calc(100% - 8px))}
+/* 案件卡片：漫畫的格。左邊日期欄鋪網點、放大數字；右邊時間、地點、標價 */
+.card{border:3px solid var(--ink);border-radius:0;background:var(--surface);padding:16px;box-shadow:none}
+.card.task{padding:0}
 .card.task:hover{border-color:var(--ink)}
 .tc-open{border-radius:0}
-.tc-body{padding:16px}
-.tc-date{font-family:var(--font-display);font-weight:900;font-size:18px;padding-right:40px;column-gap:12px;row-gap:0}
-.dnum{font-family:var(--font-display);font-style:italic;font-weight:800;font-size:1.75em;line-height:.9;margin:0 2px;letter-spacing:-.02em}
-.tc-date .tc-time{font-family:var(--font-body);font-size:16px;font-weight:600;letter-spacing:.02em}
-.tc-place{color:var(--ink);font-weight:500}
-.tc-side .price{display:inline-block;font-size:20px;line-height:1.15;padding:4px 10px 3px;background:var(--metal);color:var(--ink);border:2.5px solid var(--ink);box-shadow:3px 3px 0 var(--ink);transform:rotate(-3deg)}
-.tc-side .price:has(.muted){background:var(--surface)}
-.tc-side .price .muted{font-family:var(--font-body);font-size:15px;font-weight:700;color:var(--ink)}
-.tc-bottom{gap:9px}
-.tc-bottom .pill{transform:rotate(2deg)}
-.tc-bar{padding:8px 16px;font-size:13px}
-.tc-bar.bottom{border-radius:0;background:var(--paper);color:var(--ink);border-top:3px solid var(--ink)}
-.tc-bar.bottom.todo{background:var(--alert);color:#fff;border-top-color:var(--ink)}
+.tc-body{display:grid;grid-template-columns:72px minmax(0,1fr);padding:0;gap:0}
+.tc-date{display:contents}
+.tc-d{grid-column:1;grid-row:1/3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:12px 0;border-right:1px solid var(--ink);
+  background:radial-gradient(rgba(10,10,10,.5) 1.05px,transparent 1.35px) 0 0/6px 6px,var(--surface);font-family:var(--font-display);font-weight:900;line-height:1;text-align:center}
+.tc-d .dm,.tc-d .dw{font-size:12px}
+.tc-d .dnum{font-size:44px;line-height:.86;padding-bottom:2px}
+.tc-d .dday{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.dnum{font-family:var(--font-display);font-style:normal;font-weight:700;letter-spacing:-.02em}
+.tc-time{grid-column:2;grid-row:1;padding:14px 50px 0 16px;font-family:var(--font-body);font-size:17px;font-weight:600;font-variant-numeric:tabular-nums}
+.tc-row{grid-column:2;grid-row:2;padding:2px 16px 14px;align-items:flex-end}
+.tc-place{color:var(--ink);font-size:15px}
+.tc-side .price{font-size:24px;line-height:1}
+.tc-side .price .muted{font-family:var(--font-display);font-size:16px;font-weight:900;color:var(--ink)}
+.tc-bottom{gap:8px}
+.tc-bar{padding:9px 16px;font-size:13px}
+.tc-bar.bottom{border-radius:0;background:var(--surface);color:var(--muted);font-weight:600;border-top:1px solid var(--ink)}
+.tc-bar.bottom.todo{background:var(--alert);color:#fff;font-weight:700;border-top-color:var(--ink)}
 .tc-dot{width:9px;height:9px;border-radius:0;transform:rotate(45deg);background:#fff}
-.bar-role{font-family:var(--font-display);font-weight:900;opacity:1;letter-spacing:.04em}
+.bar-role{font-weight:600;font-size:12px;letter-spacing:.04em;opacity:1}
+/* 待你處理的第一件（最急）放大成主角格 */
+section[aria-label="待你處理"]>.card.task:first-of-type .tc-body{grid-template-columns:96px minmax(0,1fr)}
+section[aria-label="待你處理"]>.card.task:first-of-type .tc-d .dnum{font-size:64px}
+section[aria-label="待你處理"]>.card.task:first-of-type .tc-time{font-size:20px;padding-top:18px}
+section[aria-label="待你處理"]>.card.task:first-of-type .tc-row{padding-bottom:18px}
+section[aria-label="待你處理"]>.card.task:first-of-type .tc-side .price{font-size:30px}
 .favbtn{border-radius:0;color:var(--ink)}
 .favbtn:hover{background:transparent}
 .favbtn.on{color:var(--ink)}
 .favbtn.on svg path{fill:var(--gold)}
-.gtxt,.gtag{border-radius:0;border:1.5px solid currentColor;transform:rotate(-2deg)}
-.gtxt.male{color:#1532b8;background:var(--info-soft)}
-.gtxt.female{color:#b80d62;background:#ffe0ef}
-.gtag.any{border-color:var(--line)}
+.gtxt,.gtag{border:0;border-radius:0;background:transparent;color:var(--ink);font-size:13px;font-weight:700;padding:0}
+.gtxt.male,.gtxt.female{color:var(--ink);background:transparent}
+.gtag.any{color:var(--ink);font-weight:400;font-size:inherit}
 
-/* 按鈕：黑框、硬陰影；滑過時往左上浮起並微微傾斜，主要按鈕出現放射速度線；按下去整個換成螢光綠 */
-.btn{border:3px solid var(--ink);border-radius:0;background:var(--accent);color:var(--accent-ink);box-shadow:4px 4px 0 var(--ink);letter-spacing:.05em;transition:transform .1s cubic-bezier(.3,1.7,.5,1),box-shadow .1s}
-.btn.sm{border-width:2.5px;box-shadow:3px 3px 0 var(--ink)}
-.btn.ghost,.btn.danger{background:var(--surface);color:var(--ink);border-color:var(--ink)}
+/* 標籤：細框、不傾斜；唯一的例外是「你已出價」金色印章 */
+.pill{border-radius:0;border:1px solid currentColor;padding:0 7px;background:transparent}
+.s-open,.s-assigned,.s-wait,.s-good,.s-bad,.s-off{background:transparent}
+.s-off{color:var(--muted)}
+.pill.s-good,.pill.s-assigned{color:var(--ink)}
+.pill.s-ownt{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.pill.s-bid{background:var(--gold);color:var(--ink);border:4px double var(--ink);padding:1px 7px;transform:rotate(-5deg)}
+.card.task .pill.s-bid{position:absolute;top:-13px;right:56px;z-index:2}
+
+/* 按鈕：主要按鈕才有硬陰影；滑過時浮起微斜並出現放射速度線；按下去換成螢光綠；次要按鈕只有底線 */
+.btn{border:2px solid var(--ink);border-radius:0;background:var(--accent);color:var(--accent-ink);box-shadow:none;letter-spacing:.04em;transition:transform .1s cubic-bezier(.3,1.7,.5,1),box-shadow .1s}
+.btn:not(.sm):not(.ghost):not(.quiet):not(.danger):not(.danger-solid):not(:disabled){border-width:3px;box-shadow:5px 5px 0 var(--ink)}
+.cmt-form .btn:not(:disabled){border-width:2px;box-shadow:none}
+.btn.sm{background:var(--ink);color:var(--surface);min-height:38px;padding:6px 14px}
+.btn.ghost,.btn.danger,.btn.ghost.sm{background:transparent;color:var(--ink);border:0;border-bottom:2px solid var(--ink);padding-left:4px;padding-right:4px}
 .btn.danger{color:var(--bad)}
-.btn.danger-solid{background:var(--bad);color:#fff}
+.btn.danger-solid{background:var(--bad);color:#fff;border-color:var(--ink)}
 .btn.quiet{border:0;box-shadow:none;background:transparent;color:var(--bad);letter-spacing:0}
-.btn:disabled{opacity:1;background:#e4ddcb;color:#6b6453;border-color:#8f8873;box-shadow:none}
-.btn.block:not(.ghost):not(.quiet):not(:disabled)::after{content:"›";content:"›"/"";font-family:var(--font-display);font-weight:400;font-size:1.5em;line-height:0;margin-left:.45em;vertical-align:-.06em}
+.btn:disabled{opacity:1;background:transparent;color:#857d6b;border-color:#b5ad98;box-shadow:none}
 @media (hover:hover){
-  .btn:not(.quiet):not(:disabled):hover{transform:translate(-2px,-2px) skewX(-6deg);box-shadow:6px 6px 0 var(--ink)}
-  .btn:not(.ghost):not(.quiet):not(.danger):not(:disabled):hover{background-image:repeating-conic-gradient(from 0deg at 50% 50%,rgba(255,252,244,.26) 0deg 3deg,transparent 3deg 11deg)}
+  .btn:not(.quiet):not(:disabled):hover{transform:translate(-2px,-2px) skewX(-5deg)}
+  .btn:not(.sm):not(.ghost):not(.quiet):not(.danger):not(.danger-solid):not(:disabled):hover{box-shadow:7px 7px 0 var(--ink);background-image:repeating-conic-gradient(from 0deg at 50% 50%,rgba(255,252,244,.26) 0deg 3deg,transparent 3deg 11deg)}
   .btn.ghost:not(:disabled):hover,.btn.danger:not(:disabled):hover{background:var(--ink);color:var(--surface)}
-  .card.task{transition:transform .12s cubic-bezier(.3,1.7,.5,1)}
-  .card.task:hover{transform:translate(-3px,-3px) rotate(-.5deg)}
-  .card.task:hover .tc-side .price{background:var(--lime)}
-  .card.linkrow{transition:transform .12s cubic-bezier(.3,1.7,.5,1)}
-  .card.linkrow:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--ink);background:var(--sun-soft)}
-  .card.linkrow.me-card:hover{background:var(--accent);box-shadow:8px 8px 0 var(--gold)}
+  .btn.sm:not(.ghost):not(:disabled):hover{background:var(--accent)}
+  .card.task{transition:transform .12s cubic-bezier(.3,1.7,.5,1),box-shadow .12s}
+  .card.task:hover{transform:translate(-3px,-3px);box-shadow:5px 5px 0 var(--ink)}
+  .card.linkrow:not(.me-card):hover{background:var(--ink);color:var(--surface)}
+  .card.linkrow:not(.me-card):hover .muted,.card.linkrow:not(.me-card):hover .cnt{color:var(--surface)}
+  .favbtn{transition:transform .12s}
   .favbtn:hover{transform:rotate(-14deg) scale(1.12)}
   .icon-btn:not(:disabled):hover,header.top .icon-btn:hover,.tool:hover{background:var(--lime)}
-  .tagbtn:hover,.chip:hover,.opt-row:not(.on):hover,.tagmenu>button:hover,.acct-row:hover{background:var(--lime)}
-  .dt-btn:hover{background:var(--sun-soft);border-color:var(--ink)}
+  .tagbtn:hover,.chip:hover,.opt-row:not(.on):hover,.tagmenu>button:hover,.acct-row:hover,.note:hover{background:var(--lime)}
+  .dt-btn:hover{border-bottom-color:var(--cobalt)}
 }
-.btn:not(.quiet):active:not(:disabled){transform:translate(3px,3px);box-shadow:1px 1px 0 var(--ink);background:var(--lime);color:var(--ink)}
-.card.task:active{transform:translate(3px,3px)}
-.link-btn,.tc-more{color:var(--accent);text-decoration-thickness:2px}
+.btn:not(.quiet):active:not(:disabled){transform:translate(3px,3px);box-shadow:none;background:var(--lime);color:var(--ink)}
+.card.task:active{transform:translate(2px,2px)}
 
-/* 表單：黑框、直角，聚焦時鈷藍外框 */
-input,select,textarea{border:2px solid var(--ink);border-radius:0;background:#fffefa}
-.field label,.field .lbl{color:var(--ink);font-weight:700;letter-spacing:.06em}
-.mail-in,.search{border:3px solid var(--ink);border-radius:0;background:var(--surface)}
-.mail-in:focus-within,.search:focus-within{outline:3px solid var(--cobalt);outline-offset:2px}
-.search{color:var(--ink);box-shadow:4px 4px 0 var(--ink)}
-.search input{min-height:40px}
-.tool{border:3px solid var(--ink);border-radius:0;color:var(--ink);box-shadow:4px 4px 0 var(--ink)}
-.tool.active{background:var(--ink);color:var(--lime);border-color:var(--ink)}
-.tool .badge,.btn .badge{background:var(--lime);color:var(--ink);border:1.5px solid var(--ink)}
-.dt-btn{border:2px solid var(--ink);border-radius:0;box-shadow:3px 3px 0 var(--ink);font-weight:600}
-.dt-btn svg{color:var(--accent)}
-.checks label{border:2px solid var(--ink);border-radius:0;font-weight:600;padding:7px 14px}
-.checks input{accent-color:var(--gold)}
-.checks label:has(input:checked){background:var(--ink);color:var(--surface);border-color:var(--ink)}
-.checks label.gm:has(input:checked){background:var(--cobalt);color:#fff}
-.checks label.gf:has(input:checked){background:var(--magenta);color:var(--ink)}
+/* 表單：只有底線；欄位名稱是不加字距的小字 */
+input,select,textarea{border:0;border-bottom:2px solid var(--ink);border-radius:0;background:transparent;padding:10px 2px}
+textarea{border-top:1px solid var(--line)}
+input:focus,select:focus,textarea:focus{outline:none;border-bottom-color:var(--cobalt);box-shadow:0 2px 0 var(--cobalt)}
+.field{gap:4px}
+.field label,.field .lbl{font-size:13px;color:var(--muted);font-weight:500;letter-spacing:.02em}
+.req,.opt{border-radius:0;background:transparent;border:0;padding:0;margin-left:6px;font-weight:500}
+.req{color:var(--bad)}.opt{color:var(--muted)}
+.mail-in{border:0;border-bottom:2px solid var(--ink);border-radius:0;background:transparent;padding-right:2px}
+.mail-in:focus-within{outline:none;border-bottom-color:var(--cobalt);box-shadow:0 2px 0 var(--cobalt)}
+.code-in{font-family:var(--font-display);font-size:34px}
+.pc-input input{font-family:var(--font-display);font-size:36px;font-weight:700}
+.dt-btn{border:0;border-bottom:2px solid var(--ink);border-radius:0;background:transparent;box-shadow:none;padding:8px 2px;font-weight:600}
+.dt-btn svg{color:var(--ink)}
+form[data-form="post"].stack{gap:22px}
+form[data-form="post"] .two+p.small{margin-top:-16px}
+form[data-form="post"] .dt-btn{font-family:var(--font-display);font-size:24px;font-weight:700;min-height:56px}
+form[data-form="post"] .dt-btn[data-act="openDate"]{font-size:28px;font-weight:900}
+/* 二選一、三選一：一排文字，選中反黑，不放單選圓點 */
+.checks{gap:0;border-bottom:2px solid var(--ink)}
+.checks label{position:relative;border:0;border-radius:0;padding:9px 16px;font-size:15px;font-weight:600;color:var(--ink);background:transparent}
+.checks input{position:absolute;opacity:0;width:1px;height:1px;margin:0;pointer-events:none}
+.checks label.gm,.checks label.gf{color:var(--ink)}
+.checks label:has(input:checked){background:var(--ink);color:var(--surface)}
+.checks label:has(input:focus-visible){outline:3px solid var(--cobalt);outline-offset:2px;z-index:1}
 .ferr{color:var(--bad)}
-.req,.opt{border-radius:0}
-.seg{border:3px solid var(--ink);border-radius:0;padding:0;gap:0;box-shadow:4px 4px 0 var(--ink)}
+/* 工具列：搜尋只有底線，排序、篩選是文字按鈕 */
+.toolbar{gap:4px;align-items:stretch;border-bottom:3px solid var(--ink)}
+.search{border:0;border-radius:0;background:transparent;color:var(--ink);box-shadow:none;padding:0 4px 0 0}
+.search input{min-height:44px;border:0}
+.search:focus-within{outline:3px solid var(--cobalt);outline-offset:0}
+.tool{width:auto;height:46px;padding:0 6px;gap:5px;border:0;border-radius:0;color:var(--ink);box-shadow:none;background:transparent;font:inherit;font-size:14px;font-weight:700}
+.tool svg{width:16px;height:16px}
+.tool.active{background:var(--ink);color:var(--surface)}
+.tool .badge{position:static;background:var(--lime);color:var(--ink);margin-left:1px}
+.btn .badge{background:var(--lime);color:var(--ink)}
+.seg{border:3px solid var(--ink);border-radius:0;padding:0;gap:0;box-shadow:none;background:var(--surface)}
 .seg button{border-radius:0;color:var(--ink);font-weight:600;min-height:44px}
-.seg button+button{border-left:3px solid var(--ink)}
-.seg button.on{background:var(--ink);color:var(--gold-hi)}
-.seg button.on .muted{color:var(--gold-hi)}
-.chip{border:2px solid var(--ink);border-radius:0;font-weight:600}
+.seg button+button{border-left:1px solid var(--ink)}
+.seg button.on{background:var(--ink);color:var(--surface)}
+.seg button.on .muted{color:var(--surface)}
+.chip{border:1px solid var(--ink);border-radius:0;font-weight:600}
 .chip.on{background:var(--ink);border-color:var(--ink);color:var(--surface)}
-.opt-row{border:2px solid var(--ink);border-radius:0}
-.opt-row.on{background:var(--ink);border-color:var(--ink);color:var(--gold-hi)}
+.optlist{gap:0;border-top:1px solid var(--ink)}
+.opt-row{border:0;border-bottom:1px solid var(--ink);border-radius:0;background:transparent}
+.opt-row.on{background:var(--ink);color:var(--surface)}
 .opt-row.on .tm-check{color:var(--lime)}
+.banner{border:1px solid var(--ink);border-radius:0;background:transparent;color:var(--ink)}
+.banner.info{background:transparent;color:var(--ink);border-color:var(--ink)}
+.banner.warn{background:var(--sun-soft);color:var(--ink);border-color:var(--ink)}
+.banner.bad{background:transparent;color:var(--bad);border-color:var(--bad)}
 
-/* 狀態標籤：直角、略為傾斜 */
-.pill{border-radius:0;border:2px solid var(--ink);padding:1px 8px;transform:rotate(-2deg)}
-.s-open,.pill.s-bid{background:var(--lime);color:var(--ink)}
-.s-assigned{background:var(--info-soft);color:#1532b8}
-.s-wait{background:var(--sun-soft);color:var(--warn)}
-.s-off{background:var(--surface);color:var(--muted);border-color:var(--ink)}
-.pill.s-ownt{background:var(--accent);color:var(--accent-ink)}
-.banner{border:2px solid var(--ink);border-left-width:8px;border-radius:0;background:var(--surface);color:var(--ink)}
-.banner.info{background:var(--info-soft);color:var(--ink);border-color:var(--ink);border-left-color:var(--cobalt)}
-.banner.warn{background:var(--sun-soft);color:var(--ink);border-color:var(--ink);border-left-color:var(--gold)}
-.banner.bad{background:var(--bad-soft);color:var(--bad);border-color:var(--ink);border-left-color:var(--bad)}
+/* 進度條：五格等寬，目前這一格反黑 */
+.steps{counter-reset:st;gap:0;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink)}
+.steps li{counter-increment:st;align-items:flex-start;text-align:left;gap:1px;padding:5px 6px 6px;font-size:12px;font-weight:600;color:var(--muted)}
+.steps li::before,.steps li:first-child::before{display:none}
+.steps .dot,.steps li.past .dot,.steps li.cur .dot{width:auto;height:auto;border:0;border-radius:0;transform:none;background:none;box-shadow:none;margin:0;font-family:var(--font-display);font-style:italic;font-weight:700;font-size:15px;line-height:1;color:inherit}
+.steps .dot::before{content:counter(st,decimal-leading-zero)}
+.steps li.past{color:var(--ink)}
+.steps li.cur{background:var(--ink);color:var(--surface);font-weight:700}
 
-/* 進度條：菱形節點，目前這一格用階段色 */
-.steps li{font-weight:600}
-.steps li::before{top:6px;height:3px;background:var(--line)}
-.steps .dot{width:14px;height:14px;border-radius:0;transform:rotate(45deg);border:2.5px solid var(--ink);background:var(--surface)}
-.steps li.past .dot{background:var(--ink);border-color:var(--ink)}
-.steps li.past::before,.steps li.cur::before{background:var(--ink)}
-.steps li.cur .dot{width:18px;height:18px;margin-top:-2px;background:var(--stg,var(--gold));border-color:var(--ink);box-shadow:3px 3px 0 var(--ink)}
-.steps li.cur{color:var(--ink);font-weight:800}
-
-/* 案件詳情頂端：依階段整塊換色（召喚替身＝螢光綠、打掃＝鈷藍、驗收＝電光洋紅、付款＝金、完成＝深靛藍） */
-.stg-summon{--stg:var(--lime);--stg-bg:var(--lime);--stg-ink:var(--ink)}
-.stg-clean{--stg:var(--cobalt);--stg-bg:var(--cobalt);--stg-ink:#fffcf4}
-.stg-check{--stg:var(--magenta);--stg-bg:var(--magenta);--stg-ink:var(--ink)}
-.stg-pay{--stg:var(--gold);--stg-bg:var(--metal);--stg-ink:var(--ink)}
-.stg-done{--stg:var(--accent);--stg-bg:var(--accent);--stg-ink:#fffcf4}
-.stg-off{--stg:#ddd6c6;--stg-bg:#e6e0d1;--stg-ink:var(--ink)}
-.card.sum{padding:0 0 16px;gap:16px;overflow:hidden}
-.card.sum>.pill{align-self:flex-start;margin:16px 0 -6px 16px}
-.sum-top{position:relative;isolation:isolate;padding:18px 16px 16px;background:var(--stg-bg,var(--paper));color:var(--stg-ink,var(--ink));border-bottom:3px solid var(--ink)}
-.sum-top::after{content:"";position:absolute;top:0;right:0;bottom:0;width:60%;z-index:-1;pointer-events:none;opacity:.2;
-  background:radial-gradient(currentColor 1.2px,transparent 1.5px) 0 0/6px 6px;-webkit-mask-image:linear-gradient(90deg,transparent,#000);mask-image:linear-gradient(90deg,transparent,#000)}
+/* 案件詳情頂端：封面格。整塊階段色、3px 墨框，後面一個超大、被裁切的日期數字 */
+.stg-summon{--stg-bg:var(--lime);--stg-ink:var(--ink);--stg-num:rgba(10,10,10,.14)}
+.stg-clean{--stg-bg:var(--cobalt);--stg-ink:#fffcf4;--stg-num:rgba(255,252,244,.17)}
+.stg-check{--stg-bg:var(--magenta);--stg-ink:var(--ink);--stg-num:rgba(10,10,10,.15)}
+.stg-pay{--stg-bg:var(--gold);--stg-ink:var(--ink);--stg-num:rgba(10,10,10,.13)}
+.stg-done{--stg-bg:var(--accent);--stg-ink:#fffcf4;--stg-num:rgba(255,252,244,.15)}
+.stg-off{--stg-bg:#e2dccd;--stg-ink:var(--ink);--stg-num:rgba(10,10,10,.09)}
+.card.sum{padding:0;gap:0;border:0;background:transparent;overflow:visible}
+.card.sum>.pill{align-self:flex-start;margin:0 0 10px}
+.sum-top{position:relative;isolation:isolate;overflow:hidden;display:flex;flex-direction:column;gap:0;padding:14px 16px 14px;background:var(--stg-bg,var(--paper));color:var(--stg-ink,var(--ink));border:3px solid var(--ink)}
+.sum-top::before{content:attr(data-d);position:absolute;right:-6px;bottom:-40px;z-index:-1;pointer-events:none;font-family:var(--font-display);font-weight:700;font-size:176px;line-height:1;letter-spacing:-.05em;color:var(--stg-num,rgba(10,10,10,.12))}
+.sum-top .grow{display:flex;flex-direction:column;gap:4px;padding-right:40px}
+.sum-date{font-family:var(--font-display);font-weight:900;font-size:24px;line-height:1.2;letter-spacing:.02em}
+.sum-date .dnum{font-size:1em;letter-spacing:0}
+.sum-time{font-size:17px;font-weight:600;column-gap:10px}
+.sum-time .small{font-size:14px;font-weight:500}
 .sum-top .muted{color:inherit}
-.sum-date{font-family:var(--font-display);font-weight:900;font-size:21px;line-height:1.25}
-.sum-time{font-weight:600;letter-spacing:.02em}
-.sum-price .price{font-size:27px}
-.card.sum .facts{padding:0 16px}
-@media (max-width:360px){
-  .sum-top{flex-wrap:wrap;row-gap:6px}
-  .sum-top .grow{flex-basis:100%;padding-right:34px}
-  .card.sum.has-fav .sum-price,.sum-price{padding-top:0;margin-left:auto;flex-direction:row;align-items:baseline;gap:8px}
-}
-.card.sum .favbtn{color:var(--stg-ink,var(--ink))}
+.sum-price,.card.sum.has-fav .sum-price{flex-direction:row;align-items:baseline;justify-content:flex-start;gap:12px;margin-top:12px;padding:10px 0 0;border-top:1px solid currentColor}
+.sum-price .small{font-size:13px;font-weight:500}
+.sum-price .price{font-size:38px;line-height:1}
+.card.sum .favbtn{top:6px;right:6px;color:var(--stg-ink,var(--ink))}
 .card.sum .favbtn.on{color:var(--ink)}
-.facts dt{color:var(--muted);font-weight:600;letter-spacing:.06em}
+.card.sum .favbtn svg{width:26px;height:26px;stroke-width:2.2}
+.card.sum .facts{padding:6px 0 0}
+.facts{gap:0 16px;font-size:14px}
+.facts dt,.facts dd{padding:4px 0;border-top:1px solid var(--line)}
+.facts dt:first-of-type,.facts dd:first-of-type{border-top:0}
+.facts dt{color:var(--muted);font-size:13px;font-weight:500}
 
-/* 你的下一步：標題做成壓在卡片上緣的傾斜標籤；輪到你時外框陰影是主色 */
-.card.next{margin-top:8px;padding-top:24px}
-.card.next>h2:first-child{align-self:flex-start;margin:-40px 0 0 -10px;padding:3px 12px 4px;font-size:17px;background:var(--ink);color:var(--surface);transform:rotate(-2deg);box-shadow:3px 3px 0 var(--gold)}
-.card.next.act{border-color:var(--ink);box-shadow:7px 7px 0 var(--accent)}
-.card.next.act>h2:first-child{background:var(--accent);color:var(--gold-hi);box-shadow:3px 3px 0 var(--ink)}
-.card.next.act>h2:first-child::before{content:"✦ ";content:"✦ "/"";color:var(--gold)}
-.chosen,.bank{background:var(--paper);border:2px solid var(--ink);border-radius:0}
-.offer{border-top:2px dashed var(--line)}
-.offer .price{font-size:20px}
-.pc-big{font-family:var(--font-display);font-weight:800}
-.pc-input input{font-family:var(--font-display);border-width:3px}
-.card.mini{box-shadow:4px 4px 0 var(--ink)}
-.mini-role{align-self:flex-start;background:var(--ink);color:var(--gold-hi);padding:0 8px;font-family:var(--font-display);font-weight:900;transform:rotate(-3deg)}
+/* 你的下一步：全頁唯一加框的區塊；輪到你時標題前有紅色菱形。其他區塊不加框，3px 粗線開頭 */
+.card:not(.task):not(.linkrow):not(.sum):not(.next){border:0;border-top:3px solid var(--ink);background:transparent;padding:12px 0 0}
+.card.mini{border-top-width:1px}
+.card.next{padding:12px 16px 16px}
+main:has(>.card.sum){gap:13px}
+.card.next.act{border-color:var(--ink);box-shadow:none}
+.card.next>h2:first-child{display:flex;align-items:center;gap:10px;font-size:20px}
+.card.next.act>h2:first-child::before{content:"";flex:none;width:10px;height:10px;transform:rotate(45deg);background:var(--alert)}
+.card.next .banner.info{border:0;padding:0;text-align:left;font-size:15px}
+.chosen,.bank{background:transparent;border:0;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);border-radius:0;padding:12px 0}
+.chosen.paysteps{flex-direction:row;flex-wrap:wrap;gap:0;padding:0;margin-top:0;font-size:14px;border:1px solid var(--ink)}
+.paysteps>span{flex:1;padding:8px 12px;font-weight:600}
+.paysteps>span+span{border-left:1px solid var(--ink)}
+.paysteps .ok{background:var(--ink);color:var(--surface)}
+.paysteps>.late{flex-basis:100%;border-left:0;border-top:1px solid var(--ink)}
+.offer{border-top:1px solid var(--ink);padding:14px 0}
+.offer:first-of-type{border-top:0;padding-top:4px}
+.offer .price{font-size:26px;line-height:1}
+.offer-side{gap:10px}
+.offer-side .btn.sm{min-width:96px}
+.pc-big{font-family:var(--font-display);font-weight:700}
+.card.mini{padding:12px 0 0}
+.mini-role{font-size:13px;font-weight:500;color:var(--muted)}
 
-/* 留言：漫畫對話框 */
-.cmts{padding:2px 6px 6px 2px}
-.cmt{background:var(--surface);border:2px solid var(--ink);border-radius:18px 18px 18px 3px;box-shadow:3px 3px 0 var(--ink)}
-.cmt.mine{background:var(--accent-soft);border-radius:18px 18px 3px 18px}
-.cmt-ph{border:2px solid var(--ink);border-radius:0}
+/* 留言：漫畫對話框；自己的是主色底 */
+.cmt{background:var(--surface);border:1.5px solid var(--ink);border-radius:16px 16px 16px 2px}
+.cmt.mine{background:var(--accent);color:var(--surface);border-color:var(--accent);border-radius:16px 16px 2px 16px}
+.cmt.mine .cmt-meta{color:#d6d3f3}
+.cmt-ph{border:1px solid var(--ink);border-radius:0}
 
-/* 照片、收款碼 */
-.ph{border:2px solid var(--ink);border-radius:0}
-.ph.add{border:2.5px dashed var(--ink);background:repeating-linear-gradient(-45deg,transparent 0 6px,rgba(10,10,10,.08) 6px 7.5px)}
+/* 照片、收款碼、付款方式 */
+.ph{border:1px solid var(--ink);border-radius:0}
+.ph.add{border:1.5px dashed var(--ink);background:transparent}
 .ph-x{border-radius:0;background:var(--ink)}
-.qr,.big-photo{border:3px solid var(--ink);border-radius:0}
-.cmt-imgs img{border:2px solid var(--ink);border-radius:0}
-
-/* 展開列表、付款方式（選項點用菱形） */
-.acc>.acc-h~.acc-h,.acc>.acc-b~.acc-h{border-top:2px solid var(--ink)}
+.qr{border:0;border-radius:0;padding:6px;background:#fff}
+.big-photo{border:3px solid var(--ink);border-radius:0}
+.cmt-imgs img{border:1px solid var(--ink);border-radius:0}
+.acc>.acc-h~.acc-h,.acc>.acc-b~.acc-h{border-top:1px solid var(--ink)}
 .acc-t{font-weight:700}
-.acc-h .chev,.card.linkrow .chev{font-family:var(--font-display);font-size:28px;color:var(--ink)}
-.pay-acc{border:3px solid var(--ink);border-radius:0}
-.pway+.pway{border-top:2px solid var(--ink)}
-.radio-dot{width:15px;height:15px;border-radius:0;transform:rotate(45deg);border:2.5px solid var(--ink)}
-.pway input:checked+.acc-h .radio-dot{border-color:var(--ink);background:var(--accent);box-shadow:inset 0 0 0 3px var(--surface)}
+.acc-h .chev,.pway .chev{display:none}
+.card.acc{border-bottom:1px solid var(--ink)!important}
+.pay-acc{border:0;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);border-radius:0;background:transparent}
+.pway+.pway{border-top:1px solid var(--ink)}
+.pway .acc-h,.pway-b.acc-b{padding-left:2px;padding-right:2px}
+.radio-dot{width:11px;height:11px;margin:0 3px;border-radius:0;transform:rotate(45deg);border:1.5px solid var(--ink);background:transparent}
+.pway input:checked+.acc-h .radio-dot{border-color:var(--ink);background:var(--ink);box-shadow:none}
 
-/* 標記 */
-.tagbtn{border:2px solid var(--ink);border-radius:0;color:var(--ink)}
-.tagbtn.tg-trust,.tagbtn.tg-black,.tagbtn.tg-custom{border-color:var(--ink)}
-.tagmenu{border:3px solid var(--ink);border-radius:0;box-shadow:5px 5px 0 var(--ink)}
+/* 標記：細框，只有黑名單是紅字 */
+.tagbtn{border:1px solid var(--ink);border-radius:0;color:var(--ink);background:transparent}
+.tagbtn.tg-trust,.tagbtn.tg-custom{color:var(--ink);border-color:var(--ink);background:transparent}
+.tagbtn.tg-black{color:var(--bad);border-color:var(--bad);background:transparent}
+.tagmenu{border:3px solid var(--ink);border-radius:0;box-shadow:none}
 .tagmenu>button{border-radius:0}
 .tm-dot{border-radius:0;transform:rotate(45deg)}
-.tm-remove{border-top:2px solid var(--ink)!important;border-radius:0!important}
+.tm-remove{border-top:1px solid var(--ink)!important;border-radius:0!important}
 
-/* 我的案件、我的 */
-.grp-h{font-family:var(--font-display);font-weight:900;font-size:22px;gap:10px;margin:10px 0 0}
-.grp-h:not(.sub)::before{content:"✦";content:"✦"/"";color:var(--gold);font-size:16px}
-.grp-h::after{content:"";flex:1;min-width:24px;height:3px;background:var(--ink)}
-.grp-h.sub{font-family:var(--font-body);font-size:14px;font-weight:700;letter-spacing:.1em;color:var(--ink)}
-.grp-h.sub::before{content:"»";content:"»"/"";font-family:var(--font-display);font-size:20px;line-height:1;color:var(--accent)}
-.grp-h.sub::after{height:1.5px}
-.sec-head h1{background:linear-gradient(var(--gold),var(--gold)) 0 calc(100% - 3px)/100% 8px no-repeat;padding-right:4px}
-.card.linkrow{box-shadow:4px 4px 0 var(--ink)}
-.card.linkrow.me-card{position:relative;overflow:hidden;background:var(--accent);color:var(--surface);box-shadow:6px 6px 0 var(--gold)}
-.me-card::after{content:"";position:absolute;right:0;top:0;bottom:0;width:45%;pointer-events:none;opacity:.25;background:radial-gradient(#fffcf4 1.2px,transparent 1.5px) 0 0/6px 6px;-webkit-mask-image:linear-gradient(90deg,transparent,#000);mask-image:linear-gradient(90deg,transparent,#000)}
-.me-card .id-name{font-family:var(--font-display);font-weight:900;font-size:25px;letter-spacing:.04em}
-.me-card .idline,.me-card .idline .dot{color:#dcd9f6}
-.card.linkrow.me-card .chev{color:var(--gold-hi)}
-main section.card ul.small li::marker{content:"✦  ";color:var(--gold-lo)}
-.empty b{font-family:var(--font-display);font-weight:900;font-size:19px}
-.demo-entry{border-top:2px dashed var(--ink)}
+/* 我的案件：欄目標題＋細線；階段分組前面是階段編號 */
+.grp{gap:14px}
+.grp-h{font-family:var(--font-display);font-weight:900;font-size:22px;gap:12px;margin:6px 0 0}
+.grp-h::after{content:"";flex:1;min-width:24px;height:1px;background:var(--ink)}
+.grp-h .badge{font-family:var(--font-body)}
+.grp-h.sub{font-family:var(--font-body);font-size:14px;font-weight:700;color:var(--ink);margin-top:4px}
+.grp-h.sub[data-n]::before{content:attr(data-n);font-family:var(--font-display);font-style:italic;font-size:20px;font-weight:700;line-height:1}
+
+/* 我的：個人資料是封面格（深靛藍、網點邊），下面是細線分隔的清單，件數放大 */
+.card.linkrow.me-card{position:relative;overflow:hidden;isolation:isolate;background:var(--accent);color:var(--surface);padding:22px 18px}
+.card.linkrow.me-card::after{content:"";position:absolute;top:0;right:0;bottom:0;width:42%;z-index:-1;clip-path:polygon(34% 0,100% 0,100% 100%,0 100%);
+  background:radial-gradient(rgba(255,252,244,.55) .9px,transparent 1.2px) 0 0/5px 5px}
+.me-card .id-name{font-family:var(--font-display);font-weight:900;font-size:34px;letter-spacing:.04em}
+.me-card .idline,.me-card .idline .dot{color:#d9d6f5}
+.card.linkrow .chev{display:none}
+.card.linkrow:not(.me-card){display:flex;align-items:center;padding:16px 2px;border:0;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);background:transparent}
+.card.linkrow:not(.me-card)+.card.linkrow{margin-top:-17px}
+.card.linkrow:not(.me-card) .grow>b{font-family:var(--font-display);font-size:19px;font-weight:900}
+.cnt{font-family:var(--font-body);font-size:20px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1;margin-right:1px}
+main>section.card:has(>ul.small){padding-top:14px}
+main section.card ul.small{list-style:none;padding:0!important;gap:0!important;font-size:15px}
+main section.card ul.small li{padding:10px 0;border-top:1px solid var(--line);line-height:1.7}
+main section.card ul.small li:first-child{border-top:0}
+.empty b{font-family:var(--font-display);font-weight:900;font-size:20px}
+.demo-entry{border-top:1px dashed var(--ink)}
 
 /* 通知 */
-.note{border:2px solid var(--ink);border-radius:0}
-.note.new{border-color:var(--ink);border-left:8px solid var(--alert)}
+.notes{gap:0;border-top:1px solid var(--ink)}
+.note{border:0;border-bottom:1px solid var(--ink);border-radius:0;background:transparent;padding:12px 4px}
+.note.new{border-color:var(--ink)}
 .note.new .note-txt::before{border-radius:0;transform:rotate(45deg)}
 
-/* 彈出視窗：網點遮罩；底部視窗上緣金邊；日期時間視窗直角硬陰影 */
-.scrim{background:radial-gradient(rgba(10,10,10,.3) 1px,transparent 1.4px) 0 0/5px 5px,rgba(28,24,90,.55)}
-.sheet{border-radius:0;border-top:4px solid var(--ink);box-shadow:0 -6px 0 var(--gold);background:var(--surface);padding:22px 18px 26px}
-.sheet>h2:first-child{font-size:22px}
-.sheet.dlg{border:4px solid var(--ink);border-radius:0;box-shadow:8px 8px 0 var(--ink);padding:20px 18px 16px}
-.acct-row{border:2px solid var(--ink);border-radius:0}
-.acct-row.on{background:var(--lime);border-color:var(--ink)}
-.dlg-title{color:var(--muted);font-weight:700;letter-spacing:.1em}
-.dlg-big{font-family:var(--font-display);font-weight:800}
+/* 彈出視窗：中性深色遮罩 */
+.scrim{background:rgba(10,10,10,.74)}
+.sheet{border-radius:0;border-top:3px solid var(--ink);box-shadow:none;background:var(--surface);padding:22px 18px 26px}
+.sheet>h2:first-child{font-size:24px}
+.sheet.dlg{border:3px solid var(--ink);border-radius:0;box-shadow:none;padding:20px 18px 16px}
+.acct-row{border:1px solid var(--ink);border-radius:0}
+.acct-row.on{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.acct-row.on .muted{color:var(--surface)}
+.dlg-title{color:var(--muted);font-weight:600}
+.dlg-big{font-family:var(--font-display);font-weight:700}
 .icon-btn{border-radius:0}
 .dd{border-radius:0}
-.dd.today{border:2px solid var(--accent);color:var(--accent)}
+.dd.today{border:1px solid var(--ink);color:var(--ink)}
 .dd:hover:not(:disabled){background:var(--lime)}
-.dd.on,.dd.on:hover:not(:disabled){background:var(--ink);border-color:var(--ink);color:var(--gold-hi)}
-.tbox{border:3px solid var(--ink);border-radius:0;background:var(--surface);font-family:var(--font-display);font-weight:700}
-.tbox.on{background:var(--accent);color:var(--accent-ink)}
-.tbig-in input{border-radius:0;border-width:3px}
-.dial{background:radial-gradient(circle,var(--surface) 0 28%,transparent 28.5%),var(--paper);box-shadow:0 0 0 3px var(--ink)}
+.dd.on,.dd.on:hover:not(:disabled){background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.tbox{border:2px solid var(--ink);border-radius:0;background:transparent;font-family:var(--font-display);font-weight:600}
+.tbox.on{background:var(--ink);color:var(--surface)}
+.tbig-in input{border-radius:0}
+.dial{background:var(--paper);box-shadow:0 0 0 2px var(--ink)}
 .dial-hand{background:var(--ink)}
-.dial-knob{background:var(--accent);border:2px solid var(--ink)}
+.dial-knob{background:var(--ink);color:var(--surface)}
 .dial-c{background:var(--ink)}
 
-/* 第一次進入的介紹：漫畫封面 */
-.intro-hero{position:relative;overflow:hidden;padding:30px 16px 24px;border:4px solid var(--ink);box-shadow:6px 6px 0 var(--ink);color:var(--surface);
-  background:repeating-conic-gradient(from 0deg at 50% 62%,rgba(255,252,244,.14) 0deg 2deg,transparent 2deg 9deg),var(--accent)}
-.intro-hero::after{content:"唰！";content:"唰！"/"";position:absolute;top:8px;right:12px;font-family:var(--font-display);font-weight:900;font-size:26px;color:var(--lime);-webkit-text-stroke:1.5px var(--ink);transform:rotate(12deg)}
-.intro-hero .brand.big{font-size:48px;color:var(--surface);text-shadow:4px 4px 0 var(--ink)}
-.intro-hero .lead{color:var(--gold-hi);font-weight:700}
-.intro-roles dt{align-self:center;justify-self:start;padding:0 8px;background:var(--ink);color:var(--gold-hi);font-family:var(--font-display);font-weight:900;transform:rotate(-3deg)}
-.intro-roles dt:nth-of-type(2){background:var(--lime);color:var(--ink)}
-.how li::before{border-radius:0;background:var(--surface);border:2.5px solid var(--ink);color:var(--ink);font-family:var(--font-display);font-weight:800;font-size:18px;box-shadow:3px 3px 0 var(--gold)}
-.intro-dots i{border-radius:0;transform:rotate(45deg);width:9px;height:9px}
+/* 第一次進入：一張雜誌封面。刊頭在上、金線、封面標語，下面一格深靛藍網點，音效字直排在格邊 */
+.m-layer:has(.intro){background:var(--surface)}
+.m-layer:has(.intro) .sheet{height:100%;max-height:none;border-top:0;padding-top:max(22px,env(safe-area-inset-top,0px))}
+.m-layer:has(.intro) .intro{flex:1}
+.intro{gap:18px}
+.intro-hero{flex:1;display:flex;flex-direction:column;gap:10px;padding:0;text-align:left;color:var(--ink)}
+.intro-hero .brand.big{font-size:min(21vw,84px);font-weight:900;letter-spacing:-.01em;line-height:1;color:var(--ink);padding-bottom:10px;border-bottom:3px solid var(--ink);box-shadow:0 5px 0 var(--surface),0 8px 0 var(--gold)}
+.intro-hero .lead{margin-top:8px;font-family:var(--font-display);font-weight:900;font-size:22px;color:var(--ink)}
+.intro-hero{position:relative}
+.intro-hero::after{content:"掃";content:"掃"/"";flex:1;min-height:150px;margin-top:8px;overflow:hidden;display:flex;justify-content:flex-end;align-items:flex-end;
+  font-family:var(--font-display);font-weight:900;font-size:min(78vw,300px);line-height:.78;color:var(--lime);text-indent:0;
+  border:3px solid var(--ink);clip-path:polygon(0 0,100% 0,100% 100%,0 calc(100% - 48px));
+  background:radial-gradient(rgba(255,252,244,.45) 1px,transparent 1.3px) 0 0/6px 6px,var(--accent)}
+.intro-hero::before{content:"唰——";content:"唰——"/"";position:absolute;z-index:1;left:14px;bottom:62px;writing-mode:vertical-rl;font-family:var(--font-display);font-weight:900;font-size:30px;line-height:1;color:var(--surface);
+  text-shadow:2px 0 var(--ink),-2px 0 var(--ink),0 2px var(--ink),0 -2px var(--ink),2px 2px var(--ink),-2px -2px var(--ink),2px -2px var(--ink),-2px 2px var(--ink)}
+.intro-roles{font-size:16px;gap:10px 14px}
+.intro-roles dt{align-self:center;justify-self:start;padding:1px 10px;background:var(--ink);color:var(--surface);font-family:var(--font-display);font-weight:900}
+.intro-roles dt:nth-of-type(2){background:var(--accent);color:var(--surface)}
+.how li::before{border-radius:0;background:transparent;border:2px solid var(--ink);color:var(--ink);font-family:var(--font-display);font-style:italic;font-weight:700;font-size:18px}
+.intro-dots i{border-radius:0;width:18px;height:3px}
 .intro-dots i.on{background:var(--ink)}
 
 /* 提示訊息：螢光綠反轉、彈跳進場，消失時直接切掉（不淡出） */
@@ -813,7 +876,7 @@ main.fx-in{animation:fxPage .26s cubic-bezier(.7,0,.2,1) backwards}
 @keyframes fxPop{0%{transform:scale(2.2) rotate(-20deg)}16%{transform:scale(.94) rotate(-8deg)}24%,100%{transform:scale(1) rotate(-10deg)}}
 @media (prefers-reduced-motion:reduce){
   .fx-flash,.fx-sfx{display:none}
-  main.fx-in,.sheet.fx-in,.btn,.card.task,.card.linkrow,#toast{animation:none;transition:none}
+  main.fx-in,.sheet.fx-in,.btn,.card.task,.favbtn,#toast{animation:none;transition:none}
 }
 </style>
 </head>
@@ -1139,7 +1202,9 @@ function favBtn(id,withText){
   return '<button class="favbtn'+(on?' on':'')+(withText?' txt':'')+'" data-act="fav" data-id="'+id+'" aria-pressed="'+on+'" aria-label="'+(on?'取消收藏':'收藏這個案件')+'">'+IC.star+(withText?'<span>'+(on?'已收藏':'收藏')+'</span>':'')+'</button>';
 }
 /* 方案 I：日期的「日」放大成斜體襯線數字（文字內容不變，仍是「11月19日（四）」） */
-function dayHTML(d){return (d.getMonth()+1)+'月<b class="dnum">'+d.getDate()+'</b>日（'+'日一二三四五六'[d.getDay()]+'）';}
+function dayHTML(d){return '<span class="dm">'+(d.getMonth()+1)+'月</span><b class="dnum" data-d="'+d.getDate()+'">'+d.getDate()+'</b><span class="dday">日</span><span class="dw">（'+'日一二三四五六'[d.getDay()]+'）</span>';}
+/* 方案 I：金額的「NT$」縮小上標（文字內容仍是「NT$ 400」） */
+function ntd(n){return '<span class="cur">NT$</span> '+money(n);}
 function cardDate(t){return dayHTML(new Date(t.start));}
 function cardTime(t){const d=new Date(t.start),e=new Date(t.end);return pad(d.getHours())+':'+pad(d.getMinutes())+' 至 '+pad(e.getHours())+':'+pad(e.getMinutes());}
 function gLabel(g){return g==='限男生'?'限男':g==='限女生'?'限女':'不限';}
@@ -1161,7 +1226,7 @@ function taskCard(t,opt){
       '<div class="tc-place">'+esc(t.building)+'</div>'+
       (t.gender==='不限'?'':'<div class="tc-g">'+genderText(t.gender)+'</div>')+
     '</div><div class="tc-side"><div class="tc-bottom">'+(opt.own&&own?'<span class="pill s-ownt">我是本體</span>':'')+(myBid?'<span class="pill s-bid">你已出價 NT$ '+money(myBid.price)+'</span>':'')+(opt.own&&isBlackPoster(t)?'<span class="pill s-bad">你的黑名單</span>':'')+
-      '<span class="price">'+(price?'NT$ '+money(price):'<span class="muted">自由出價</span>')+'</span></div></div></div></div>'+bar+'</div>';
+      '<span class="price">'+(price?ntd(price):'<span class="muted">自由出價</span>')+'</span></div></div></div></div>'+bar+'</div>';
 }
 /* 備註超過兩行才顯示「展開」 */
 function fixNotes(){
@@ -1218,8 +1283,8 @@ function browseView(){
   return suspendBanner(m)+
   '<h1 class="vh">接案</h1>'+
   '<div class="toolbar"><div class="search">'+IC.search+'<input id="q" type="search" enterkeyhint="search" placeholder="搜尋地點、集合位置、備註" aria-label="搜尋案件" value="'+esc(ui.q)+'"></div>'+
-  '<button class="icon-btn tool" data-act="openSort" aria-haspopup="dialog" aria-label="排序，目前是'+sortText()+'" title="排序">'+IC.sort+'</button>'+
-  '<button class="icon-btn tool'+(n?' active':'')+'" data-act="openFilter" aria-haspopup="dialog" aria-label="篩選'+(n?'，已套用 '+n+' 個條件':'')+'" title="篩選">'+IC.filter+(n?'<span class="badge">'+n+'</span>':'')+'</button>'+
+  '<button class="icon-btn tool" data-act="openSort" aria-haspopup="dialog" aria-label="排序，目前是'+sortText()+'" title="排序">'+IC.sort+'<span class="tl" aria-hidden="true">排序</span></button>'+
+  '<button class="icon-btn tool'+(n?' active':'')+'" data-act="openFilter" aria-haspopup="dialog" aria-label="篩選'+(n?'，已套用 '+n+' 個條件':'')+'" title="篩選">'+IC.filter+'<span class="tl" aria-hidden="true">篩選</span>'+(n?'<span class="badge">'+n+'</span>':'')+'</button>'+
   '</div>'+
   '<div id="blist" class="stack">'+browseList()+'</div>';
 }
@@ -1249,8 +1314,8 @@ function mineView(){
   const cnt=k=>S.tasks.filter(t=>G[k].some(g=>g[1](t))).length;
   if(!ui.mineRole)ui.mineRole=(!cnt('work')&&cnt('own'))?'own':'work';
   const k=ui.mineRole;
-  const groups=G[k].map(([title,fn])=>{const list=S.tasks.filter(fn).sort((a,b)=>a.start-b.start);
-    return list.length?'<section class="grp"><h3 class="grp-h sub">'+title+'（'+list.length+'）</h3>'+list.map(t=>taskCard(t,{bar:true})).join('')+'</section>':'';}).join('');
+  const groups=G[k].map(([title,fn],gi)=>{const list=S.tasks.filter(fn).sort((a,b)=>a.start-b.start);
+    return list.length?'<section class="grp"><h3 class="grp-h sub" data-n="0'+(gi+1)+'">'+title+'（'+list.length+'）</h3>'+list.map(t=>taskCard(t,{bar:true})).join('')+'</section>':'';}).join('');
   const none=k==='work'
     ?'<div class="empty"><b>你目前沒有當替身的案件</b><span class="small">出價後的案件會出現在這裡。</span><button class="btn ghost sm" data-act="tab" data-v="browse">去看看有哪些案件</button></div>'
     :'<div class="empty"><b>你目前沒有當本體的案件</b><span class="small">填好日期、時間和地點就能發案。</span><button class="btn ghost sm" data-act="tab" data-v="post">發案</button></div>';
@@ -1426,13 +1491,14 @@ function meView(){
   if(ui.meSub==='tags')return tagsView();
   if(ui.meSub==='bank')return bankView();
   const b=m.bank,hn=historyList(m.id).length,cn=cancelledList(m.id).length,fn=favList().length;
+  const cnt=n=>'<b class="cnt">'+n+'</b>';  /* 方案 I：件數用大號數字 */
   const row=(act,title,sub)=>'<button class="card linkrow" data-act="'+act+'"><span class="grow"><b>'+title+'</b><span class="small muted">'+sub+'</span></span><span class="chev" aria-hidden="true">›</span></button>';
   return suspendBanner(m)+'<h1 class="vh">我的</h1>'+
   '<button class="card linkrow me-card" data-act="profile"><span class="grow">'+idBlock(m,true).replace(/<div/g,'<span').replace(/<\/div>/g,'</span>')+'</span><span class="chev" aria-hidden="true">›</span></button>'+
   row('bankPage','收款方式',esc(payList(m))||'還沒設定，出價前要先設定')+
-  row('favs','收藏',fn+' 筆')+
-  row('past','過去的案件','已完成 '+hn+' 筆、已取消 '+cn+' 筆')+
-  row('tagsPage','標記的人',Object.keys(S.tags[S.me]||{}).length+' 人')+
+  row('favs','收藏',cnt(fn)+' 筆')+
+  row('past','過去的案件','已完成 '+cnt(hn)+' 筆、已取消 '+cnt(cn)+' 筆')+
+  row('tagsPage','標記的人',cnt(Object.keys(S.tags[S.me]||{}).length)+' 人')+
   '<section class="card"><h2>使用規則</h2><ul class="small" style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px">'+
   '<li>本體：發案、請人打掃的人。替身：接案、去打掃的人。</li>'+
   '<li>開工前，本體和替身都可以取消。</li><li>本體選了替身之後，替身要在 24 小時內、而且在開工前確認接案，逾時自動撤銷。本體選擇 1 小時後，可以改選別人。</li><li>開工時間結束 24 小時後，替身還沒按「打掃完成」，會自動算打掃完成。</li><li>替身打掃完成 3 天後，本體還沒驗收，會自動驗收完成。</li>'+
@@ -1575,7 +1641,7 @@ function personCard(title,x,self){
 function offerRow(t,o,i,canChoose){
   const x=u(o.user),sus=suspended(x),g=tagOf(x.id);
   return '<div class="offer"><div class="row between offer-row"><div class="grow">'+idBlock(x)+(g?'<div class="row wrap small"><span class="muted">你的標記</span>'+tagChip(g)+'</div>':'')+'</div>'+
-    '<div class="offer-side"><span class="price">NT$ '+money(o.price)+'</span>'+(!canChoose?'':sus?'<span class="pill s-bad">停權中，不能選擇</span>':'<button class="btn sm" data-act="choose" data-id="'+t.id+'" data-oid="'+o.id+'">選這位</button>')+'</div></div></div>';
+    '<div class="offer-side"><span class="price">'+ntd(o.price)+'</span>'+(!canChoose?'':sus?'<span class="pill s-bad">停權中，不能選擇</span>':'<button class="btn sm" data-act="choose" data-id="'+t.id+'" data-oid="'+o.id+'">選這位</button>')+'</div></div></div>';
 }
 /* ---------- 案件詳情 ----------
    由上到下：進度條（只有當事人）→ 摘要 → 你的下一步 → 留言板 → 對方資訊 → 取消或退出 */
@@ -1594,22 +1660,22 @@ function hhmm(ts){const d=new Date(ts);return pad(d.getHours())+':'+pad(d.getMin
 function summaryCard(t){
   const live=t.status==='open'||t.status==='pending'||t.status==='assigned';
   const pl=t.price?'成交價':'本體標價';
-  const pv=t.price?'NT$ '+money(t.price):t.budget?'NT$ '+money(t.budget):'<span class="muted">自由出價</span>';
+  const pv=t.price?ntd(t.price):t.budget?ntd(t.budget):'<span class="muted">自由出價</span>';
   const clamp=t.note&&!(t.status==='open'||t.status==='pending'),exp=!!ui.expanded[t.id];
   const note=!t.note?'<span class="muted">無</span>'
     :clamp?'<div class="clamp'+(exp?' open':'')+'"><span class="clamp-txt">'+esc(t.note)+'</span><button class="tc-more" data-act="toggleNote" data-id="'+t.id+'" aria-expanded="'+exp+'">'+(exp?'收合':'展開')+'</button></div>'
     :esc(t.note);
   return '<section class="card sum stg-'+stg(t)+(S.me?' has-fav':'')+'" aria-label="案件摘要">'+favBtn(t.id)+
     (t.status==='cancelled'?'<span class="pill s-off" style="align-self:flex-start">已取消</span>':'')+
-    '<div class="sum-top"><div class="grow"><div class="sum-date">'+dayHTML(new Date(t.start))+'</div><div class="sum-time"><span>'+hhmm(t.start)+' 至 '+hhmm(t.end)+'</span>'+(live?'<span class="small muted">'+when(t)+'</span>':'')+'</div></div>'+
+    '<div class="sum-top" data-d="'+new Date(t.start).getDate()+'"><div class="grow"><div class="sum-date">'+dayHTML(new Date(t.start))+'</div><div class="sum-time"><span>'+hhmm(t.start)+' 至 '+hhmm(t.end)+'</span>'+(live?'<span class="small muted">'+when(t)+'</span>':'')+'</div></div>'+
     '<div class="sum-price"><span class="small muted">'+pl+'</span><b class="price">'+pv+'</b></div></div>'+
     '<dl class="facts"><dt>地點</dt><dd>'+esc(t.building)+'</dd><dt>集合位置</dt><dd>'+esc(t.meet)+'</dd><dt>替身性別</dt><dd>'+genderText(t.gender)+'</dd><dt>備註</dt><dd>'+note+'</dd></dl></section>';
 }
 /* 付款進度：從看的人的角度寫（你／本體／替身） */
 function payBanner(t,r){
   const paid=t.status==='paid',late=t.confirmedAt&&now()>t.confirmedAt+24*H;
-  const a=r==='poster'?(paid?'✓ 你已付款':'○ 你付款'):(paid?'✓ 本體已付款':'○ 本體付款');
-  const b=r==='poster'?'○ 替身確認收款':'○ 你確認收款';
+  const a=r==='poster'?(paid?'◆ 你已付款':'◇ 你付款'):(paid?'◆ 本體已付款':'◇ 本體付款');
+  const b=r==='poster'?'◇ 替身確認收款':'◇ 你確認收款';
   return '<div class="chosen paysteps"><span class="'+(paid?'ok':'')+'">'+a+'</span><span>'+b+'</span>'+(late?'<span class="small late">已經超過 24 小時，請雙方盡快確認。</span>':'')+'</div>';
 }
 /* 「你的下一步」：一張卡、一個主要按鈕。輪到你做事時，卡片外框會變成主色。 */
@@ -1640,12 +1706,12 @@ function nextStep(t,r){
     }
     if(r==='poster'){
       const re=canUn?'你現在可以改選別人。':'1 小時後你能改選別人（還剩 '+span(unAt-now())+'）。';
-      return card('等替身確認','<div class="chosen"><div class="row between">'+idBlock(w)+tagButton(w.id)+'</div><div class="row between"><span class="small muted">成交價</span><b class="price">NT$ '+money(t.price)+'</b></div></div>'+
+      return card('等替身確認','<div class="chosen"><div class="row between">'+idBlock(w)+tagButton(w.id)+'</div><div class="row between"><span class="small muted">成交價</span><b class="price">'+ntd(t.price)+'</b></div></div>'+
         '<p>'+re+esc(w.name)+'將在 '+dl+' 前確認接案或婉拒（還剩 '+left+'）。</p>'+
         '<button class="btn ghost block" data-act="unchoose" data-id="'+t.id+'"'+(canUn?'':' disabled')+'>改選別人</button>',false);
     }
     const mine=m?t.offers.find(o=>o.user===m.id):null;
-    return card('',(mine?'<div class="row between pc-row"><span class="muted">你的出價</span><span class="price">NT$ '+money(mine.price)+'</span></div>':'')+
+    return card('',(mine?'<div class="row between pc-row"><span class="muted">你的出價</span><span class="price">'+ntd(mine.price)+'</span></div>':'')+
       '<p class="small muted center">本體已選其他人，正在等對方確認。對方沒有確認的話，案件會重新召喚替身。</p>',false);
   }
   if(t.status==='assigned'){
@@ -1667,7 +1733,7 @@ function nextStep(t,r){
     const b=w.bank,autoNote=t.autoConfirmed?'<p class="small muted">'+(r==='poster'?'你沒有在 3 天內驗收，已自動驗收完成。':'本體沒有在 3 天內驗收，已自動驗收完成。')+'</p>':'';
     if(r==='poster'){
       const lp=w.linepay,ways=[b?'bank':'',lp?'linepay':''].filter(Boolean),opts=ways.length?ways:['bank','linepay'],one=opts.length===1,WN={bank:'銀行轉帳',linepay:'LINE Pay'};
-      let body=autoNote+payBanner(t,r)+'<div class="row between pc-row"><span class="muted">金額</span><b class="price">NT$ '+money(t.price)+'</b></div>'+
+      let body=autoNote+payBanner(t,r)+'<div class="row between pc-row"><span class="muted">金額</span><b class="price">'+ntd(t.price)+'</b></div>'+
         (ways.length?'':'<p>替身還沒設定收款方式，請在留言板跟替身確認。</p>')+
         '<form data-form="pay" data-id="'+t.id+'" class="stack" novalidate><div class="field"><span class="lbl" id="pw">'+(one?'付款方式':'選一種付款方式')+'</span><div class="pay-acc" role="radiogroup" aria-labelledby="pw">';
       opts.forEach(k=>{
