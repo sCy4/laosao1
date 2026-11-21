@@ -730,10 +730,10 @@ main>.card.sum:first-child{margin-top:-16px}
 .sum-price .price .cur{vertical-align:.5em;font-size:12px;margin-right:4px}
 .sum-price .price .muted{font-size:20px;font-weight:500;color:rgba(255,252,244,.72)}
 @media (max-width:360px){.sum-date .dnum{font-size:54px}.sum-time{font-size:19px}.sum-price .price{font-size:26px}.steps li{font-size:12px}}
-.card.sum .favbtn{top:10px;right:8px;color:var(--surface)}
+.card.sum .favbtn{top:8px;right:8px;color:var(--surface)}
 .card.sum .favbtn.on{color:var(--surface)}
 .card.sum .favbtn.on svg path{fill:currentColor}
-.card.sum .favbtn svg{width:26px;height:26px;stroke-width:2.2}
+.card.sum .favbtn svg{width:24px;height:24px;stroke-width:2.6}
 .card.sum .facts{padding:4px 16px 0}
 .facts{gap:0;font-size:14px}
 .facts dt,.facts dd{padding:3px 0;border-top:1px solid var(--ink)}
@@ -1045,7 +1045,7 @@ function stLabel(t){return t.status==='assigned'&&now()>=t.start?'打掃中':ST[
 function deptLine(x){return x.cls||'';}
 function suspended(x){return x.suspendedUntil>now();}
 function canCancel(t){return now()<t.start;}
-function role(t,id){return t.poster===id?'poster':t.assignee===id?'worker':'viewer';}
+function role(t,id){if(!id)return 'viewer';return t.poster===id?'poster':t.assignee===id?'worker':'viewer';}
 function avatar(x,sz){let h=0;for(const c of x.id)h+=c.charCodeAt(0);return '<span class="av '+(sz||'')+'" style="background:'+AV[h%AV.length]+'" aria-hidden="true">'+esc(x.name[0])+'</span>';}
 function v(f,n){return f.elements[n].value.trim();}
 function empty(t,s){return '<div class="empty"><b>'+t+'</b><span class="small">'+s+'</span></div>';}
