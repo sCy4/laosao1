@@ -737,6 +737,7 @@ form[data-form="post"]>:is(.field:first-child,.field:has(#p-b),.field:has([aria-
 .card.next{padding:12px 16px 16px}
 main:has(>.card.sum){gap:10px}
 .card.next.act{border-color:var(--ink);box-shadow:none}
+.card.next:not(.act){border-width:1px}  /* 輪到你時是 3px 粗框，等別人時是 1px 細框 */
 .card.next>h2:first-child{display:flex;align-items:center;gap:10px;font-size:20px}
 .card.next .banner.info{border:0;padding:0;text-align:left;font-size:15px}
 .chosen,.bank{background:transparent;border:0;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);border-radius:0;padding:12px 0}
