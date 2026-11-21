@@ -131,7 +131,7 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
   await act('close');
 
   // D5. 姓名 30 天內只能改一次（林柏翰沒有銀行帳戶）
-  await fresh('u3'); await go('#profile'); await p.click('[data-act="editProfile"]'); await W();
+  await fresh('u3'); await go('#me'); await p.click('[data-act="editProfile"]');  /* 「我的」個人資料旁的「編輯」直接進入編輯 */ await W();
   ok((await main()).includes('姓名 30 天內只能改一次。'), '編輯資料寫「姓名 30 天內只能改一次」');
   await p.fill('#m-name', '林柏瀚'); await p.click('form[data-form="profile"] button[type="submit"]'); await W();
   ok((await st()).users.find(x => x.id === 'u3').name === '林柏瀚', '第一次改名成功');

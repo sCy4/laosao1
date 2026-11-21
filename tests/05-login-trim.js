@@ -45,7 +45,7 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
   const st = await js(() => JSON.parse(localStorage.getItem('swaptime-proto-v1')));
   const me = st.users.find(x => x.id === st.me);
   ok(me && me.name === '蘇同學' && me.sid === 'S15330124' && me.email === 's15330124@thu.edu.tw' && me.gender === '女' && me.cls === '資工3A', '建立帳號並登入：' + JSON.stringify(me && [me.name, me.sid, me.email, me.gender, me.cls]));
-  await go('#profile'); await p.click('[data-act="editProfile"]'); await W();
+  await go('#me'); await p.click('[data-act="editProfile"]');  /* 「我的」個人資料旁的「編輯」直接進入編輯 */ await W();
   ok(!(await js(() => !!document.querySelector('#m-sid'))) && (await main()).includes('S15330124') && !(await main()).includes('不能修改'), '編輯資料時學號不能改（沒有多餘說明）');
 
   // 3. 學校信箱登入：已有帳號、驗證碼過期

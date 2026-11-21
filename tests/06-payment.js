@@ -77,7 +77,7 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
   ok((await st()).tasks.find(t => t.id === 't8').payment.method === 'LINE Pay', '按「我已付款」完成');
 
   // 1. 刪掉「從學校信箱取得，不能修改。」
-  await fresh('u1'); await go('#profile'); await p.click('[data-act="editProfile"]'); await W();
+  await fresh('u1'); await go('#me'); await p.click('[data-act="editProfile"]');  /* 「我的」個人資料旁的「編輯」直接進入編輯 */ await W();
   ok(!(await main()).includes('不能修改'), '編輯資料沒有「從學校信箱取得，不能修改」');
   ok(errs.length === 0, 'no console errors ' + JSON.stringify(errs));
   console.log(fails ? fails + ' FAILED' : 'ALL PASSED');
