@@ -28,7 +28,8 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
 
   // 接案頁頂端變矮、標記圖示、提示在上方
   await fresh('u1'); await go('#browse');
-  const top = await js(() => Math.round(document.querySelector('#blist .card.task').getBoundingClientRect().top));
+  // 卡片有「我是本體／我是替身」標籤時，從標籤頂端算起
+  const top = await js(() => { const c = document.querySelector('#blist .card.task'), g = c.querySelector('.tc-tab'); return Math.round((g || c).getBoundingClientRect().top); });
   ok(top < 190, '第一張卡片從 ' + top + 'px 開始（原本約 260px）');
   ok(await js(() => { const h = document.querySelector('main h1'); return h && h.classList.contains('vh'); }), '頁面大標只留給螢幕閱讀器');
   ok(await js(() => { const r1 = document.querySelector('.search').getBoundingClientRect(), r2 = document.querySelector('[data-act="openFilter"]').getBoundingClientRect(); return Math.abs(r1.top - r2.top) < 4; }), '搜尋、排序、篩選在同一排');

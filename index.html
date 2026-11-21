@@ -580,9 +580,11 @@ main{gap:16px}
   background:#f1e9d6;font-family:var(--font-display);font-weight:900;line-height:1;text-align:center}
 .tc-d .dm,.tc-d .dw{font-family:var(--font-body);font-size:12px;font-weight:600}
 .tc-d{background:var(--surface)}
-.card.task.is-worker .tc-d{background:#f1e9d6}
-.card.task.is-poster .tc-d{background:var(--ink);color:var(--surface);border-right-color:var(--ink)}
-.tc-r{font-family:var(--font-body);font-size:12px;font-weight:800;letter-spacing:.06em;margin-bottom:2px}
+/* 我是本體／我是替身：卡片左上角突出的索引標籤（本體黑底、替身白底黑框），和日期分開 */
+.card.task.is-poster,.card.task.is-worker{margin-top:20px}
+.tc-tab{position:absolute;left:-3px;bottom:calc(100% + 3px);height:22px;padding:0 10px;display:flex;align-items:center;box-sizing:border-box;
+  font-size:12px;font-weight:800;letter-spacing:.06em;white-space:nowrap;background:var(--ink);color:var(--surface)}
+.card.task.is-worker .tc-tab{background:var(--surface);color:var(--ink);border:3px solid var(--ink);border-bottom:0;padding:0 7px}
 .tc-who{font-size:14px;font-weight:600;color:var(--ink)}
 .tc-d .dnum{font-size:46px;line-height:.86;padding-bottom:2px}
 .tc-d .dday{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
@@ -599,7 +601,6 @@ main{gap:16px}
 .tc-dot{width:11px;height:11px;border-radius:0;transform:rotate(45deg);background:var(--alert)}
 section[aria-label="待你處理"]>.grp-h .badge{display:none}
 
-.bar-role{font-weight:600;font-size:12px;letter-spacing:.04em;opacity:1}
 /* 待你處理的第一件（最急）放大成主角格 */
 .favbtn{border-radius:0;color:var(--ink)}
 .favbtn:hover{background:transparent}
@@ -615,7 +616,6 @@ section[aria-label="待你處理"]>.grp-h .badge{display:none}
 .s-off{color:var(--muted)}
 .pill.s-good,.pill.s-assigned{color:var(--ink)}
 .offer .pill{padding:2px 8px;font-size:13px;border:0;background:#ece3cf}
-.pill.s-ownt{background:var(--ink);color:var(--surface);border-color:var(--ink)}
 .pill.s-bid{background:transparent;color:var(--ink);border:0;padding:0;font-size:13px;font-weight:700}
 
 /* 按鈕：主要按鈕才有硬陰影；滑過時浮起微斜並出現放射速度線；按下去換成螢光綠；次要按鈕只有底線 */
@@ -1276,16 +1276,16 @@ function taskCard(t,opt){
   const price=t.price||t.budget;
   const role=!S.me?'':own?'我是本體':(t.assignee===S.me||t.offers.some(o=>o.user===S.me))?'我是替身':'';
   let bar='';
-  if(opt.bar)bar='<div class="tc-bar bottom'+(td?' todo':'')+'">'+(td?'<span class="tc-dot" aria-hidden="true"></span>':'')+'<span class="grow">'+(td?'<span class="vh">需要你處理：</span>':'')+esc(barText(t,S.me))+'</span>'+(opt.role&&role?'<span class="bar-role">'+role+'</span>':'')+'</div>';
+  if(opt.bar)bar='<div class="tc-bar bottom'+(td?' todo':'')+'">'+(td?'<span class="tc-dot" aria-hidden="true"></span>':'')+'<span class="grow">'+(td?'<span class="vh">需要你處理：</span>':'')+esc(barText(t,S.me))+'</span></div>';
   const rk=own?'is-poster':role?'is-worker':'',boss=t.assignee===S.me&&S.me&&t.status!=='pending'?u(t.poster):null;
-  return '<div class="card task'+(rk?' '+rk:'')+'">'+
+  return '<div class="card task'+(rk?' '+rk:'')+'">'+(role?'<span class="tc-tab">'+role+'</span>':'')+
     '<button class="tc-open" data-act="open" data-id="'+t.id+'" aria-label="查看 '+dateLabel(t)+esc(t.building)+' 的案件"></button>'+
     favBtn(t.id)+(unread(t)?'<span class="nbadge" aria-label="'+unread(t)+' 則新留言">'+unread(t)+'</span>':'')+
-    '<div class="tc-body"><div class="tc-date"><span class="tc-d">'+(rk?'<span class="tc-r">'+(own?'本體':'替身')+'</span>':'')+cardDate(t)+'</span><span class="tc-time">'+cardTime(t)+'</span></div>'+
+    '<div class="tc-body"><div class="tc-date"><span class="tc-d">'+cardDate(t)+'</span><span class="tc-time">'+cardTime(t)+'</span></div>'+
     '<div class="tc-row"><div class="tc-main">'+
       '<div class="tc-place">'+esc(t.building)+'</div>'+(boss?'<div class="tc-who">本體 '+esc(boss.name)+'</div>':'')+
       (t.gender==='不限'?'':'<div class="tc-g">'+genderText(t.gender)+'</div>')+
-    '</div><div class="tc-side"><div class="tc-bottom">'+(opt.own&&own?'<span class="pill s-ownt">我是本體</span>':'')+(myBid?'<span class="pill s-bid">你已出價 NT$ '+money(myBid.price)+'</span>':'')+(opt.own&&isBlackPoster(t)?'<span class="pill s-bad">你的黑名單</span>':'')+
+    '</div><div class="tc-side"><div class="tc-bottom">'+(myBid?'<span class="pill s-bid">你已出價 NT$ '+money(myBid.price)+'</span>':'')+(opt.own&&isBlackPoster(t)?'<span class="pill s-bad">你的黑名單</span>':'')+
       '<span class="price">'+(price?ntd(price):'<span class="muted">自由出價</span>')+'</span></div></div></div></div>'+bar+'</div>';
 }
 /* 備註超過兩行才顯示「展開」 */
@@ -1381,7 +1381,7 @@ function mineView(){
     :'<div class="empty"><b>你目前沒有當本體的案件</b><span class="small">填好日期、時間和地點就能發案。</span><button class="btn ghost sm" data-act="tab" data-v="post">發案</button></div>';
   return '<h1 class="vh">我的案件</h1>'+
   (todos.length
-    ?'<section class="grp" aria-label="待你處理"><h2 class="grp-h">待你處理<span class="badge">'+todos.length+'</span></h2>'+todos.map(t=>taskCard(t,{bar:true,role:true})).join('')+'</section>'
+    ?'<section class="grp" aria-label="待你處理"><h2 class="grp-h">待你處理<span class="badge">'+todos.length+'</span></h2>'+todos.map(t=>taskCard(t,{bar:true})).join('')+'</section>'
     :'<p class="small muted">目前沒有需要你處理的事。</p>')+
   '<h2 class="grp-h">全部案件</h2>'+
   '<div class="seg" role="tablist">'+[['work','我是替身'],['own','我是本體']].map(([v,l])=>'<button role="tab" aria-selected="'+(k===v)+'" class="'+(k===v?'on':'')+'" data-act="seg" data-k="mineRole" data-v="'+v+'">'+l+'<span class="muted small">'+cnt(v)+'</span></button>').join('')+'</div>'+
@@ -1531,13 +1531,13 @@ function pastView(){
   return '<div class="sec-head"><h1>過去的案件</h1></div>'+
   '<div class="seg" role="tablist">'+[['history','已完成',done.length],['cancelled','已取消',cc.length]].map(([k,l,n])=>'<button role="tab" aria-selected="'+(kind===k)+'" class="'+(kind===k?'on':'')+'" data-act="seg" data-k="pastKind" data-v="'+k+'">'+l+'<span class="muted small">'+n+'</span></button>').join('')+'</div>'+
   '<div class="chips" role="group" aria-label="依身分篩選">'+[['all','全部'],['work','我是替身'],['post','我是本體']].map(([k,l])=>'<button class="chip'+(sg===k?' on':'')+'" aria-pressed="'+(sg===k)+'" data-act="seg" data-k="histSeg" data-v="'+k+'">'+l+'</button>').join('')+'</div>'+
-  (list.length?list.map(t=>taskCard(t,{bar:true,role:true})).join(''):empty('還沒有紀錄',kind==='cancelled'?'取消的案件會出現在這裡。':'完成的案件會出現在這裡。'));
+  (list.length?list.map(t=>taskCard(t,{bar:true})).join(''):empty('還沒有紀錄',kind==='cancelled'?'取消的案件會出現在這裡。':'完成的案件會出現在這裡。'));
 }
 function favList(){const ids=S.favs[S.me]||[];return S.tasks.filter(t=>ids.indexOf(t.id)>=0);}
 function favView(){
   const list=favList().sort((a,b)=>a.start-b.start);
   return '<div class="sec-head"><h1>收藏</h1><span class="small muted">共 '+list.length+' 筆</span></div>'+
-  (list.length?list.map(t=>taskCard(t,{bar:true,role:true})).join(''):empty('還沒有收藏','在案件卡片或案件詳情的右上角按星號，就能收藏。'));
+  (list.length?list.map(t=>taskCard(t,{bar:true})).join(''):empty('還沒有收藏','在案件卡片或案件詳情的右上角按星號，就能收藏。'));
 }
 function meView(){
   const m=me();
@@ -1690,8 +1690,7 @@ function commentSection(t,r){
       :'<p class="small muted">案件已經'+(t.status==='closed'?'完成':'取消')+'，留言板只能查看。</p>')+
   '</section>';
 }
-function personCard(title,x,self,compact){
-  if(compact)return '<section class="card mini"><div class="row between"><span class="row"><span class="mini-role">'+title+'</span><b class="mini-name">'+esc(x.name)+'</b></span>'+tagButton(x.id)+'</div></section>';
+function personCard(title,x,self){
   return '<section class="card mini"><div class="row between"><span class="mini-role">'+title+'</span>'+(self?'<span class="small muted">你</span>':tagButton(x.id))+'</div>'+
   idBlock(x)+'</section>';
 }
@@ -1878,7 +1877,7 @@ function detailView(){
   out.push(nextStep(t,r));
   if(r==='viewer'){const g=tagOf(t.poster);if(g)out.push('<div class="banner warn row wrap">你標記過這位本體：'+tagChip(g)+'</div>');}
   out.push(commentSection(t,r));
-  if(w&&r!=='viewer'&&t.status!=='pending')out.push(r==='poster'?personCard('替身',w,false):personCard('本體',p,false,true));
+  if(w&&r!=='viewer'&&t.status!=='pending')out.push(r==='poster'?personCard('替身',w,false):personCard('本體',p,false));
   out.push(exitArea(t,r));
   return out.join('');
 }
