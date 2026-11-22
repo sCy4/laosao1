@@ -6,7 +6,7 @@
 <title>替身掃者</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700..900;1,700..900&family=Jost:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700..900;1,700..900&family=Jost:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Zhi+Mang+Xing&text=%E5%94%B0%E5%92%9A%E5%8F%AE%E7%A0%B0%E5%95%AA%E5%92%BB%EF%BC%81%E2%80%94&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -933,116 +933,111 @@ main section.card ul.small li:first-child{border-top:0}
 }
 
 /* =====================================================================
-   方案 J：從方案 I 出發，改成報紙「時刻表」式的版面（目前只套在「我的案件」頁，.pg-mine）
-   - 案件不再是粗框格子，而是一列一列的時刻表：左邊日期欄、細線分隔，區段開頭一條 3px 粗線
-   - 線條的意思固定：粗線＝區段，細線＝一列
-   - 字：品牌名和區段標題用明體（思源宋體），日期用高反差襯線數字，時間、金額和其他用無襯線
-   - 灰色改成暖灰；紅色只用在數字紅點和「還剩多久」的期限
-   - 最上面「下一個開工」是全頁唯一的黑色塊
+   方案 J：「我的案件」頁（.pg-mine），用互動平台的角度重做
+   - 一眼看出輪到你做什麼、多久內要做、按哪裡：每張待辦卡右邊一顆固定寬度的按鈕；只有最急的那件是實心
+   - 身分用淡色標籤（本體＝靛藍、替身＝琥珀），金額從你的角度寫（標價／你的出價／你付／你收）
+   - 紅色只用在：24 小時內的期限、未讀數字
+   - 卡片用白色面和間距分開，小圓角（手機上常見、看得出是一張可以點的卡）
    ===================================================================== */
-:root{--muted:#544c40}
-/* 刊頭：明體品牌名，底下一條粗線；標題欄、下方分頁和頁面同一個紙色 */
-body::before{background:var(--bg)}
-header.top{background:var(--bg)}
-.brand{font-family:"Noto Serif TC",var(--font-display);font-weight:900;letter-spacing:.04em}
-.hd-brand .brand{font-size:27px}
-/* 紅色數字：小方塊，貼在元件角落、不壓住圖示和文字 */
-.nbadge.hdr{top:4px;right:0;min-width:16px;height:16px;padding:0 3px;font-size:12px}
-/* 下方分頁：細線，選中的分頁字下面一條 3px 線（和「我是替身／我是本體」同一種） */
-nav.tabs{background:var(--bg);border-top:1px solid var(--ink);box-shadow:none}
-nav.tabs button.on{box-shadow:none}
-nav.tabs button.on span:not(.badge){padding:4px 0 3px;border-bottom:3px solid var(--ink)}
-nav.tabs .badge{top:14px;left:calc(50% + 34px);right:auto;min-width:16px;height:16px;padding:0 3px}
-@media (max-width:360px){nav.tabs button{font-size:14px}nav.tabs .badge{left:calc(50% + 30px)}}
+:root{--muted:#544c40;--muted2:#655d4f;--role-p:#26217a;--role-p-bg:#e7e4f7;--role-w:#6e4a06;--role-w-bg:#f6e8c3}
+/* 標題欄：品牌名縮小一點，讓出畫面 */
+header.top{min-height:54px;border-bottom:1px solid var(--ink)}
+.hd-brand .brand{font-size:23px}
+.nbadge.hdr{top:2px;right:-2px;min-width:18px;height:18px;padding:0 4px;font-size:12px;border:2px solid var(--surface)}
+/* 下方分頁：圖示＋文字。選中的分頁圖示在淺灰小塊裡、字是墨黑粗字 */
+nav.tabs{border-top:1px solid var(--ink)}
+nav.tabs svg{display:block;width:22px;height:22px;stroke-width:2}
+nav.tabs button{flex-direction:column;gap:3px;padding-top:6px;min-height:58px;font-size:13px;letter-spacing:.02em;color:var(--muted2)}
+nav.tabs button.on{box-shadow:none;color:var(--ink);font-weight:800}
+nav.tabs button.on svg{box-sizing:content-box;width:20px;height:20px;padding:2px 16px;border-radius:14px;background:#e6dcc5;stroke-width:2.4}
+nav.tabs .badge{top:0;left:calc(50% + 24px);right:auto;min-width:18px;height:18px;padding:0 4px;border:2px solid var(--surface)}
 
-.pg-mine{gap:26px}
-.pg-mine .grp{gap:0}
+.pg-mine{gap:20px}
+.pg-mine .grp{gap:12px}
 .pg-mine .grp:last-of-type:has(>.card.task)::after{content:none}
-/* 區段標題：明體，上面一條 3px 粗線（第一段接在標題欄下面，不再重複） */
-.pg-mine .grp-h{display:flex;align-items:baseline;margin:0 0 4px;padding-top:14px;border-top:2px solid var(--ink);font-family:"Noto Serif TC",serif;font-size:21px;font-weight:900;letter-spacing:.04em}
-.pg-mine>section.grp:first-child>.grp-h,.pg-mine>h1+section.grp>.grp-h{border-top:0;padding-top:0}
-.pg-mine .grp-h::before,.pg-mine .grp-h::after{content:none}
+.pg-mine .grp-h{display:flex;align-items:baseline;gap:8px;font-size:19px;margin:4px 0 -2px}
+.pg-mine .grp-h::after,.pg-mine .grp-h.sub::before{content:none}
 .pg-mine .grp-h .badge{display:none}
-.pg-mine .grp-note{margin-left:auto;font-family:var(--font-body);font-size:13px;font-weight:500;letter-spacing:.02em;color:var(--muted)}
-.pg-mine .grp-h.sub{margin:14px 0 0;padding:0 0 4px;border:0;font-family:var(--font-body);font-size:13px;font-weight:700;letter-spacing:.1em;color:var(--muted)}
-.pg-mine .gcnt{margin-left:8px;font-variant-numeric:tabular-nums}
-.pg-mine .pa{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-/* 我是替身／我是本體：一排文字分頁，選中的底下一條粗線 */
-.pg-mine .seg{display:flex;justify-content:flex-start;gap:28px;margin-top:-18px;padding:0;border:0;border-bottom:1px solid var(--ink);background:transparent}
-.pg-mine .seg button{flex:none;min-height:44px;padding:0;border:0;background:transparent;color:var(--muted);font-size:16px;font-weight:700;box-shadow:none}
+.pg-mine .grp-n{font-family:var(--font-body);font-size:16px;font-weight:600;color:var(--muted)}
+
+/* 下一個開工：全頁唯一的黑色塊，整塊可以點，下面兩顆按鈕 */
+.lead{position:relative;display:flex;flex-direction:column;gap:4px;margin:0;padding:12px 16px 14px;border-radius:12px;background:var(--ink);color:var(--surface)}
+.lead p{margin:0}
+.lead-k{display:flex;align-items:center;justify-content:space-between;font-size:13px;font-weight:700;letter-spacing:.04em;color:rgba(255,252,244,.85)}
+.lead-role{padding:1px 8px;border-radius:4px;background:var(--role-w-bg);color:var(--role-w);font-size:13px;font-weight:700;letter-spacing:.02em}
+.lead-n{display:flex;align-items:baseline;gap:6px;font-size:16px;font-weight:700}
+.lead-n .dnum{font-family:var(--font-body);font-size:40px;font-weight:800;line-height:1;letter-spacing:-.01em}
+.lead-place{font-size:15px;font-weight:700;font-variant-numeric:tabular-nums}
+.lead-m{font-size:14px;color:rgba(255,252,244,.9)}
+.lead-note{font-size:14px;line-height:1.5;color:rgba(255,252,244,.9);display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+.lead-sep{margin:0 2px;opacity:.6}
+.lead-chev{margin-left:auto;padding-left:8px;font-size:20px;line-height:1;opacity:.8}
+.lead-place{display:flex;align-items:center}
+.lead-l{margin-right:6px;font-size:13px;color:rgba(255,252,244,.78)}
+.lead .tc-open{border-radius:12px}
+/* 身分標籤：全頁同一種（下一個開工、待辦卡）：小的淡色標籤，本體＝靛藍、替身＝琥珀 */
+.role-tag{display:inline-flex;align-items:center;flex:none;padding:1px 7px;border-radius:4px;background:var(--role-p-bg);color:var(--role-p);font-size:13px;font-weight:700;letter-spacing:.02em;line-height:1.5}
+.role-tag.is-w,.is-worker .role-tag{background:var(--role-w-bg);color:var(--role-w)}
+/* 留言：顯示最新一則（兩行），未讀是名字前的紅點；「回覆」44px 高 */
+.lead-msg{position:relative;z-index:2;appearance:none;display:flex;align-items:center;gap:10px;min-height:56px;margin-top:10px;padding:6px 6px 6px 12px;border:0;border-radius:8px;background:rgba(255,252,244,.12);color:var(--surface);font:inherit;font-size:14px;line-height:1.45;text-align:left;cursor:pointer}
+.lead-msg-t{flex:1;min-width:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.lead-msg .dot{display:inline-block;width:8px;height:8px;margin-right:6px;border-radius:50%;background:var(--alert);vertical-align:1px}
+.lead-msg-go{flex:none;display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border-radius:6px;background:var(--surface);color:var(--ink);font-weight:700}
+
+/* 待你處理：白色卡片。上：身分標籤、期限（時鐘時間＋還剩多久，24 小時內紅色）；中：發生了什麼事、金額、做決定需要的資訊＋按鈕；下：案件時間、地點 */
+.pg-mine .todo-row{display:flex;flex-direction:column;gap:6px;padding:12px 14px;border:0;border-radius:10px;background:var(--surface);box-shadow:0 1px 2px rgba(10,10,10,.08)}
+.pg-mine .todo-row.is-poster,.pg-mine .todo-row.is-worker{margin-top:0}
+.pg-mine .todo-row:hover{transform:none;box-shadow:0 1px 2px rgba(10,10,10,.08)}
+.pg-mine .todo-row:active{transform:none;background:#f3ecdc}
+.pg-mine .todo-row .tc-open{border-radius:10px}
+.pg-mine .todo-row p{margin:0}
+.tr-top{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px}
+.pg-mine .todo-row .tc-tab,.pg-mine .todo-row.is-worker .tc-tab{position:static;height:auto;padding:1px 7px;border:0}
+.pg-mine .todo-row.is-worker .tc-tab{background:var(--role-w-bg);color:var(--role-w)}
+.tr-due{font-size:13px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+.tr-left{font-weight:500;color:var(--muted)}
+.tr-due.late,.tr-due.late .tr-left{color:var(--alert-ink)}
+.tr-main{display:flex;align-items:flex-start;gap:12px}
+.tr-txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.tr-title{font-size:17px;font-weight:700;line-height:1.35;color:var(--ink)}
+.tr-amt{font-size:15px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+.tr-amt .price,.tr-proof .price{font-family:var(--font-body);font-size:inherit;font-weight:600}
+.tr-al{margin-right:6px;font-size:13px;font-weight:500;color:var(--muted)}
+.tr-amt .cur,.tr-proof .cur{font-size:12px;margin-right:1px}
+.tr-proof{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:14px;color:var(--ink);font-variant-numeric:tabular-nums}
+.tr-proof .tr-al{margin-right:0}
+.tr-proof .nw{white-space:nowrap}
+.tr-photos{align-items:flex-start}
+.tr-photos img{width:64px;height:64px;border-radius:6px;object-fit:cover;background:#ece5d4}
+.tr-acts{position:relative;z-index:2;flex:none;display:flex;flex-direction:column;align-items:stretch;gap:2px}
+.pg-mine .tr-go.btn.sm{width:96px;min-height:44px;padding:0 8px;border-radius:8px;font-size:15px;box-shadow:none}
+.tr-alt{appearance:none;min-height:40px;border:0;background:none;font:inherit;font-size:14px;font-weight:600;color:var(--muted);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.tr-meta{margin-top:2px!important;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.tr-meta .nw{white-space:nowrap}
+.tr-sep{margin:0 1px}
+.tr-new{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--alert-ink)}
+.tr-new .nbadge{position:static;border:0}
+
+/* 全部案件：分頁選中是底線；卡片白色面 */
+.pg-mine .seg{display:flex;gap:24px;padding:0;border:0;border-bottom:1px solid var(--line);background:transparent}
+.pg-mine .seg button{flex:none;min-height:44px;padding:0 2px;background:transparent;color:var(--muted2);font-size:15px;font-weight:700}
 .pg-mine .seg button+button{border-left:0}
 .pg-mine .seg button.on{background:transparent;color:var(--ink);box-shadow:inset 0 -3px 0 var(--ink)}
-.pg-mine .seg button .muted,.pg-mine .seg button.on .muted{font-size:14px;font-weight:600;color:inherit;font-variant-numeric:tabular-nums}
-.pg-mine .mine-note{margin:-10px 0 0;font-size:14px;color:var(--muted)}
-
-/* 下一個開工：全頁唯一的黑色塊。左邊倒數，右邊地點、時間、集合位置 */
-.lead{position:relative;margin:0;padding:14px 18px 20px;background:var(--ink);color:var(--surface)}
-.lead p{margin:0}
-.lead-k{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px!important;font-size:13px;font-weight:700;letter-spacing:.1em}
-.lead-role{padding:1px 6px;border:1px solid rgba(255,252,244,.8);font-size:12px;letter-spacing:.06em}
-.lead-g{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:20px;align-items:start}
-.lead-n{display:flex;flex-direction:column;align-items:flex-start;gap:8px;font-size:15px;font-weight:700}
-.lead-n .dnum{font-size:88px;line-height:.76;letter-spacing:-.03em}
-.lead-i{display:flex;flex-direction:column;gap:6px;padding-left:20px;border-left:1px solid rgba(255,252,244,.35)}
-.lead-place{font-family:"Noto Serif TC",serif;font-size:22px;font-weight:900;line-height:1.2;letter-spacing:.03em}
-.lead-m{font-size:14px;line-height:1.5;font-variant-numeric:tabular-nums;color:rgba(255,252,244,.88)}
-.lead-l{display:inline-block;margin-right:8px;font-size:12px;font-weight:700;letter-spacing:.06em;color:rgba(255,252,244,.78)}
-.lead .tc-open{border-radius:0}
-.lead-go{margin-top:16px!important;text-align:right;font-size:14px;font-weight:700;letter-spacing:.04em}
-.lead-go::after{content:" →";content:" →"/""}
-
-/* 案件：時刻表的一列。左：日期；右：時間、地點、金額、狀態 */
-.pg-mine .card.task{display:grid;grid-template-columns:52px auto minmax(0,1fr) auto;align-items:start;margin:0;padding:16px 0;border:0;border-top:1px solid var(--ink);background:transparent}
-.pg-mine .grp-h+.card.task{border-top:0;padding-top:10px}
-.pg-mine .card.task.is-poster,.pg-mine .card.task.is-worker{margin-top:0}
-.pg-mine>.grp:last-of-type>.card.task:last-child{border-bottom:1px solid var(--ink)}
-.pg-mine .card.task:hover,.pg-mine .card.task:active{transform:none;box-shadow:none}
-.pg-mine .tc-body,.pg-mine .tc-date,.pg-mine .tc-row{display:contents}
-.pg-mine .tc-d{grid-column:1;grid-row:1/span 3;align-self:start;display:flex;flex-direction:column;align-items:flex-start;gap:4px;margin-right:14px;padding:0;border:0;background:none}
-.pg-mine .tc-d .dnum{order:1;font-size:36px;line-height:.78;margin-left:-2px}
-.pg-mine .tc-d .dw{order:2;font-size:12px;font-weight:600;color:var(--ink)}
-.pg-mine .tc-d .dm{order:3;font-size:12px;font-weight:600;color:var(--muted)}
-.pg-mine .tc-d .dw::before{content:"週";content:"週"/""}
-.pg-mine .card.no-m .tc-d .dm{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-.pg-mine .tc-time{grid-column:2/4;grid-row:1;padding:0;font-size:16px;font-weight:600;line-height:1.25}
-.pg-mine .tc-main{grid-column:2/5;grid-row:2;margin-top:4px;gap:2px}
-.pg-mine .tc-place{font-size:15px}
-.pg-mine .tc-who{font-size:14px;font-weight:600}
-.pg-mine .tc-side{grid-column:4;grid-row:1;align-self:start;justify-content:flex-start}
-.pg-mine .tc-side .price{font-family:var(--font-body);font-size:16px;font-weight:600;line-height:1.25;font-variant-numeric:tabular-nums;word-spacing:-.15em}
-.pg-mine .tc-side .price .cur{font-size:12px;letter-spacing:.04em}
-.pg-mine .tc-side .price .muted{font-size:14px}
-.pg-mine .tc-bar.bottom{grid-column:2/5;grid-row:3;margin-top:8px;padding:0;border:0;background:none;color:var(--muted);font-size:14px;font-weight:500}
-.pg-mine .tc-dot{display:none}
-.pg-mine .tc-bar .dl{color:var(--alert-ink)}
-.pg-mine .nbadge{top:16px;right:auto;left:30px;min-width:18px;height:18px;padding:0 4px;border:0}
-
-/* 待你處理：左欄是倒數（還剩多久，24 小時內紅色），右邊：身分＋地點／要做的事＋金額／說明／日期時間 */
-.pg-mine .todo-list .tc-d{grid-row:1/span 4}
-.pg-mine .tc-cd{gap:3px}
-.pg-mine .tc-cd .cd-k{order:0}.pg-mine .tc-cd .dnum{order:1}.pg-mine .tc-cd .cd-u{order:2}
-.pg-mine .todo-list .tc-bar .grow{display:block}
-.pg-mine .tc-cd .cd-k,.pg-mine .tc-cd .cd-u{font-family:var(--font-body);font-size:12px;font-weight:600;line-height:1.1;color:var(--muted)}
-.pg-mine .tc-cd .dnum{font-size:36px;line-height:.8;margin-left:-2px;color:var(--ink)}
-.pg-mine .tc-cd.late .dnum,.pg-mine .tc-cd .cd-over{color:var(--alert-ink)}
-.pg-mine .tc-cd .cd-over{font-family:"Noto Serif TC",serif;font-size:20px;font-weight:900;line-height:1.1}
-.pg-mine .todo-list .tc-tab{position:static;grid-column:2;grid-row:1;align-self:center;height:20px;margin:0 8px 0 0;padding:0 6px;border:0;font-size:12px;letter-spacing:.06em}
-.pg-mine .todo-list .card.task.is-worker .tc-tab{padding:0 5px;border:1px solid var(--ink);background:transparent}
-.pg-mine .todo-list .tc-main{grid-column:3/5;grid-row:1;align-self:center;flex-direction:row;flex-wrap:wrap;column-gap:8px;margin:0;min-width:0}
-.pg-mine .todo-list .tc-place{font-size:14px;line-height:1.3;color:var(--muted)}
-.pg-mine .todo-list .tc-who{font-size:14px;line-height:1.3}
-.pg-mine .todo-list .tc-bar.bottom{grid-column:2/4;grid-row:2;margin-top:8px;color:var(--ink);font-size:17px;font-weight:700;line-height:1.35}
-.pg-mine .todo-list .tc-bar .grow::after{content:" →";content:" →"/"";white-space:nowrap}
-.pg-mine .todo-list .tc-bar .dl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-.pg-mine .todo-list .tc-side{grid-column:4;grid-row:2;align-self:baseline;margin:8px 0 0 12px}
-.pg-mine .todo-list .tc-side .price{font-size:16px;line-height:1.35}
-.pg-mine .todo-list .card.amt-in-bar .tc-side{display:none}
-.pg-mine .tc-due{grid-column:2/5;grid-row:3;margin:2px 0 0;font-size:13px;color:var(--muted)}
-.pg-mine .todo-list .tc-time{grid-column:2/5;grid-row:4;margin-top:8px;font-size:13px;font-weight:500;color:var(--muted)}
-.pg-mine .tc-dt{margin-right:6px}
-.pg-mine .mine-end{margin:-12px 0 0;font-size:14px;color:var(--muted)}
-/* 窄螢幕：金額移到身分那一行右邊，要做的事整行都能用 */
-@media (max-width:360px){.pg-mine .todo-list .tc-side{grid-row:1;align-self:center;margin:0 0 0 8px}.pg-mine .todo-list .tc-main{grid-column:3}.pg-mine .todo-list .tc-bar.bottom{grid-column:2/5;font-size:16px}}
+.pg-mine .seg button.on .muted{color:var(--ink)}
+.pg-mine .card.task:not(.todo-row){border:0;border-radius:12px;margin-top:0;box-shadow:0 1px 2px rgba(10,10,10,.08)}
+.pg-mine .card.task:not(.todo-row):hover{transform:none}
+.pg-mine .card.task:not(.todo-row) .tc-bar.bottom{border-top:1px solid var(--line);background:transparent;color:var(--muted)}
+.pg-mine .card.task:not(.todo-row) .tc-d{border-right:1px solid var(--line);background:transparent}
+.pg-mine .card.task .nbadge{top:8px;right:8px}
+.pg-mine .mine-note{margin:-6px 0 0;font-size:14px;color:var(--muted)}
+/* 最後：一句話＋整列可以點的「過去的案件」 */
+.pg-mine .mine-end{display:flex;flex-direction:column;gap:12px;font-size:14px;color:var(--muted)}
+.mine-wait{display:flex;align-items:center;gap:8px;padding:0 2px}
+.mine-wait b{font-size:15px;color:var(--ink)}
+.mine-past span{font-size:22px;line-height:1;color:var(--muted)}
+.pg-mine .mine-end p{margin:0}
+.mine-past{appearance:none;display:flex;align-items:center;justify-content:space-between;min-height:52px;padding:0 16px;border:0;border-radius:12px;background:var(--surface);box-shadow:0 1px 2px rgba(10,10,10,.08);font:inherit;font-size:15px;font-weight:700;color:var(--ink);cursor:pointer}
+@media (max-width:360px){.tr-photos img{width:44px;height:44px}.tr-proof{gap:4px}}
 </style>
 </head>
 <body>
@@ -1267,13 +1262,13 @@ function endReason(t,r){
   return t.cancelReason||'已取消。';
 }
 /* 待辦的截止時間，用來排序「待你處理」 */
-/* 待辦的排序依據＝畫面上寫的期限（方案 J 在「待你處理」每一列都寫出來） */
+/* 待辦的排序依據＝「待你處理」每一張卡右上角寫的期限（方案 J） */
 function dueAt(t){
   if(t.status==='pending')return deadline(t);
   if(t.status==='open')return t.start;
-  if(t.status==='assigned')return t.end+24*H;        /* 之後自動算打掃完成 */
-  if(t.status==='done')return (t.requestedAt||t.end)+3*D;  /* 之後自動驗收完成 */
-  if(t.confirmedAt)return t.confirmedAt+24*H;         /* 驗收後 24 小時內付款、確認收款 */
+  if(t.status==='assigned')return t.end+24*H;              /* 之後自動算打掃完成 */
+  if(t.status==='done')return (t.requestedAt||t.end)+3*D;   /* 之後自動驗收完成 */
+  if(t.confirmedAt)return t.confirmedAt+24*H;               /* 驗收後 24 小時內付款、確認收款 */
   return (t.requestedAt||t.start)+24*H;
 }
 
@@ -1342,7 +1337,8 @@ function headerView(){
   const m=me(),n=m?unreadNotes():0;
   /* 仿 Google Play：四個主分頁的標題欄是刊頭（左邊品牌名和時間，右邊鈴鐺；未登入時是「登入」）；
      下一層頁面（案件詳情、「我的」底下的頁面）是工具列：左邊返回鍵、沒有品牌名；案件詳情右邊是「⋮」，選單裡有分享和收藏。
-     標題欄固定一排；示範工具不放這裡，放在每一頁內容的最下面。螢幕太窄時時間會用「…」省略，不會換行 */
+     標題欄固定一排；示範工具不放這裡，放在每一頁內容的最下面。
+     不顯示現在時間（手機上方已經有）；只有示範工具快轉時間時，才顯示「模擬」和模擬的時間，螢幕太窄時用「…」省略 */
   const detail=ui.view==='detail',sub=ui.view==='list'&&ui.tab==='me'&&S.me&&ui.meSub&&ui.meSub!=='main';
   if(detail||sub){
     const t=detail?T(ui.detailId):null,fav=t&&S.me&&isFav(t.id);
@@ -1352,7 +1348,7 @@ function headerView(){
     return '<header class="top sub"><button class="icon-btn" data-act="'+(detail?'back':'backMe')+'" aria-label="'+(detail?'返回':'返回我的')+'">'+IC.back+'</button><span class="grow"></span>'+more+'</header>';
   }
   return '<header class="top">'+
-  '<div class="hd-brand"><div class="brand">替身掃者</div><div class="clock">'+(S.clockOffset?'<span class="sim">模擬</span>':'')+fmtTime(now())+'</div></div>'+
+  '<div class="hd-brand"><div class="brand">替身掃者</div>'+(S.clockOffset?'<div class="clock"><span class="sim">模擬</span>'+fmtTime(now())+'</div>':'')+'</div>'+
   '<div class="hd-act">'+(m?'<button class="icon-btn bell" data-act="openNotes" aria-label="通知'+(n?'，'+n+' 則未讀':'')+'">'+IC.bell+(n?'<span class="nbadge hdr">'+n+'</span>':'')+'</button>':'<button class="btn sm" data-act="login">登入</button>')+'</div></header>';
 }
 function tabsView(){
@@ -1398,13 +1394,12 @@ function taskCard(t,opt){
   const price=t.price||t.budget;
   const role=!S.me||opt.noRole?'':own?'我是本體':(t.assignee===S.me||t.offers.some(o=>o.user===S.me))?'我是替身':'';
   let bar='';
-  const di=opt.due&&td?dueInfo(t,S.me):null,cd=di?countCol(di):'';
-  if(opt.bar)bar=(di?'<p class="tc-due"><span class="vh">'+(di.left>0?'還剩 '+span(di.left)+'，':'')+'</span>'+di.txt+'</p>':'')+'<div class="tc-bar bottom'+(td?' todo':'')+'">'+(td?'<span class="tc-dot" aria-hidden="true"></span>':'')+'<span class="grow">'+(td?'<span class="vh">需要你處理：</span>':'')+esc(barText(t,S.me)).replace(/（還剩 ([^）]+)）/,'<span class="dl"><span class="pa">（</span>還剩 $1<span class="pa">）</span></span>')+'</span></div>';
+  if(opt.bar)bar='<div class="tc-bar bottom'+(td?' todo':'')+'">'+(td?'<span class="tc-dot" aria-hidden="true"></span>':'')+'<span class="grow">'+(td?'<span class="vh">需要你處理：</span>':'')+esc(barText(t,S.me))+'</span></div>';
   const rk=own?'is-poster':(role||opt.noRole&&S.me&&(t.assignee===S.me||t.offers.some(o=>o.user===S.me)))?'is-worker':'',boss=t.assignee===S.me&&S.me&&t.status!=='pending'?u(t.poster):null;
-  return '<div class="card task'+(rk?' '+rk:'')+(opt.noMonth?' no-m':'')+(opt.due&&td&&/NT\$/.test(barText(t,S.me))?' amt-in-bar':'')+'">'+(role?'<span class="tc-tab">'+role+'</span>':'')+
+  return '<div class="card task'+(rk?' '+rk:'')+'">'+(role?'<span class="tc-tab">'+role+'</span>':'')+
     '<button class="tc-open" data-act="open" data-id="'+t.id+'" aria-label="查看 '+dateLabel(t)+esc(t.building)+' 的案件"></button>'+
     (opt.noFav?'':favBtn(t.id))+(unread(t)?'<span class="nbadge" aria-label="'+unread(t)+' 則新留言">'+unread(t)+'</span>':'')+
-    '<div class="tc-body"><div class="tc-date">'+(cd?cd:'<span class="tc-d">'+cardDate(t)+'</span>')+'<span class="tc-time">'+(cd?'<span class="tc-dt">'+dateLabel(t)+'</span>':'')+cardTime(t)+'</span></div>'+
+    '<div class="tc-body"><div class="tc-date"><span class="tc-d">'+cardDate(t)+'</span><span class="tc-time">'+cardTime(t)+'</span></div>'+
     '<div class="tc-row"><div class="tc-main">'+
       '<div class="tc-place">'+esc(t.building)+'</div>'+(boss?'<div class="tc-who">本體 '+esc(boss.name)+'</div>':'')+
       (t.gender==='不限'?'':'<div class="tc-g">'+genderText(t.gender)+'</div>')+
@@ -1494,63 +1489,104 @@ function mineGroups(id){
 function mineView(){
   const id=S.me,G=mineGroups(id);
   const todos=S.tasks.filter(t=>todo(t,id)).sort((a,b)=>dueAt(a)-dueAt(b));
-  /* 方案 J：24 小時內就要開工的案件放最上面（不是待辦，不用紅色） */
+  /* 方案 J：24 小時內就要開工、已確認接案的案件放最上面（不是待辦，不算紅點） */
   const lead=S.tasks.filter(t=>t.status==='assigned'&&(t.assignee===id||t.poster===id)&&t.start>now()&&t.start-now()<=D).sort((a,b)=>a.start-b.start)[0];
   const above={};todos.forEach(t=>above[t.id]=1);if(lead)above[lead.id]=1;
   const cnt=k=>S.tasks.filter(t=>G[k].some(g=>g[1](t))).length;
   if(!ui.mineRole)ui.mineRole=(!cnt('work')&&cnt('own'))?'own':'work';
-  const k=ui.mineRole,thisMonth=new Date(now()).getMonth();
-  /* 月份：這個月的不寫，其他月份才寫 */
-  const cards=(list,o)=>list.map(t=>taskCard(t,Object.assign({bar:true,noFav:true,noMonth:new Date(t.start).getMonth()===thisMonth},o))).join('');
-  /* 全部案件：上面已經列出的案件不再重複，只在最後說一句 */
+  const k=ui.mineRole;
+  /* 全部案件：上面已經列出的案件不再重複 */
   const shownUp=S.tasks.filter(t=>above[t.id]&&G[k].some(g=>g[1](t))).length;
   const groups=G[k].map(([title,fn],gi)=>{const list=S.tasks.filter(t=>fn(t)&&!above[t.id]).sort((a,b)=>a.start-b.start);
-    return list.length?'<section class="grp"><h3 class="grp-h sub" data-n="0'+(gi+1)+'">'+title+'<span class="gcnt"><span class="pa">（</span>'+list.length+'<span class="pa">）</span></span></h3>'+cards(list,{noRole:true})+'</section>':'';}).join('');
+    return list.length?'<section class="grp"><h3 class="grp-h sub" data-n="0'+(gi+1)+'">'+title+'（'+list.length+'）</h3>'+list.map(t=>taskCard(t,{bar:true,noRole:true,noFav:true})).join('')+'</section>':'';}).join('');
   const none=k==='work'
     ?'<div class="empty"><b>你目前沒有當替身的案件</b><span class="small">出價後的案件會出現在這裡。</span><button class="btn ghost sm" data-act="tab" data-v="browse">去看看有哪些案件</button></div>'
     :'<div class="empty"><b>你目前沒有當本體的案件</b><span class="small">填好日期、時間和地點就能發案。</span><button class="btn ghost sm" data-act="tab" data-v="post">發案</button></div>';
   const note=shownUp?'<p class="mine-note">'+(groups?'另外 '+shownUp+' 個案件列在上面。':'這 '+shownUp+' 個案件都列在上面。')+'</p>':'';
-  /* 兩種身分都沒有上面以外的案件：整區縮成一句 */
   const others=v=>S.tasks.filter(t=>!above[t.id]&&G[v].some(g=>g[1](t))).length,upAll=Object.keys(above).length;
   const allUp=upAll&&!others('work')&&!others('own');
   return '<h1 class="vh">我的案件</h1>'+(lead?leadBlock(lead,id):'')+
   (todos.length
-    ?'<section class="grp todo-list" aria-label="待你處理"><h2 class="grp-h">待你處理<span class="badge">'+todos.length+'</span></h2>'+cards(todos,{due:true})+'</section>'
+    ?'<section class="grp todo-list" aria-label="待你處理"><h2 class="grp-h">待你處理<span class="grp-n">'+todos.length+'</span><span class="badge">'+todos.length+'</span></h2>'+todos.map(t=>todoRow(t,id)).join('')+'</section>'
     :'<p class="small muted">目前沒有需要你處理的事。</p>')+
-  (allUp?'<p class="mine-end">以上是你全部的案件。</p>':
+  (allUp?'<div class="mine-end"><p class="mine-wait"><b>等對方回覆</b><span>0</span></p><button class="mine-past" data-act="past">過去的案件<span aria-hidden="true">›</span></button></div>':
   '<h2 class="grp-h">全部案件</h2>'+
   '<div class="seg" role="tablist">'+[['work','我是替身'],['own','我是本體']].map(([v,l])=>'<button role="tab" aria-selected="'+(k===v)+'" class="'+(k===v?'on':'')+'" data-act="seg" data-k="mineRole" data-v="'+v+'">'+l+'<span class="muted small">'+cnt(v)+'</span></button>').join('')+'</div>'+
   (cnt(k)?groups+note:none));
 }
-/* 方案 J：待你處理每一列的期限（排序就是照這個）。left＝還剩多久（負的＝已經超過） */
+/* 方案 J：期限的說法：48 小時內一律用小時（「1 天」可能是 47 小時，不好比較），1 小時內用分鐘 */
+function leftText(ms){const m=Math.round(ms/M);if(m<60)return Math.max(1,m)+' 分鐘';const h=Math.round(ms/H);return h<48?h+' 小時':Math.round(ms/D)+' 天';}
+/* 方案 J：待你處理的期限：「明天 08:00 前付款・還剩 21 小時」（時鐘時間＋要做的事＋還剩多久）。超過了寫「已超過 24 小時」 */
+const DUE_VERB={open:'選好',pending:'確認',assigned:'按完成',done:'驗收',confirmed:'付款',paid:'確認收款'};
 function dueInfo(t,id){
-  const n=now();let end=null,txt='';
-  if(t.status==='open'){end=t.start;txt='開工前要選好';}
-  else if(t.status==='pending'){end=deadline(t);txt='逾時自動撤銷';}
-  else if(t.status==='assigned'){end=t.end+24*H;txt='之後自動算打掃完成';}
-  else if(t.status==='done'&&t.requestedAt){end=t.requestedAt+3*D;txt='之後自動驗收完成';}
-  else if((t.status==='confirmed'||t.status==='paid')&&t.confirmedAt){end=t.confirmedAt+24*H;const c=t.status==='confirmed';
-    txt=n>=end?(c?'已超過 24 小時還沒付款':'已超過 24 小時還沒確認收款'):(c?'驗收後 24 小時內付款':'驗收後 24 小時內確認收款');}
+  const n=now();let end=null;
+  if(t.status==='open')end=t.start;
+  else if(t.status==='pending')end=deadline(t);
+  else if(t.status==='assigned')end=t.end+24*H;
+  else if(t.status==='done'&&t.requestedAt)end=t.requestedAt+3*D;
+  else if((t.status==='confirmed'||t.status==='paid')&&t.confirmedAt)end=t.confirmedAt+24*H;
   if(end===null)return null;
-  return {left:end-n,txt:txt,late:end-n<24*H};
+  const left=end-n,d=new Date(end);
+  return {left:left,late:left<24*H,
+    text:left>0?dayWord(end)+' '+pad(d.getHours())+':'+pad(d.getMinutes())+' 前'+DUE_VERB[t.status]+'<span class="tr-left">・還剩 '+leftText(left)+'</span>':'已超過 24 小時還沒'+DUE_VERB[t.status]};
 }
-/* 左欄的倒數：還剩／大數字／單位；已經超過就寫「逾期」 */
-function countCol(di){
-  if(di.left<=0)return '<span class="tc-d tc-cd late" aria-hidden="true"><span class="cd-over">逾期</span></span>';
-  const m=span(di.left).match(/^(\d+) (.+)$/);
-  return '<span class="tc-d tc-cd'+(di.late?' late':'')+'" aria-hidden="true"><span class="cd-k">還剩</span><b class="dnum">'+m[1]+'</b><span class="cd-u">'+m[2]+'</span></span>';
+/* 方案 J：待你處理的一張卡。標題寫發生了什麼事，按鈕寫要做的事（按了打開案件，那一步的按鈕在詳情頁第一屏） */
+const TODO_VERB={open:'選替身',pending:'確認接案',assigned:'打掃完成',done:'驗收',confirmed:'付款',paid:'確認收款'};
+function todoTitle(t){
+  switch(t.status){
+    case 'open':return t.offers.length+' 人出價';
+    case 'pending':return '本體選了你';
+    case 'assigned':return now()<t.end?'打掃中':'已過結束時間';
+    case 'done':return t.autoDone?'已自動算打掃完成':'替身打掃完成了';
+    case 'confirmed':return '驗收完成，請付款';
+    case 'paid':return '本體已付款';
+  }
+  return barText(t,S.me);
 }
-function dayWord(ms){const a=new Date(now());a.setHours(0,0,0,0);const d=Math.round((new Date(ms).setHours(0,0,0,0)-a)/D);return d===0?'今天':d===1?'明天':mdw(new Date(ms));}
-/* 方案 J：「下一個開工」：最上面一塊。左邊倒數，右邊地點、時間、集合位置 */
+/* 做決定需要的資訊：每筆出價的金額（不顯示姓名）、打掃證明縮圖、替身的收款方式 */
+function todoProof(t){
+  if(t.status==='open'&&t.offers.length){const ps=t.offers.map(o=>o.price).sort((a,b)=>a-b);
+    return '<p class="tr-proof"><span class="tr-al">出價</span>'+ps.slice(0,3).map(p=>'<span class="nw">'+ntd(p)+'</span>').join('、')+(ps.length>3?'<span class="tr-al">等 '+ps.length+' 筆</span>':'')+'</p>';}
+  if(t.status==='done'){const ph=t.photos||[];
+    return ph.length&&!t.photosGone?'<p class="tr-proof tr-photos"><span class="tr-al">打掃證明</span>'+ph.slice(0,3).map(x=>'<img src="'+x.src+'" alt="">').join('')+(ph.length>3?'<span class="tr-al">+'+(ph.length-3)+'</span>':'')+'</p>':'<p class="tr-proof"><span class="tr-al">沒有附打掃證明</span></p>';}
+  if(t.status==='confirmed'){const w=u(t.assignee);return w&&hasPay(w)?'<p class="tr-proof"><span class="tr-al">收款方式</span>'+esc(payList(w).replace(/ \*\*\*\*\d+/,''))+'</p>':'';}
+  if(t.status==='paid'&&t.payment)return '<p class="tr-proof">'+(t.payment.method==='LINE Pay'?'已用 LINE Pay 付款':'已匯款，帳號末五碼 '+esc(t.payment.last5||''))+'</p>';
+  return '';
+}
+/* 金額：從你的角度寫（還沒成交是「標價／你的出價」，成交後是「你付／你收」） */
+function todoAmt(t,own){
+  if(t.status==='open')return t.budget?'<span class="tr-al">標價</span>'+ntd(t.budget):'<span class="tr-al">自由出價</span>';
+  if(t.status==='pending')return '<span class="tr-al">你的出價</span>'+ntd(t.price);
+  return '<span class="tr-al">'+(own?'你付':'你收')+'</span>'+ntd(t.price);
+}
+/* 一張待辦卡：上面是身分標籤和期限；中間是發生了什麼事、金額、做決定需要的資訊，右邊是按鈕；最下面是案件時間和地點 */
+function todoRow(t,id){
+  const own=t.poster===id,di=dueInfo(t,id),title=todoTitle(t),n=unread(t);
+  return '<div class="card task todo-row '+(own?'is-poster':'is-worker')+'">'+
+    '<button class="tc-open" data-act="open" data-id="'+t.id+'" aria-label="'+esc(barText(t,id))+'：'+dateLabel(t)+esc(t.building)+'"></button>'+
+    '<div class="tr-top"><span class="tc-tab role-tag">'+(own?'我是本體':'我是替身')+'</span>'+(di?'<span class="tr-due'+(di.late?' late':'')+'">'+di.text+'</span>':'')+'</div>'+
+    '<div class="tr-main"><div class="tr-txt"><p class="tr-title"><span class="vh">需要你處理：</span>'+esc(title)+'</p>'+
+      '<p class="tr-amt">'+todoAmt(t,own)+'</p>'+todoProof(t)+'</div>'+
+      '<div class="tr-acts"><button class="btn sm tr-go" data-act="open" data-id="'+t.id+'" tabindex="-1" aria-hidden="true">'+TODO_VERB[t.status]+'</button>'+
+      (t.status==='pending'&&!own?'<button class="tr-alt" data-act="declineMatch" data-id="'+t.id+'">婉拒</button>':'')+'</div></div>'+
+    (n?'<p class="tr-new"><span class="nbadge">'+n+'</span>則新留言</p>':'')+
+    '<p class="tr-meta"><span class="nw">'+dayWord(t.start,true)+' '+cardTime(t)+'</span><span class="tr-sep">・</span>'+esc(t.building)+'</p></div>';
+}
+function dayWord(ms,wd){const a=new Date(now());a.setHours(0,0,0,0);const x=new Date(ms),d=Math.round((new Date(ms).setHours(0,0,0,0)-a)/D),w=wd?'（'+'日一二三四五六'[x.getDay()]+'）':'';const r={'-1':'昨天','0':'今天','1':'明天','2':'後天'}[d];return r?r+w:mdw(x);}
+/* 方案 J：「下一個開工」：倒數、地點和時間、集合位置、備註；替身另外看得到本體姓名（本體這邊照規則不顯示替身）。
+   最下面是留言：有留言就顯示最新一則，按了打開案件並捲到留言板 */
 function leadBlock(t,id){
-  const w=when(t).match(/^(\d+) (.+)開工$/),own=t.poster===id,boss=!own?u(t.poster):null;
-  return '<section class="lead" aria-label="下一個開工"><button class="tc-open" data-act="open" data-id="'+t.id+'" aria-label="查看 '+dateLabel(t)+esc(t.building)+' 的案件"></button>'+
-    '<p class="lead-k">下一個開工<span class="lead-role">'+(own?'我是本體':'我是替身')+'</span></p>'+
-    '<div class="lead-g"><p class="lead-n">'+(w?'<b class="dnum">'+w[1]+'</b><span>'+w[2]+'開工</span>':'<span>'+when(t)+'</span>')+'</p>'+
-    '<div class="lead-i"><p class="lead-place">'+esc(t.building)+'</p><p class="lead-m">'+dayWord(t.start)+' '+cardTime(t)+'</p>'+
-    '<p class="lead-m"><span class="lead-l">集合</span>'+esc(t.meet)+'</p>'+(boss?'<p class="lead-m"><span class="lead-l">本體</span>'+esc(boss.name)+'</p>':'')+'</div></div><p class="lead-go" aria-hidden="true">查看案件</p></section>';
+  const w=when(t).match(/^(\d+) (.+)開工$/),own=t.poster===id,boss=!own?u(t.poster):null,cs=t.comments||[],last=cs[cs.length-1],n=unread(t);
+  const who=last?(last.user===id?'你':u(last.user).name):'';
+  return '<section class="lead" aria-label="下一個開工"><button class="tc-open" data-act="open" data-id="'+t.id+'" aria-label="下一個開工：'+esc(when(t))+'，'+esc(t.building)+'，查看案件"></button>'+
+    '<p class="lead-k"><span>下一個開工</span><span class="role-tag '+(own?'is-p':'is-w')+'">'+(own?'我是本體':'我是替身')+'</span></p>'+
+    '<p class="lead-n">'+(w?'<b class="dnum">'+w[1]+'</b><span>'+w[2]+'</span>':'<span>'+when(t)+'</span>')+'</p>'+
+    '<p class="lead-place">'+esc(t.building)+'<span class="lead-sep">・</span>'+dayWord(t.start)+' '+cardTime(t)+'</p>'+
+    '<p class="lead-m"><span class="lead-l">集合</span>'+esc(t.meet)+(boss?'<span class="lead-sep">・</span><span class="lead-l">本體</span>'+esc(boss.name):'')+'</p>'+
+    (t.note?'<p class="lead-note">'+esc(t.note)+'</p>':'')+
+    '<button class="lead-msg" data-act="leadCmt" data-id="'+t.id+'">'+(last?'<span class="lead-msg-t">'+(n?'<i class="dot" aria-label="新留言"></i>':'')+'<b>'+esc(who)+'</b>：'+esc(last.text||'（照片）')+'</span>':'<span class="lead-msg-t">留言給'+(own?'替身':'本體')+'</span>')+
+      '<span class="lead-msg-go">'+(last?'回覆':'留言')+'</span></button></section>';
 }
-
 function pfdef(){const d=new Date(now()+D);return {date:toDate(d),month:toDate(d).slice(0,7),start:'10:00',end:'11:00',building:'',meet:'',gender:'不限',budget:'',note:''};}
 function toMin(s){const p=s.split(':');return Number(p[0])*60+Number(p[1]);}
 function fromMin(n){return pad(Math.floor(n/60))+':'+pad(n%60);}
@@ -2281,6 +2317,7 @@ function render(){
   if(ds&&k.d!==pk.d)ds.classList.add('fx-in');
   fxKeys=k;
   if(ui.top){window.scrollTo(0,0);ui.top=false;}
+  if(ui.toCmt){ui.toCmt=false;const c=document.getElementById('cmt-in');if(c){const sec=c.closest('section');window.scrollTo(0,sec.getBoundingClientRect().top+window.scrollY-72);c.focus({preventScroll:true});}}
   fixNotes();
   centerTimeCols();
   document.querySelectorAll('.cmts').forEach(c=>{c.scrollTop=c.scrollHeight;});
@@ -2350,6 +2387,7 @@ const A={
   /* 出價前要先設定收款方式：設定好後自動回到原本的案件 */
   setupPay(d){ui.payReturn=d.id;go('#bank');},
   open(d){go('#task-'+d.id);},
+  leadCmt(d){ui.toCmt=true;go('#task-'+d.id);},
   back(){return goBack(TAB_HASH[ui.tab]||'#browse');},
   filter(d){ui.filter=d.v;},
   seg(d){ui[d.k]=d.v;},

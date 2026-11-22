@@ -175,16 +175,32 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
   ok(await js(() => { const c = document.querySelector('.chosen'); return !!c && !c.querySelector('.tagbtn') && c.querySelector('.taglink').textContent === '標記'; }), '等替身確認的卡片也改成低調的「標記」');
   await fresh('u1'); await go('#task-t11'); await js(() => document.querySelector('[data-act="acceptMatch"]').click()); await W(300);
   await go('#mine');
-  // 方案 J：「全部案件」已經用「我是替身／我是本體」切換過，那裡的列不再重複身分標籤（待你處理裡才有）
+  // 方案 J：「全部案件」已經用「我是替身／我是本體」切換過，那裡的卡片不再重複身分標籤（待你處理、下一個開工裡才有）
   ok(await js(() => { const c = document.querySelector('[data-act="open"][data-id="t11"]').closest('.card.task'); return c.classList.contains('is-worker') && !c.querySelector('.tc-tab') && document.querySelector('.seg .on').textContent.startsWith('我是替身') && c.querySelector('.tc-who').textContent === '本體 陳怡君'; }), '我的案件：替身的案件在「全部案件・我是替身」下面（不再重複標籤），地點下面有「本體 陳怡君」');
-  ok(await js(() => { const c = Array.from(document.querySelectorAll('.card.task.is-poster')); return c.length > 0 && c.every(x => x.querySelector('.tc-tab').textContent === '我是本體' && !x.querySelector('.tc-who')) && getComputedStyle(c[0].querySelector('.tc-d')).backgroundColor !== 'rgb(10, 10, 10)'; }), '我的案件：本體的卡片左上角標籤「我是本體」，日期欄不再是黑底，不顯示替身資料');
-  // 方案 J：「待你處理」是一列一列的時刻表，標籤在右欄最上面（左欄是倒數），一樣和日期分開
-  ok(await js(() => { const c = Array.from(document.querySelectorAll('.card.task')); const tb = c.filter(x => x.querySelector('.tc-tab')); return tb.length > 0 && !document.querySelector('.bar-role') && tb.every(x => { const g = x.querySelector('.tc-tab').getBoundingClientRect(), d = x.querySelector('.tc-d').getBoundingClientRect(), bar = x.querySelector('.tc-bar').getBoundingClientRect(); return g.left >= d.right - 1 && g.bottom <= bar.top + 1; }) && !tb.some(x => x.querySelector('.tc-d').textContent.includes('本體') || x.querySelector('.tc-d').textContent.includes('替身')); }), '標籤在每一列右欄最上面、和左欄分開；橫條右邊不再寫「我是本體／我是替身」');
+  // 方案 J：待你處理的卡片沒有日期欄，改成檢查身分標籤不是整塊黑底
+  ok(await js(() => { const c = Array.from(document.querySelectorAll('.card.task.is-poster')); return c.length > 0 && c.every(x => x.querySelector('.tc-tab').textContent === '我是本體' && !x.querySelector('.tc-who') && getComputedStyle(x.querySelector('.tc-tab')).backgroundColor !== 'rgb(10, 10, 10)'); }), '我的案件：本體的卡片有「我是本體」標籤（不是整塊黑底），不顯示替身資料');
+  // 方案 J：待你處理的卡片是白色卡片，身分標籤在卡片裡最上面一行的左邊；日期時間在最下面一行，不和標籤黏在一起
+  ok(await js(() => { const c = Array.from(document.querySelectorAll('.card.task')); const tb = c.filter(x => x.querySelector('.tc-tab')); return tb.length > 0 && !document.querySelector('.bar-role') && tb.every(x => { const g = x.querySelector('.tc-tab').getBoundingClientRect(), box = x.getBoundingClientRect(), m = x.querySelector('.tr-meta'); return g.top - box.top < 30 && g.left - box.left < 30 && m && m.getBoundingClientRect().top > g.bottom && !/本體|替身/.test(m.textContent); }); }), '標籤在卡片左上角、和日期分開；橫條右邊不再寫「我是本體／我是替身」');
   ok(!(await js(() => document.querySelector('main').classList.contains('fx-in'))), '換頁沒有特效');
   await go('#me'); await p.click('[data-act="editProfile"]'); await W();
   ok(!(await main()).includes('出價時，本體會看到這些資料'), '編輯資料頁沒有「出價時，本體會看到這些資料。」');
   await fresh('u1'); await go('#task-t8');
   ok(await js(() => { const s = Array.from(document.querySelectorAll('.paysteps > span')); return s.length >= 2 && getComputedStyle(s[0], '::before').height === '4px'; }), '付款進度用和頂端一樣的線段');
+
+  // 方案 J：標題欄不顯示現在時間（只有示範工具快轉時間時才顯示「模擬」和模擬的時間）
+  await fresh('u1'); await go('#mine');
+  ok(!(await js(() => !!document.querySelector('header .clock'))), '標題欄不顯示現在時間');
+  await act('ff', { v: '60' }); await W(200);
+  ok(await js(() => { const c = document.querySelector('header .clock'); return !!c && c.textContent.startsWith('模擬'); }), '快轉時間時才顯示「模擬」和時間');
+  // 方案 J：「下一個開工」：24 小時內要開工的案件在最上面；按留言那一列會打開案件、捲到留言板、游標放進留言框
+  await fresh('u1'); await go('#mine');
+  ok(await js(() => { const l = document.querySelector('.lead'); return !!l && l.textContent.includes('下一個開工') && l.textContent.includes('分鐘後') && l.textContent.includes('第一宿舍') && l.textContent.includes('本體陳怡君'); }), '下一個開工：倒數、地點、本體姓名');
+  await p.click('.lead-msg'); await W(300);
+  ok((await js(() => location.hash)) === '#task-t3' && (await js(() => document.activeElement && document.activeElement.id)) === 'cmt-in', '按留言：打開案件，游標在留言框');
+  // 方案 J：待你處理的「婉拒」會先問「婉拒接案？」
+  await fresh('u1'); await go('#mine');
+  await p.click('.tr-alt[data-act="declineMatch"]'); await W();
+  ok((await js(() => (document.querySelector('.sheet') || {}).textContent || '')).includes('婉拒接案？'), '待你處理的婉拒會先跳出確認視窗');
   ok(errs.length === 0, 'no console errors ' + JSON.stringify(errs));
   console.log(fails ? fails + ' FAILED' : 'ALL PASSED');
   await b.close();

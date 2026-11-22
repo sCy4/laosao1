@@ -41,15 +41,15 @@ const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); if (!c) fails++
   await click('nav.tabs [data-v="mine"]');
   ok((await hash()) === '#mine', '#mine');
   const mine = await txt();
-  // 方案 J：上面（下一個開工、待你處理）已經列出的案件，「全部案件」不再重複；王小明的案件全都在上面，所以只剩一句
-  ok(mine.includes('下一個開工') && mine.includes('待你處理') && mine.includes('以上是你全部的案件') && !mine.includes('全部案件'), 'mine has 下一個開工 + 待你處理; 全部案件 collapses when every case is already above');
-  ok(await p.$$eval('[data-act="open"][data-id="t11"]', e => e.length) === 1, 'a case in 待你處理 is not repeated below');
+  // 方案 J：王小明的案件全都在「下一個開工」和「待你處理」裡，所以「全部案件」不再重複，只留「等對方回覆 0」和「過去的案件」
+  ok(mine.includes('下一個開工') && mine.includes('待你處理') && mine.includes('等對方回覆') && !mine.includes('全部案件') && !!(await p.$('.mine-past')), 'mine has 下一個開工 + 待你處理; 全部案件 collapses when every case is already above');
+  ok(await p.$$eval('[data-act="open"][data-id="t11"].tc-open', e => e.length) === 1, 'a case in 待你處理 is not repeated below');
+  // 方案 J：待你處理每一張卡都有期限和一顆要做的事的按鈕（至少 44px 高）
+  ok(await p.$$eval('section[aria-label="待你處理"] .card.task', cs => cs.length > 0 && cs.every(c => c.querySelector('.tr-due') && c.querySelector('.tr-go') && c.querySelector('.tr-go').getBoundingClientRect().height >= 44)), '待你處理每一張卡都有期限和按鈕');
   const todoCount = await p.$$eval('section[aria-label="待你處理"] .card.task', e => e.length);
   const tabBadge = await p.$eval('nav.tabs [data-v="mine"] .badge', e => e.textContent);
   ok(String(todoCount) === tabBadge, '待你處理 count ' + todoCount + ' == tab badge ' + tabBadge);
   ok(!mine.includes('去打掃並上傳證明'), 'assigned-before-start is no longer a todo');
-  // 方案 J：待你處理每一列都寫出期限（左欄倒數＋說明），順序就是照這個期限
-  ok(await p.$$eval('section[aria-label="待你處理"] .card.task', cs => cs.length > 0 && cs.every(c => c.querySelector('.tc-due') && c.querySelector('.tc-cd'))), '待你處理每一列都有期限（倒數和說明）');
   await shot('03-mine-u1', true);
 
   // scroll a bit then open t11 from 待你處理, go back with browser back => scroll restored
