@@ -20,6 +20,7 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
     };
     await check('未登入');
     await act('pick', { id: 'u1' }); await p.waitForTimeout(200); await check('已登入');
+    await p.evaluate(() => { location.hash = '#mine'; }); await p.waitForTimeout(300); await check('我的案件（方案 K）');
     await p.evaluate(() => { location.hash = '#task-t1'; }); await p.waitForTimeout(300); await check('案件詳情');
     await act('openDemo'); await act('ff', { v: '60' }); await act('close'); await p.waitForTimeout(200); await check('案件詳情＋模擬時間');
     await p.close();

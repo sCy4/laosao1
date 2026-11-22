@@ -177,7 +177,12 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
   await go('#mine');
   ok(await js(() => { const c = document.querySelector('[data-act="open"][data-id="t11"]').closest('.card.task'); return c.classList.contains('is-worker') && c.querySelector('.tc-tab').textContent === '我是替身' && c.querySelector('.tc-who').textContent === '本體 陳怡君'; }), '我的案件：替身的卡片左上角標籤「我是替身」，地點下面有「本體 陳怡君」');
   ok(await js(() => { const c = Array.from(document.querySelectorAll('.card.task.is-poster')); return c.length > 0 && c.every(x => x.querySelector('.tc-tab').textContent === '我是本體' && !x.querySelector('.tc-who')) && getComputedStyle(c[0].querySelector('.tc-d')).backgroundColor !== 'rgb(10, 10, 10)'; }), '我的案件：本體的卡片左上角標籤「我是本體」，日期欄不再是黑底，不顯示替身資料');
-  ok(await js(() => { const c = Array.from(document.querySelectorAll('.card.task')); const tb = c.filter(x => x.querySelector('.tc-tab')); const tab = tb[0] && tb[0].querySelector('.tc-tab').getBoundingClientRect(), box = tb[0] && tb[0].getBoundingClientRect(); return tb.length > 0 && !document.querySelector('.bar-role') && tab.bottom <= box.top + 1 && tab.left <= box.left + 1 && !tb.some(x => x.querySelector('.tc-d').textContent.includes('本體') || x.querySelector('.tc-d').textContent.includes('替身')); }), '標籤在卡片左上角外側、和日期分開；橫條右邊不再寫「我是本體／我是替身」');
+  // 方案 K（Material Design 3）把「我的案件」的身分標籤從卡片左上角外側（方案 I 的索引標籤）移到卡片裡、內容欄最上面：
+  // M3 的卡片內容都放在容器裡，不突出卡片外。檢查重點不變：標籤在卡片上方、和日期分開，橫條右邊不再寫身分
+  ok(await js(() => { const tb = Array.from(document.querySelectorAll('.card.task')).filter(x => x.querySelector('.tc-tab'));
+    return tb.length > 0 && !document.querySelector('.bar-role') && tb.every(x => { const box = x.getBoundingClientRect(), tab = x.querySelector('.tc-tab').getBoundingClientRect(), d = x.querySelector('.tc-d').getBoundingClientRect(), tm = x.querySelector('.tc-time').getBoundingClientRect();
+      return tab.top >= box.top && tab.top - box.top <= 24 && tab.left >= d.right && tab.bottom <= tm.top + 1 && !/本體|替身/.test(x.querySelector('.tc-d').textContent); }); }),
+    '標籤在卡片內容欄最上面（日期方塊右邊、時間上面），和日期分開；橫條右邊不再寫「我是本體／我是替身」');
   ok(!(await js(() => document.querySelector('main').classList.contains('fx-in'))), '換頁沒有特效');
   await go('#me'); await p.click('[data-act="editProfile"]'); await W();
   ok(!(await main()).includes('出價時，本體會看到這些資料'), '編輯資料頁沒有「出價時，本體會看到這些資料。」');
