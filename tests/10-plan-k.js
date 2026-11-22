@@ -27,12 +27,12 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
         document.querySelectorAll('header.top *, main *, nav.tabs *').forEach(el => {
           if (!Array.from(el.childNodes).some(n => n.nodeType === 3 && n.textContent.trim())) return;
           const cs = getComputedStyle(el), rc = el.getBoundingClientRect();
-          if (rc.width < 2 || cs.visibility === 'hidden') return;  /* 視覺隱藏、給螢幕閱讀器的字不算 */
+          if (rc.width < 2 || cs.visibility === 'hidden' || el.closest('[aria-hidden="true"]')) return;  /* 視覺隱藏、給螢幕閱讀器的字不算；純裝飾的字（例如換成箭頭圖示的「›」）也不算 */
           if (parseFloat(cs.fontSize) < 12) small.push(el.textContent.trim().slice(0, 10) + ' ' + cs.fontSize);
         });
         return { bg: getComputedStyle(document.body).backgroundColor, sw: document.documentElement.scrollWidth, small };
       });
-      ok(f.bg === 'rgb(247, 249, 255)' && f.sw <= w && f.small.length === 0, w + 'px ' + h + '：淺色底、沒有左右捲動、字不小於 12px ' + (f.small.length ? JSON.stringify(f.small) : ''));
+      ok(f.bg === 'rgb(255, 255, 255)' && f.sw <= w && f.small.length === 0, w + 'px ' + h + '：淺色底、沒有左右捲動、字不小於 12px ' + (f.small.length ? JSON.stringify(f.small) : ''));
     }
     await go('#mine');
     if (w === 390) await p.screenshot({ path: OUT + '/k-mine-390.png', fullPage: true });
@@ -59,7 +59,7 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
 
     // 上方應用程式列往下捲時換底色
     await js(() => window.scrollTo(0, 400)); await W(400);  /* 底色有 0.2 秒的漸變，等它跑完再量 */
-    ok(await js(() => document.querySelector('header.top').classList.contains('scrolled') && getComputedStyle(document.querySelector('header.top')).backgroundColor === 'rgb(232, 238, 249)'), w + 'px 往下捲時上方應用程式列換底色');
+    ok(await js(() => document.querySelector('header.top').classList.contains('scrolled') && getComputedStyle(document.querySelector('header.top')).backgroundColor === 'rgb(236, 238, 244)'), w + 'px 往下捲時上方應用程式列換底色');
     await js(() => window.scrollTo(0, 0)); await W(250);
     ok(!(await js(() => document.querySelector('header.top').classList.contains('scrolled'))), w + 'px 捲回最上面時換回原本的底色');
 
@@ -74,6 +74,10 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
     await go('#task-t1');
     ok(await js(() => { const d = document.querySelector('.sum-date').getBoundingClientRect(), t = document.querySelector('.sum-time').getBoundingClientRect(), pr = document.querySelector('.sum-price').getBoundingClientRect();
       return d.bottom <= t.top + 1 && t.bottom <= pr.top + 1 && !!document.querySelector('.steps li.cur'); }), w + 'px 詳情頁頂端：日期 → 時間 → 標價由上到下');
+    // 使用者意見：「標記」放在人物資料卡的右上角（還沒標記時，名字下面不多佔一行）
+    await go('#task-t3');
+    ok(await js(() => { const c = document.querySelector('.card.mini'), r = c.getBoundingClientRect(), t = c.querySelector('.taglink').getBoundingClientRect(), n = c.querySelector('.id-name').getBoundingClientRect();
+      return c.querySelector('.taglink').textContent === '標記' && Math.abs(t.right - (r.right - 8)) < 2 && Math.abs(t.top - (r.top + 8)) < 2 && t.bottom <= n.bottom + 12; }), w + 'px 人物資料卡：「標記」在右上角');
     await go('#browse');
     ok(await js(() => { const c = document.querySelector('.card.task').getBoundingClientRect(), f = document.querySelector('.card.task .favbtn').getBoundingClientRect();
       return Math.abs(f.right - (c.right - 8)) < 2 && Math.abs(f.top - (c.top + 8)) < 2; }), w + 'px 收藏星號在卡片右上角');

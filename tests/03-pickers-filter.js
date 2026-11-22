@@ -22,8 +22,8 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
 
   // 淺色模式：手機設成深色也維持淺色
   await fresh('u1');
-  // 方案 K（Material Design 3）的底色是淺藍白 surface（247, 249, 255），原本比對方案 I 的象牙白；檢查的重點不變：手機是深色模式時仍是淺色底
-  ok((await js(() => getComputedStyle(document.body).backgroundColor)) === 'rgb(247, 249, 255)', '手機是深色模式時，背景仍是淺色（M3 surface）');
+  // 方案 K（Material Design 3）的底色是白色（使用者覺得淺藍底太藍，改成白色），原本比對方案 I 的象牙白；檢查的重點不變：手機是深色模式時仍是淺色底
+  ok((await js(() => getComputedStyle(document.body).backgroundColor)) === 'rgb(255, 255, 255)', '手機是深色模式時，背景仍是淺色（白色）');
   // 日曆刪除
   ok(!(await js(() => !!document.querySelector('[data-act="openBcal"]'))) && (await js(() => document.querySelectorAll('.toolbar .tool').length)) === 2, '日曆按鈕已刪除，只剩排序和篩選');
   // 發案頁的 24 小時時鐘

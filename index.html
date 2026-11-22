@@ -514,16 +514,17 @@ label.btn{display:flex;align-items:center;justify-content:center}
   --md-secondary:#515e7d;--md-secondary-container:#d9e2ff;--md-on-secondary-container:#394664;
   --md-tertiary:#585a8b;--md-tertiary-container:#e1e0ff;--md-on-tertiary-container:#414271;
   --md-error:#ba1a1a;--md-on-error:#fff;--md-error-container:#ffdad6;--md-on-error-container:#93000a;
-  --md-surface:#f7f9ff;--md-surface-container-lowest:#fff;--md-surface-container-low:#edf4ff;--md-surface-container:#e8eef9;
-  --md-surface-container-high:#e2e9f3;--md-surface-container-highest:#dce3ee;
-  --md-on-surface:#151c24;--md-on-surface-variant:#3e4852;--md-outline:#6f7884;--md-outline-variant:#bec7d4;
-  --md-inverse-surface:#2a3139;--md-inverse-on-surface:#eaf1fc;
+  /* 底色、卡片色：使用者覺得太藍、卡片和底分不清楚、眼睛容易累 → 頁面底改成白色，卡片等容器改用彩度很低的中性灰（Tonal Spot 的中性色階） */
+  --md-surface:#fff;--md-surface-container-lowest:#fff;--md-surface-container-low:#f1f3f9;--md-surface-container:#eceef4;
+  --md-surface-container-high:#e6e8ee;--md-surface-container-highest:#e0e2e8;
+  --md-on-surface:#181c20;--md-on-surface-variant:#42474e;--md-outline:#72777f;--md-outline-variant:#c2c7cf;
+  --md-inverse-surface:#2d3135;--md-inverse-on-surface:#eff1f6;
   /* 身分標籤 */
   --role-p:#ffcc85;--on-role-p:#452b00;   /* 我是本體：琥珀 */
   --role-w:#7ae4ef;--on-role-w:#00363b;   /* 我是替身：青 */
   --md-male:#00639a;--md-female:#b41b5c;  /* 限男、限女：外框小標籤，不填色，避免和「需要你處理」的淺紅混在一起 */
   /* 狀態層：滑過 8%、按下 10%（on-surface、primary 的透明版本） */
-  --st-hover:rgba(21,28,36,.08);--st-press:rgba(21,28,36,.1);--st-p-hover:rgba(0,99,156,.08);--st-p-press:rgba(0,99,156,.1);
+  --st-hover:rgba(24,28,32,.08);--st-press:rgba(24,28,32,.1);--st-p-hover:rgba(0,99,156,.08);--st-p-press:rgba(0,99,156,.1);
   --md-elev-1:0 1px 2px rgba(0,0,0,.3),0 1px 3px 1px rgba(0,0,0,.15);
   --md-elev-2:0 1px 2px rgba(0,0,0,.3),0 2px 6px 2px rgba(0,0,0,.15);
   --md-elev-3:0 1px 3px rgba(0,0,0,.3),0 4px 8px 3px rgba(0,0,0,.15);
@@ -738,8 +739,8 @@ main>h1.vh+p.small::before{--ic:var(--ic-checkCircle);color:var(--md-primary)}
 @media (hover:hover){.btn.ghost:hover:not(:disabled),.btn.danger:hover:not(:disabled),.btn.quiet:hover{box-shadow:none;background-image:linear-gradient(var(--st-p-hover),var(--st-p-hover))}}
 .btn.danger-solid{background:var(--md-error);color:var(--md-on-error)}
 .btn.quiet{background:transparent;border:0;color:var(--md-error);padding:10px 12px;font-weight:500;text-decoration:none}
-.btn:disabled{opacity:1;background:rgba(21,28,36,.12);color:rgba(21,28,36,.38)}
-.btn.ghost:disabled{background:transparent;border-color:rgba(21,28,36,.12)}
+.btn:disabled{opacity:1;background:rgba(24,28,32,.12);color:rgba(24,28,32,.38)}
+.btn.ghost:disabled{background:transparent;border-color:rgba(24,28,32,.12)}
 label.btn{cursor:pointer}
 
 /* ---------- 表單：欄位名稱在上、outlined 輸入框 ---------- */
@@ -829,7 +830,7 @@ form[data-form="post"] .two+p.small{margin-top:-12px}
 .photos{gap:8px}
 .ph{border-radius:8px;background:var(--md-surface-container-high)}
 .ph.add{border:1px dashed var(--md-outline);background:transparent;color:var(--md-primary);font-weight:500}
-.ph-x{background:rgba(21,28,36,.72)}
+.ph-x{background:rgba(24,28,32,.72)}
 .big-photo{border-radius:12px}
 .qr{border:1px solid var(--md-outline-variant);border-radius:12px;padding:8px}
 .bank{border-radius:12px;background:var(--md-surface-container-high)}
@@ -868,7 +869,19 @@ form[data-form="post"] .two+p.small{margin-top:-12px}
 .id-name{font-size:16px;font-weight:500}
 .idblock.big .id-name{font-size:24px;line-height:32px}
 .idline{font-size:14px;color:var(--md-on-surface-variant)}
-.taglink{min-height:40px;padding:0 4px;font-size:14px;font-weight:500;color:var(--md-on-surface-variant);text-decoration:underline;text-underline-offset:4px}
+/* 標記：放在對方資訊卡（和「等替身確認」卡片）的右上角，低調的文字按鈕；按了在原位往下展開說明和選項。
+   標記過的人，名字下面一行寫「你的標記［可信賴］」，右上角的按鈕變成「更改」 */
+.card.mini,.chosen{position:relative}
+.tagline{margin-top:0}
+.tagline .tagwrap{position:static;display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;font-size:14px}
+.tagline:has(.pill){margin-top:8px}
+.tagline:not(:has(.pill,.tagmenu)),.tagline:not(:has(.pill,.tagmenu)) .tagwrap{display:contents}  /* 還沒標記、選單也沒打開時，不多佔一行 */
+.taglink{position:absolute;top:8px;right:8px;min-height:40px;padding:0 12px;border-radius:20px;font-size:14px;font-weight:500;color:var(--md-on-surface-variant);text-decoration:none;transition:background-color .15s linear}
+.chosen .taglink{top:4px;right:4px}
+.chosen .id-name,.card.mini .mini-role{padding-right:64px}  /* 只在名字（或「本體／替身」）那一行讓出右上角給「標記」 */
+@media (hover:hover){.taglink:hover{background:var(--st-hover);color:var(--md-on-surface)}}
+.taglink[aria-expanded="true"]{background:var(--md-secondary-container);color:var(--md-on-secondary-container)}
+.tagline .tagmenu{flex-basis:100%;max-width:none;margin-top:8px}
 .tagmenu{border:1px solid var(--md-outline-variant);border-radius:12px;background:var(--md-surface-container-lowest);box-shadow:var(--md-elev-2);padding:8px 0}
 .tagline .tagmenu{box-shadow:none}
 .tagmenu>button{min-height:48px;padding:0 16px;border-radius:0;font-size:14px;font-weight:500}
@@ -966,7 +979,7 @@ main section.card ul.small li::marker{color:var(--md-primary)}
 .dd{font-size:14px}
 .dd.today{border:1px solid var(--md-primary);color:var(--md-primary)}
 .dd.on,.dd.on:hover:not(:disabled){background:var(--md-primary);border-color:var(--md-primary);color:var(--md-on-primary);font-weight:500}
-.dd:disabled{color:rgba(21,28,36,.38)}
+.dd:disabled{color:rgba(24,28,32,.38)}
 .dlg-actions{gap:4px}
 .dlg-actions .btn,.dlg-actions .btn.ghost{min-height:40px;padding:10px 12px;border:0;background:transparent;color:var(--md-primary);box-shadow:none}
 @media (hover:hover){.dlg-actions .btn:hover{background-image:linear-gradient(var(--st-p-hover),var(--st-p-hover));box-shadow:none}}
@@ -986,13 +999,33 @@ main section.card ul.small li::marker{color:var(--md-primary)}
   font-size:14px;line-height:20px;letter-spacing:.25px;font-weight:400;transform:translate(-50%,-8px);transition:opacity .15s linear,transform .25s var(--md-ease-decel)}
 #toast.show{transform:translate(-50%,0)}
 
+/* ---------- 細節 ---------- */
+/* 箭頭一律用 Material 圖示（原本是「›」文字）：清單是向右箭頭，展開列表是向下箭頭、展開時轉向 */
+.acc-h .chev,.card.linkrow .chev,.dlg-month .icon-btn::before{width:24px;height:24px;flex:none;padding:0;font-size:0;line-height:0;background:currentColor;
+  -webkit-mask:var(--ic-chev) center/contain no-repeat;mask:var(--ic-chev) center/contain no-repeat;transition:transform .2s var(--md-ease)}
+.acc-h .chev{-webkit-mask-image:var(--ic-expand);mask-image:var(--ic-expand)}
+.acc-h.on .chev,.pway input:checked+.acc-h .chev{transform:rotate(180deg)}
+.dlg-month .icon-btn{font-size:0}
+.dlg-month .icon-btn::before{content:""}
+.dlg-month [data-v="-1"]::before{transform:rotate(180deg)}
+/* 留言輸入框：一行高，字多時跟著長高（最多 6 行） */
+.cmt-form textarea{height:auto;min-height:48px;max-height:168px;field-sizing:content;resize:none;line-height:24px;padding:11px 16px}
+.cmt-form .cmt-ph{flex:none}
+/* 通知視窗右上角的「關閉」是 text button */
+.sheet>.row.between>.btn.ghost.sm{border:0;padding:10px 12px}
+/* 第一次進入的介紹：第一頁上方是淺藍的封面區，右下角一個大的掃具圖示 */
+.intro-hero{position:relative;overflow:hidden;padding:24px 20px 28px;border-radius:24px;background:var(--md-primary-container);color:var(--md-on-primary-container)}
+.intro-hero .lead{color:var(--md-on-primary-container)}
+.intro-hero::after{content:"";position:absolute;right:-14px;bottom:-18px;width:132px;height:132px;background:var(--md-primary);opacity:.14;
+  -webkit-mask:var(--ic-clean) center/contain no-repeat;mask:var(--ic-clean) center/contain no-repeat}
+
 /* 系統設定「減少動態效果」時：沒有水波紋和動畫，按下時改成整塊變深 */
 @media (prefers-reduced-motion:reduce){
   .k-ripple{display:none}
   .icon-btn:active:not(:disabled),.favbtn:active,.tc-open:active,.tool:active{background:var(--st-press)}
   .seg button:active,.note:active,.acct-row:active,.card.linkrow:active,.opt-row:active,.checks label:active{background-image:linear-gradient(var(--st-press),var(--st-press))}
   nav.tabs button.on.k-in::before,.seg button.on.k-in::before,.m-layer .sheet.fx-in,.d-layer .sheet.fx-in,.moremenu{animation:none}
-  header.top,.card.task,.tc-open,.icon-btn,.favbtn,.btn,#toast,nav.tabs button::before,.intro-dots i,.trouble summary::after{transition:none}
+  header.top,.card.task,.tc-open,.icon-btn,.favbtn,.btn,#toast,nav.tabs button::before,.intro-dots i,.trouble summary::after,.acc-h .chev,.taglink{transition:none}
 }
 </style>
 </head>
