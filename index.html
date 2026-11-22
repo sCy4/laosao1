@@ -158,11 +158,12 @@ nav.tabs .badge{position:absolute;top:4px;left:calc(50% + 8px)}
 .tm-remove{color:var(--bad)!important;border-top:1px solid var(--line)!important;border-radius:0 0 8px 8px!important}
 .tm-custom{display:flex;gap:6px;padding:6px}
 .tm-custom input{min-height:36px;padding:6px 10px}
-/* 資訊卡裡的標記：平常一個低調的「標記」，按了才出現說明和選項 */
-.tagline{margin-top:8px}
-.tagline .tagwrap{display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px;font-size:14px}
+/* 人物卡：右上角是標記（平常一個低調的「標記」），按了在卡片裡往下展開說明和選項 */
+.pc-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.taghead{flex:none;display:inline-flex;align-items:center;gap:8px;max-width:60%;margin-top:-6px;font-size:14px}
+.taghead .pill{min-width:0;max-width:140px;overflow:hidden;text-overflow:ellipsis}
 .taglink{appearance:none;border:0;background:none;padding:6px 0;font:inherit;font-size:14px;font-weight:700;color:var(--ink);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
-.tagline .tagmenu{position:static;flex-basis:100%;max-width:340px;margin-top:2px;box-shadow:none}  /* 在原位往下展開，不浮在別的內容上 */
+.tagzone .tagmenu{position:static;max-width:none;margin-top:8px;box-shadow:none}  /* 在卡片裡往下展開，不浮在別的內容上 */
 .tm-note{margin:0;padding:6px 10px 8px;line-height:1.5;border-bottom:1px solid var(--line)}
 .tagmenu{scroll-margin:80px 0 96px}
 .card.mini{overflow:visible}
@@ -791,6 +792,9 @@ main:has(>.card.sum){gap:10px}
 .pc-row .price{font-family:var(--font-body);font-weight:600}
 .card.mini{padding:12px 0 0}
 .mini-role{font-size:13px;font-weight:500;color:var(--muted)}
+/* 對方的資訊做成一張細框卡片（和「我的案件」的案件卡片同一種線），右上角是標記 */
+.card.card.mini.pcard.pcard{border:1px solid var(--ink);padding:12px 14px 14px;gap:4px}
+.tagzone .tagmenu{border-width:1px}  /* 在細框卡片裡展開的選單也用細框 */
 
 /* 留言：漫畫對話框；自己的是主色底 */
 .cmt{background:var(--surface);border:1.5px solid var(--ink);border-radius:16px 16px 16px 2px}
@@ -954,8 +958,9 @@ main section.card ul.small li:first-child{border-top:0}
 .pg-mine .card.task{border-width:1px}
 .pg-mine .card.task,.pg-mine .tc-d{background:transparent}
 .pg-mine .card.task.is-poster,.pg-mine .card.task.is-worker{margin-top:32px}
-.pg-mine .tc-tab{left:-1px;bottom:calc(100% + 1px);height:24px;padding:0 8px;font-size:13px}
-.pg-mine .card.task.is-worker .tc-tab{border-width:1px 1px 0;padding:0 7px}
+.pg-mine .tc-tab{left:auto;right:-1px;bottom:calc(100% + 1px);height:24px;padding:0 8px;background:#e4d9c1;color:var(--ink);font-size:13px}  /* 右上角；「我是本體」淡米色底，不再用黑底 */
+.pg-mine .card.task.is-worker .tc-tab{border-width:1px 1px 0;padding:0 7px;background:transparent}
+.pg-mine .nbadge{top:8px;right:44px}  /* 右上角外側給身分標籤用，新留言數放到卡片裡、星號左邊 */
 /* 日期欄：月、日、星期靠左對齊，不加直線 */
 .pg-mine .tc-d{align-items:flex-start;gap:2px;padding:8px 0 8px 14px;border-right:0}
 .pg-mine .tc-d .dnum{font-size:40px}
@@ -1726,12 +1731,14 @@ function tagButton(uid){
     '<span class="tg-lbl">'+(g?esc(tagText(g)):'標記')+'</span>'+IC.tag+'</button>'+(open?tagMenuHTML(uid,g,''):'')+'</span>';
 }
 /* 資訊卡裡的標記：平常只有一個低調的「標記」，按了才出現說明和選項；標記後寫「你的標記［可信賴］ 更改」 */
-function tagLine(uid,who){
+/* 人物卡右上角的標記：平常是低調的「標記」，標記了就顯示標記內容和「更改」；按了在卡片裡往下展開說明和選項（tagMenuFor） */
+function tagHead(uid,who){
   const g=tagOf(uid),open=ui.tagMenu===uid;
-  const note=who==='本體'?'只有你看得到。之後打開這位本體的案件時會提醒你；標成黑名單的本體，案件在接案頁會自動隱藏。':'只有你看得到。之後這位替身出價時會提醒你。';
-  return '<div class="tagline"><span class="tagwrap">'+(g?'<span class="muted">你的標記</span>'+tagChip(g):'')+
-    '<button class="taglink" data-act="tagMenu" data-uid="'+uid+'" aria-haspopup="menu" aria-expanded="'+open+'" aria-label="'+(g?'更改標記，目前是「'+esc(tagText(g))+'」':'標記這位'+who)+'">'+(g?'更改':'標記')+'</button>'+
-    (open?tagMenuHTML(uid,g,note):'')+'</span></div>';
+  return '<span class="taghead">'+(g?tagChip(g):'')+'<button class="taglink" data-act="tagMenu" data-uid="'+uid+'" aria-haspopup="menu" aria-expanded="'+open+'" aria-label="'+(g?'更改標記，目前是「'+esc(tagText(g))+'」':'標記這位'+who)+'">'+(g?'更改':'標記')+'</button></span>';
+}
+function tagMenuFor(uid,who){
+  if(ui.tagMenu!==uid)return '';
+  return tagMenuHTML(uid,tagOf(uid),who==='本體'?'只有你看得到。之後打開這位本體的案件時會提醒你；標成黑名單的本體，案件在接案頁會自動隱藏。':'只有你看得到。之後這位替身出價時會提醒你。');
 }
 function tagMenuHTML(uid,g,note){
   return '<div class="tagmenu" role="menu">'+(note?'<p class="tm-note small muted">'+note+'</p>':'')+
@@ -1766,8 +1773,8 @@ function commentSection(t,r){
   '</section>';
 }
 function personCard(title,x,self){
-  return '<section class="card mini"><div class="row between"><span class="mini-role">'+title+'</span>'+(self?'<span class="small muted">你</span>':'')+'</div>'+
-  idBlock(x)+(self?'':tagLine(x.id,title))+'</section>';
+  return '<section class="card mini pcard tagzone"><div class="pc-head"><span class="mini-role">'+title+'</span>'+(self?'<span class="small muted">你</span>':tagHead(x.id,title))+'</div>'+
+  idBlock(x)+(self?'':tagMenuFor(x.id,title))+'</section>';
 }
 function offerRow(t,o,i,canChoose){
   const x=u(o.user),sus=suspended(x),g=tagOf(x.id);
@@ -1841,7 +1848,7 @@ function nextStep(t,r){
     }
     if(r==='poster'){
       const re=canUn?'你現在可以改選別人。':'1 小時後你能改選別人（還剩 '+span(unAt-now())+'）。';
-      return card('等替身確認','<div class="chosen">'+idBlock(w)+tagLine(w.id,'替身')+'<div class="row between"><span class="small muted">成交價</span><b class="price">'+ntd(t.price)+'</b></div></div>'+
+      return card('等替身確認','<div class="chosen tagzone"><div class="pc-head">'+idBlock(w)+tagHead(w.id,'替身')+'</div>'+tagMenuFor(w.id,'替身')+'<div class="row between"><span class="small muted">成交價</span><b class="price">'+ntd(t.price)+'</b></div></div>'+
         '<p>'+re+esc(w.name)+'將在 '+dl+' 前確認接案或婉拒（還剩 '+left+'）。</p>'+
         '<button class="btn ghost block" data-act="unchoose" data-id="'+t.id+'"'+(canUn?'':' disabled')+'>改選別人</button>',false);
     }
@@ -2458,7 +2465,7 @@ function shrink(file){
 
 document.addEventListener('click',e=>{
   const el=e.target.closest('[data-act]');
-  if(ui.tagMenu&&!e.target.closest('.tagwrap')){ui.tagMenu=null;ui.tagCustom=false;if(!el){render();return;}}
+  if(ui.tagMenu&&!e.target.closest('.tagwrap,.tagzone')){ui.tagMenu=null;ui.tagCustom=false;if(!el){render();return;}}
   if(ui.moreMenu&&!e.target.closest('.morewrap')){ui.moreMenu=false;if(!el){render();return;}}
   if(!el)return;
   const fn=A[el.dataset.act];if(!fn)return;

@@ -168,16 +168,18 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
   ok(await js(() => { const c = Array.from(document.querySelectorAll('.card.mini')).pop(); return !!c && c.innerText.includes('陳怡君') && !!c.querySelector('.idline') && !!c.querySelector('.taglink'); }), '下方的本體卡也完整顯示（名字、學號等資料、標記）');
   // 標記：平常只有低調的「標記」，按了才出現說明和選項；標記後寫「你的標記［可信賴］ 更改」
   await js(() => Array.from(document.querySelectorAll('.card.mini .taglink')).pop().click()); await W(200);
-  ok(await js(() => { const m = document.querySelector('.tagline .tagmenu'); return !!m && m.querySelector('.tm-note').textContent.startsWith('只有你看得到') && m.querySelectorAll('[data-act="setTag"]').length === 2; }), '按「標記」才出現說明和選項');
-  await js(() => document.querySelector('.tagline .tagmenu [data-act="setTag"][data-type="trust"]').click()); await W(200);
-  ok(await js(() => { const l = Array.from(document.querySelectorAll('.card.mini .tagline')).pop(); return !document.querySelector('.tagmenu') && l.innerText.includes('你的標記') && l.innerText.includes('可信賴') && l.querySelector('.taglink').textContent === '更改'; }), '標記後：「你的標記［可信賴］ 更改」');
+  ok(await js(() => { const m = document.querySelector('.pcard .tagmenu'); return !!m && m.querySelector('.tm-note').textContent.startsWith('只有你看得到') && m.querySelectorAll('[data-act="setTag"]').length === 2; }), '按「標記」才出現說明和選項');
+  await js(() => document.querySelector('.pcard .tagmenu [data-act="setTag"][data-type="trust"]').click()); await W(200);
+  // 人物資料是一張卡片，標記在右上角；標記後右上角是「［可信賴］ 更改」
+  ok(await js(() => { const c = Array.from(document.querySelectorAll('.pcard')).pop(), h = c.querySelector('.taghead'), cb = c.getBoundingClientRect(), hb = h.getBoundingClientRect(); return !document.querySelector('.tagmenu') && h.innerText.includes('可信賴') && h.querySelector('.taglink').textContent === '更改' && cb.right - hb.right < 20 && hb.top - cb.top < 20 && getComputedStyle(c).borderLeftWidth === '1px'; }), '人物資料是細框卡片，標記在右上角；標記後是「［可信賴］ 更改」');
   await fresh('u2'); await go('#task-t11');
   ok(await js(() => { const c = document.querySelector('.chosen'); return !!c && !c.querySelector('.tagbtn') && c.querySelector('.taglink').textContent === '標記'; }), '等替身確認的卡片也改成低調的「標記」');
   await fresh('u1'); await go('#task-t11'); await js(() => document.querySelector('[data-act="acceptMatch"]').click()); await W(300);
   await go('#mine');
   ok(await js(() => { const c = document.querySelector('[data-act="open"][data-id="t11"]').closest('.card.task'); return c.classList.contains('is-worker') && c.querySelector('.tc-tab').textContent === '我是替身' && c.querySelector('.tc-who').textContent === '本體 陳怡君'; }), '我的案件：替身的卡片左上角標籤「我是替身」，地點下面有「本體 陳怡君」');
   ok(await js(() => { const c = Array.from(document.querySelectorAll('.card.task.is-poster')); return c.length > 0 && c.every(x => x.querySelector('.tc-tab').textContent === '我是本體' && !x.querySelector('.tc-who')) && getComputedStyle(c[0].querySelector('.tc-d')).backgroundColor !== 'rgb(10, 10, 10)'; }), '我的案件：本體的卡片左上角標籤「我是本體」，日期欄不再是黑底，不顯示替身資料');
-  ok(await js(() => { const c = Array.from(document.querySelectorAll('.card.task')); const tb = c.filter(x => x.querySelector('.tc-tab')); const tab = tb[0] && tb[0].querySelector('.tc-tab').getBoundingClientRect(), box = tb[0] && tb[0].getBoundingClientRect(); return tb.length > 0 && !document.querySelector('.bar-role') && tab.bottom <= box.top + 1 && tab.left <= box.left + 1 && !tb.some(x => x.querySelector('.tc-d').textContent.includes('本體') || x.querySelector('.tc-d').textContent.includes('替身')); }), '標籤在卡片左上角外側、和日期分開；橫條右邊不再寫「我是本體／我是替身」');
+  ok(await js(() => { const c = Array.from(document.querySelectorAll('.card.task')); const tb = c.filter(x => x.querySelector('.tc-tab')); const tab = tb[0] && tb[0].querySelector('.tc-tab').getBoundingClientRect(), box = tb[0] && tb[0].getBoundingClientRect(); return tb.length > 0 && !document.querySelector('.bar-role') && tab.bottom <= box.top + 1 && tab.right >= box.right - 1 && !tb.some(x => x.querySelector('.tc-d').textContent.includes('本體') || x.querySelector('.tc-d').textContent.includes('替身')); }), '（我的案件頁）標籤在卡片右上角外側、和日期分開；橫條右邊不再寫「我是本體／我是替身」');
+  ok(await js(() => { const t = document.querySelector('.card.task.is-poster .tc-tab'); return !!t && getComputedStyle(t).backgroundColor !== 'rgb(10, 10, 10)'; }), '（我的案件頁）「我是本體」標籤不再是黑底');
   ok(!(await js(() => document.querySelector('main').classList.contains('fx-in'))), '換頁沒有特效');
   await go('#me'); await p.click('[data-act="editProfile"]'); await W();
   ok(!(await main()).includes('出價時，本體會看到這些資料'), '編輯資料頁沒有「出價時，本體會看到這些資料。」');
