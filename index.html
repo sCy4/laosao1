@@ -2116,7 +2116,7 @@ function render(){
   else if(!S.me&&ui.tab!=='browse')body=gateView(ui.tab);
   else body=({browse:browseView,post:postView,mine:mineView,me:meView}[ui.tab]||browseView)();
   /* 示範工具只在原型裡用，放在每一頁內容的最下面，不佔標題欄 */
-  app.innerHTML=headerView()+'<main>'+body+'<div class="demo-entry"><button class="btn ghost sm" data-act="openDemo">示範工具</button><span class="small muted">原型才有，正式版不會出現</span></div></main>'+tabsView()+modalView()+dlgView();
+  app.innerHTML=headerView()+'<main class="pg-'+(ui.view==='detail'?'detail':ui.tab)+'">'+body+'<div class="demo-entry"><button class="btn ghost sm" data-act="openDemo">示範工具</button><span class="small muted">原型才有，正式版不會出現</span></div></main>'+tabsView()+modalView()+dlgView();
   const k={p:[ui.view,ui.tab,ui.detailId,ui.meSub,ui.mineRole,ui.pastKind,ui.histSeg].join('|'),
     m:ui.modal?[ui.modal.type,ui.modal.step||0,ui.modal.title||''].join('|'):'',d:ui.dlg?ui.dlg.kind+'|'+ui.dlg.target:''};
   const pk=fxKeys||{p:k.p,m:'',d:''};  /* 第一次畫面不播換頁動畫，但第一次進入的介紹視窗會播 */
