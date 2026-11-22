@@ -936,7 +936,9 @@ main section.card ul.small li:first-child{border-top:0}
 /* 區段：3px 粗線開頭；標題後面不再拖一條細線。「全部案件」小一號，上方多留白 */
 .pg-mine .grp{gap:8px}
 .pg-mine .grp-h::after{display:none}
-.pg-mine .grp-all{font-size:18px;margin-top:32px;padding-top:12px;border-top:3px solid var(--ink)}
+.pg-mine .grp-all{font-size:18px;margin-top:16px;padding-top:20px;border-top:3px solid var(--ink)}
+/* 「待你處理」標題旁放件數（大號襯線數字，不是紅點） */
+.pg-mine .grp-todo .grp-h .badge{display:inline-flex;min-width:0;height:auto;padding:0;margin-left:2px;background:none;color:var(--ink);font-family:var(--font-display);font-size:24px;font-weight:700;line-height:1}
 .pg-mine .mine-none{margin:0;font-size:16px;color:var(--ink)}
 /* 卡片一律用和頁面同一種紙色，框線就代表一張卡片 */
 .pg-mine .card.task,.pg-mine .tc-d{background:transparent}
@@ -947,14 +949,16 @@ main section.card ul.small li:first-child{border-top:0}
 /* 卡片內容：時間、地點（金額和地點同一條基線）、第三行（本體或性別） */
 .pg-mine .tc-d{padding:8px 0;gap:2px}
 .pg-mine .tc-d .dnum{font-size:34px}
-.pg-mine .tc-d .dw .pa{color:var(--muted);font-weight:400}
+.pg-mine .tc-d{border-right:0}  /* 日期欄和內容之間不加直線（兩區同一套結構） */
+.pg-mine .tc-d .dw{color:var(--muted)}
+.pg-mine .tc-d .dw .pa{font-weight:400}
 .pg-mine .tc-time{padding:10px 44px 0 14px;font-size:16px;line-height:22px}
 .pg-mine .tc-row{padding:2px 14px 10px;align-items:baseline}
 .pg-mine .tc-main{gap:2px;justify-content:flex-start}
 .pg-mine .tc-place,.pg-mine .tc-who,.pg-mine .tc-g{line-height:20px;min-height:0}
 .pg-mine .tc-side{justify-content:flex-start}
 .pg-mine .tc-bottom{margin-top:0}
-.pg-mine .tc-side .price .cur{font-size:14px;font-weight:600;letter-spacing:.04em}
+.pg-mine .tc-side .price .cur{font-size:12px;font-weight:400;letter-spacing:.04em;color:var(--muted)}
 .pg-mine .pill.s-bid{display:none}  /* 底下的狀態已經寫了「已出價 NT$…」，不重複 */
 /* 收藏星號：灰色，線條粗細和鈴鐺一樣，收藏了才變黑 */
 .pg-mine .favbtn{top:4px;right:4px;width:36px;height:36px}
@@ -963,17 +967,21 @@ main section.card ul.small li:first-child{border-top:0}
 /* 狀態那一行：紅色小方塊對齊日期欄中間，文字對齊內容欄（待你處理和全部案件一樣） */
 .pg-mine .tc-bar.bottom{position:relative;padding-left:86px}
 .pg-mine .tc-dot{position:absolute;left:32px;top:50%;width:8px;height:8px;margin-top:-4px;transform:none}
-/* 待你處理：黑色橫條細一點 */
-.pg-mine .grp-todo .tc-bar.bottom.todo{min-height:32px;padding-top:6px;padding-bottom:6px;font-size:14px;font-weight:800}
-/* 待你處理的日期欄鋪一層很淡的網點（全頁唯一的漫畫手法） */
-.pg-mine .grp-todo .tc-d{background-image:radial-gradient(rgba(10,10,10,.16) .8px,transparent 1px);background-size:5px 5px}
+/* 待你處理：黑色橫條 15px 粗體，紅方塊緊貼在文字前面 */
+.pg-mine .grp-todo .tc-bar.bottom.todo{min-height:36px;padding:7px 14px;gap:8px;font-size:15px;font-weight:700}
+.pg-mine .grp-todo .tc-dot{position:static;margin:0}
+.pg-mine .tc-bar.bottom .grow{text-wrap:balance;word-break:keep-all;overflow-wrap:anywhere}  /* 窄螢幕要折行時，兩行長度平均，不會只剩「時）」掉到第二行 */
+/* 第一張（最急的）做成主角格：日期數字和橫條都大一號 */
+.pg-mine .grp-todo>.card.task:first-of-type .tc-d .dnum{font-size:44px}
+.pg-mine .grp-todo>.card.task:first-of-type .tc-bar.bottom.todo{min-height:42px;font-size:16px;font-weight:800}
 /* 全部案件：像目錄一樣的列，不加粗框和黑橫條，只用細線分隔；日期欄不加直線 */
 .pg-mine .grp-idx .card.task{border:0;border-top:1px solid var(--ink)}
 .pg-mine .grp-idx .card.task:last-of-type{border-bottom:1px solid var(--ink)}
 .pg-mine .grp-idx .tc-d{border-right:0}
 .pg-mine .grp-idx .tc-bar.bottom{background:transparent;border-top:0;color:var(--muted);font-size:14px;font-weight:500;padding-top:0;padding-bottom:12px;min-height:0}
 .pg-mine .grp-idx .tc-bar.bottom.todo{background:transparent;color:var(--ink);font-weight:700}
-.pg-mine .grp-idx .tc-dot{top:calc(50% - 6px)}
+.pg-mine .grp-idx .tc-dot{left:70px;top:calc(50% - 6px)}  /* 紅方塊掛在文字左邊，文字仍對齊內容欄 */
+.pg-mine .grp-idx .nbadge{top:10px;right:44px}  /* 新留言數放在星號左邊，不掛在線的末端 */
 .pg-mine .grp-idx .tc-tab{left:0;bottom:calc(100% + 1px)}
 .pg-mine .grp-idx .card.task.is-worker .tc-tab{border-width:1px 1px 0;padding:0 7px}
 /* 階段標題：「召喚替身（1）」16px 粗體，編號是同一條基線上的小號頁碼，不會被看成日期；沒有案件的階段只留一行淡色小字 */
@@ -984,10 +992,10 @@ main section.card ul.small li:first-child{border-top:0}
 .pg-mine .grp-idx.is-empty .grp-h.sub{font-size:14px;font-weight:600;color:var(--muted)}
 /* 「我是替身／我是本體」改成文字分頁：選中的粗字加底線，不再用黑底（黑底只留給「我是本體」標籤） */
 .pg-mine .seg{display:flex;justify-content:flex-start;gap:28px;padding:0;border:0;border-bottom:1px solid var(--ink);background:transparent}
-.pg-mine .seg button{flex:none;min-height:44px;padding:8px 0 6px;margin-bottom:-1px;border:0;border-bottom:3px solid transparent;background:transparent;color:var(--muted);font-size:16px;font-weight:500}
+.pg-mine .seg button{flex:none;min-height:44px;padding:8px 0 6px;margin-bottom:-1px;border:0;border-bottom:3px solid transparent;background:transparent;color:var(--muted);font-size:15px;font-weight:500}
 .pg-mine .seg button+button{border-left:0}
 .pg-mine .seg button.on{background:transparent;color:var(--ink);font-weight:900;border-bottom-color:var(--ink)}
-.pg-mine .seg button .muted,.pg-mine .seg button.on .muted{color:inherit;font-size:16px}
+.pg-mine .seg button .muted,.pg-mine .seg button.on .muted{color:inherit;font-size:15px}
 /* 結尾記號：靠右，放在整頁最後 */
 .pg-mine .grp::after{display:none}
 main.pg-mine .grp-idx.is-last.is-last::after{content:"";display:block;align-self:flex-end;width:9px;height:9px;margin-top:4px;background:var(--ink)}
