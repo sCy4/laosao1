@@ -931,30 +931,37 @@ main section.card ul.small li:first-child{border-top:0}
   .fx-flash,.fx-sfx{display:none}
   .sheet.fx-in,.btn,.card.task,.favbtn,#toast{animation:none;transition:none}
 }
-/* ===== 方案 I・「我的案件」評論修改（只套在這一頁：.pg-mine） ===== */
-.pg-mine{--muted:#6b6459}  /* 灰字改成暖灰，不再偏藍紫 */
-/* 區段：3px 粗線開頭；標題後面不再拖一條細線。「全部案件」小一號，上方多留白 */
+/* ===== 方案 I・「我的案件」（只套在這一頁：.pg-mine） =====
+   原則：這是每天用的互動式平台，不是海報。分類要看起來像分類，案件要看起來像可以點的卡片。 */
+.pg-mine{--muted:#6b6459}  /* 灰字用暖灰，不偏藍紫 */
+/* 大分類（待你處理、全部案件）：靠左、16px 粗體，件數用括號接在後面；兩區之間只靠留白分開 */
 .pg-mine .grp{gap:8px}
 .pg-mine .grp-h::after{display:none}
-.pg-mine .grp-all{font-size:18px;margin-top:16px;padding-top:20px;padding-left:87px;border-top:3px solid var(--ink)}
-/* 「待你處理」的件數是這一頁的主角：大號襯線數字放在日期那一欄，標題接在內容欄；0 件時同一個位置 */
-.pg-mine .todo-h{align-items:flex-end;gap:0}
-.pg-mine .todo-n{flex:none;width:87px;padding-left:12px;font-family:var(--font-display);font-size:84px;font-weight:700;line-height:.74;letter-spacing:-.03em}
-.pg-mine .grp-todo.is-none .todo-n{color:var(--muted)}
-.pg-mine .mine-none{padding-left:87px}
-.pg-mine .mine-none{margin:0;font-size:16px;color:var(--ink)}
-/* 卡片一律用和頁面同一種紙色，框線就代表一張卡片 */
+.pg-mine .grp-h:not(.sub){gap:0;margin:0;font-family:var(--font-body);font-size:16px;font-weight:700}
+.pg-mine .grp-h .cnt{font-weight:500}
+.pg-mine .grp-h.grp-all{margin-top:24px}
+.pg-mine .mine-none{margin:0;font-size:15px;color:var(--ink)}
+/* 小分類（召喚替身、打掃、驗收與付款）：14px 灰字，像清單裡的分組名稱；沒有案件的階段不顯示 */
+.pg-mine .grp-idx{margin-top:4px}
+.pg-mine .grp-h.sub{margin:6px 0 0;font-family:var(--font-body);font-size:14px;font-weight:600;color:var(--muted)}
+/* 「我是替身／我是本體」：文字分頁，選中的粗字加底線（黑底只留給「我是本體」標籤） */
+.pg-mine .seg{display:flex;justify-content:flex-start;gap:28px;padding:0;border:0;border-bottom:1px solid var(--ink);background:transparent}
+.pg-mine .seg button{flex:none;gap:0;min-height:44px;padding:8px 0 6px;margin-bottom:-1px;border:0;border-bottom:3px solid transparent;background:transparent;color:var(--muted);font-size:15px;font-weight:500}
+.pg-mine .seg button+button{border-left:0}
+.pg-mine .seg button.on{background:transparent;color:var(--ink);font-weight:900;border-bottom-color:var(--ink)}
+.pg-mine .seg button .muted,.pg-mine .seg button.on .muted{color:inherit;font-size:15px}
+/* 案件卡片：兩區同一種，1px 外框，和頁面同一種紙色 */
+.pg-mine .card.task{border-width:1px}
 .pg-mine .card.task,.pg-mine .tc-d{background:transparent}
-/* 身分標籤大一點；卡片之間、標題和第一張卡片之間約 20px */
 .pg-mine .card.task.is-poster,.pg-mine .card.task.is-worker{margin-top:32px}
-.pg-mine .tc-tab{height:24px;padding:0 8px;font-size:13px}
-.pg-mine .card.task.is-worker .tc-tab{padding:0 5px}
-/* 卡片內容：時間、地點（金額和地點同一條基線）、第三行（本體或性別） */
-.pg-mine .tc-d{padding:8px 0;gap:2px}
-.pg-mine .tc-d .dnum{font-size:32px}
-.pg-mine .tc-d{border-right:0;align-items:flex-start;padding-left:14px}  /* 日期欄和內容之間不加直線；月、日、星期靠左對齊同一條邊 */
+.pg-mine .tc-tab{left:-1px;bottom:calc(100% + 1px);height:24px;padding:0 8px;font-size:13px}
+.pg-mine .card.task.is-worker .tc-tab{border-width:1px 1px 0;padding:0 7px}
+/* 日期欄：月、日、星期靠左對齊，不加直線 */
+.pg-mine .tc-d{align-items:flex-start;gap:2px;padding:8px 0 8px 14px;border-right:0}
+.pg-mine .tc-d .dnum{font-size:40px}
 .pg-mine .tc-d .dw{color:var(--muted);margin-left:-.5em}  /* 全形括號左邊有留白，往左移半格，和月、日對齊 */
 .pg-mine .tc-d .dw .pa{font-weight:400}
+/* 內容：時間、地點（金額和地點同一條基線）、第三行（本體或性別）；粗體只留給狀態和日期 */
 .pg-mine .tc-time{padding:10px 44px 0 14px;font-size:16px;font-weight:500;line-height:22px}
 .pg-mine .tc-row{padding:2px 14px 10px;align-items:baseline}
 .pg-mine .tc-main{gap:2px;justify-content:flex-start}
@@ -964,55 +971,22 @@ main section.card ul.small li:first-child{border-top:0}
 .pg-mine .tc-side .price{font-weight:500}
 .pg-mine .tc-side .price .cur{margin-right:-.1em;vertical-align:.45em;font-size:12px;font-weight:400;letter-spacing:.04em;color:var(--muted)}
 .pg-mine .pill.s-bid{display:none}  /* 底下的狀態已經寫了「已出價 NT$…」，不重複 */
-/* 收藏星號：灰色，線條粗細和鈴鐺一樣，收藏了才變黑 */
+/* 收藏星號：灰色，收藏了才變黑 */
 .pg-mine .favbtn{top:4px;right:4px;width:36px;height:36px}
 .pg-mine .favbtn svg{width:18px;height:18px;stroke-width:2}
 .pg-mine .favbtn:not(.on){color:var(--muted)}
-/* 狀態那一行：紅色小方塊對齊日期欄中間，文字對齊內容欄（待你處理和全部案件一樣） */
-.pg-mine .tc-bar.bottom{position:relative;padding-left:86px}
-.pg-mine .tc-dot{position:absolute;left:32px;top:50%;width:8px;height:8px;margin-top:-4px;transform:none}
-/* 待你處理：卡片外框改細線，黑色橫條是卡片上唯一的大塊黑色；橫條字 16px 粗體，紅方塊緊貼文字、對齊第一行 */
-.pg-mine .grp-todo .card.task{border-width:1px}
-.pg-mine .grp-todo .tc-tab{left:-1px;bottom:calc(100% + 1px)}
-.pg-mine .grp-todo .card.task.is-worker .tc-tab{border-width:1px 1px 0;padding:0 7px}
-.pg-mine .grp-todo .tc-bar.bottom.todo{min-height:36px;padding:7px 14px;gap:8px;align-items:flex-start;font-size:16px;font-weight:700;line-height:22px}
-.pg-mine .grp-todo .tc-dot{position:static;margin:7px 0 0}
-.pg-mine .tc-bar.bottom .grow{text-wrap:balance;word-break:keep-all;overflow-wrap:anywhere}  /* 窄螢幕要折行時，兩行長度平均，不會只剩「時）」掉到第二行 */
-/* 第一張（最急的）做成主角格：日期數字和橫條都大一號 */
-.pg-mine .grp-todo .tc-d .dnum{font-size:40px}
-/* 全部案件：像目錄一樣的列，不加粗框和黑橫條，只用細線分隔；日期欄不加直線 */
-.pg-mine .grp-idx .card.task{border:0;border-top:1px solid var(--ink)}
-.pg-mine .grp-idx .card.task:last-of-type{border-bottom:1px solid var(--ink)}
-.pg-mine .grp-idx .tc-d{border-right:0}
-.pg-mine .grp-idx .tc-bar.bottom{background:transparent;border-top:0;color:var(--muted);font-size:14px;font-weight:500;padding-top:0;padding-bottom:12px;min-height:0}
-.pg-mine .grp-idx .tc-bar.bottom.todo{background:transparent;color:var(--ink);font-weight:700}
-.pg-mine .grp-idx .tc-dot{left:70px;top:calc(50% - 6px)}  /* 紅方塊掛在文字左邊，文字仍對齊內容欄 */
-.pg-mine .grp-idx .nbadge{top:9px;right:52px}
-/* 目錄列比上面的卡片密一點：日期數字 28px、上下間距小一點 */
-.pg-mine .grp-idx .tc-d{padding-top:6px;padding-bottom:6px}
-.pg-mine .grp-idx .tc-d .dnum{font-size:32px}
-.pg-mine .grp-idx .tc-time{padding-top:8px}
-.pg-mine .grp-idx .tc-row{padding-bottom:6px}  /* 新留言數放在星號左邊，不掛在線的末端 */
-.pg-mine .grp-idx .tc-tab{left:0;bottom:calc(100% + 1px)}
-.pg-mine .grp-idx .card.task.is-worker .tc-tab{border-width:1px 1px 0;padding:0 7px}
-/* 階段標題：「召喚替身（1）」16px 粗體，編號是同一條基線上的小號頁碼，不會被看成日期；沒有案件的階段只留一行淡色小字 */
-.pg-mine .grp-idx{margin-top:8px}
-.pg-mine .grp-h.sub{align-items:baseline;gap:0;margin-top:0;font-family:var(--font-body);font-size:16px;font-weight:900}
-.pg-mine .grp-h.sub[data-n]::before{flex:none;width:87px;padding-left:14px;box-sizing:border-box;font-family:var(--font-body);font-style:normal;font-size:16px;font-weight:500;letter-spacing:.06em;color:var(--muted)}
-.pg-mine .grp-idx.is-empty .grp-h.sub{font-size:14px;font-weight:600;color:var(--muted)}
-/* 「我是替身／我是本體」改成文字分頁：選中的粗字加底線，不再用黑底（黑底只留給「我是本體」標籤） */
-.pg-mine .seg{display:flex;justify-content:flex-start;gap:28px;padding:0 0 0 87px;border:0;border-bottom:1px solid var(--ink);background:transparent}
-.pg-mine .seg button{flex:none;min-height:44px;padding:8px 0 6px;margin-bottom:-1px;border:0;border-bottom:3px solid transparent;background:transparent;color:var(--muted);font-size:15px;font-weight:500}
-.pg-mine .seg button+button{border-left:0}
-.pg-mine .seg button.on{background:transparent;color:var(--ink);font-weight:900;border-bottom-color:var(--ink)}
-.pg-mine .seg button .muted,.pg-mine .seg button.on .muted{color:inherit;font-size:15px}
+/* 狀態行：卡片最下面一條，上面一條細線；輪到你時是淡紅底、深紅粗字，紅方塊貼著文字（紅色只代表需要你處理） */
+.pg-mine .tc-bar.bottom{display:flex;align-items:flex-start;gap:8px;min-height:36px;padding:7px 14px;border-top:1px solid var(--line);background:transparent;color:var(--muted);font-size:15px;font-weight:500;line-height:22px}
+.pg-mine .tc-bar.bottom.todo{border-top-color:#f0b4bb;background:#fce4e6;color:#9e0b22;font-weight:700}
+.pg-mine .tc-dot{position:static;width:8px;height:8px;margin:7px 0 0;transform:none}
+.pg-mine .tc-bar.bottom .grow{text-wrap:balance;word-break:keep-all;overflow-wrap:anywhere}  /* 窄螢幕要折行時，在標點處折、兩行長度平均 */
 /* 結尾記號：靠右，放在整頁最後 */
 .pg-mine .grp::after{display:none}
 main.pg-mine .grp-idx.is-last.is-last::after{content:"";display:block;align-self:flex-end;width:9px;height:9px;margin-top:4px;background:var(--ink)}
-/* 沒有案件時：靠左，標題比區段標題小，主要按鈕是黑色 */
-.pg-mine .mine-empty{align-items:stretch;padding:20px 0 0 87px;gap:8px;text-align:left}
+/* 沒有案件時：靠左，主要按鈕是黑色 */
+.pg-mine .mine-empty{align-items:flex-start;gap:8px;padding:16px 0 0;text-align:left}
 .pg-mine .mine-empty b{font-size:16px}
-.pg-mine .mine-empty .btn{margin-top:8px;min-height:48px}
+.pg-mine .mine-empty .btn{margin-top:8px}
 </style>
 </head>
 <body>
@@ -1464,19 +1438,18 @@ function mineView(){
   const cnt=k=>S.tasks.filter(t=>G[k].some(g=>g[1](t))).length;
   if(!ui.mineRole)ui.mineRole=(!cnt('work')&&cnt('own'))?'own':'work';
   const k=ui.mineRole;
-  /* 三個階段都列出來（沒有案件的階段只留一行淡色標題），編號 01～03 才不會跳號；最後一個有案件的階段後面放結尾記號 */
-  const lists=G[k].map(([title,fn])=>[title,S.tasks.filter(fn).sort((a,b)=>a.start-b.start)]);
-  const lastIdx=lists.map(x=>x[1].length>0).lastIndexOf(true);
-  const groups=lastIdx<0?'':lists.map(([title,list],gi)=>'<section class="grp grp-idx'+(list.length?'':' is-empty')+(gi===lists.length-1?' is-last':'')+'"><h3 class="grp-h sub" data-n="0'+(gi+1)+'">'+title+'（'+list.length+'）</h3>'+list.map(t=>taskCard(t,{bar:true})).join('')+'</section>').join('');
+  /* 只列出有案件的階段；最後一個階段後面放結尾記號 */
+  const lists=G[k].map(([title,fn])=>[title,S.tasks.filter(fn).sort((a,b)=>a.start-b.start)]).filter(x=>x[1].length);
+  const groups=lists.map(([title,list],gi)=>'<section class="grp grp-idx'+(gi===lists.length-1?' is-last':'')+'"><h3 class="grp-h sub">'+title+'（'+list.length+'）</h3>'+list.map(t=>taskCard(t,{bar:true})).join('')+'</section>').join('');
   const none=k==='work'
     ?'<div class="empty mine-empty"><b>你目前沒有當替身的案件</b><span class="small">出價後的案件會出現在這裡。</span><button class="btn sm" data-act="tab" data-v="browse">去看看有哪些案件</button></div>'
     :'<div class="empty mine-empty"><b>你目前沒有當本體的案件</b><span class="small">填好日期、時間和地點就能發案。</span><button class="btn sm" data-act="tab" data-v="post">發案</button></div>';
   return '<h1 class="vh">我的案件</h1>'+
   (todos.length
-    ?'<section class="grp grp-todo" aria-label="待你處理"><h2 class="grp-h todo-h"><span class="todo-n" aria-hidden="true">'+todos.length+'</span>待你處理<span class="vh">，'+todos.length+' 件</span></h2>'+todos.map(t=>taskCard(t,{bar:true})).join('')+'</section>'
-    :'<section class="grp grp-todo is-none"><h2 class="grp-h todo-h"><span class="todo-n" aria-hidden="true">0</span>待你處理</h2><p class="mine-none">目前沒有需要你處理的事。</p></section>')+
+    ?'<section class="grp grp-todo" aria-label="待你處理"><h2 class="grp-h">待你處理<span class="cnt">（'+todos.length+'）</span></h2>'+todos.map(t=>taskCard(t,{bar:true})).join('')+'</section>'
+    :'<section class="grp grp-todo is-none"><h2 class="grp-h">待你處理</h2><p class="mine-none">目前沒有需要你處理的事。</p></section>')+
   '<h2 class="grp-h grp-all">全部案件</h2>'+
-  '<div class="seg" role="tablist">'+[['work','我是替身'],['own','我是本體']].map(([v,l])=>'<button role="tab" aria-selected="'+(k===v)+'" class="'+(k===v?'on':'')+'" data-act="seg" data-k="mineRole" data-v="'+v+'">'+l+'<span class="muted small">'+cnt(v)+'</span></button>').join('')+'</div>'+
+  '<div class="seg" role="tablist">'+[['work','我是替身'],['own','我是本體']].map(([v,l])=>'<button role="tab" aria-selected="'+(k===v)+'" class="'+(k===v?'on':'')+'" data-act="seg" data-k="mineRole" data-v="'+v+'">'+l+'<span class="muted small">（'+cnt(v)+'）</span></button>').join('')+'</div>'+
   (groups||none);
 }
 
