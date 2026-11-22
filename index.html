@@ -160,8 +160,9 @@ nav.tabs .badge{position:absolute;top:4px;left:calc(50% + 8px)}
 .tm-custom input{min-height:36px;padding:6px 10px}
 /* 人物卡：右上角是標記（平常一個低調的「標記」），按了在卡片裡往下展開說明和選項 */
 .pc-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
-.taghead{flex:none;display:inline-flex;align-items:center;gap:8px;max-width:60%;margin-top:-6px;font-size:14px}
-.taghead .pill{min-width:0;max-width:140px;overflow:hidden;text-overflow:ellipsis}
+.taghead{flex:none;display:inline-flex;align-items:center;gap:8px;max-width:72%;margin-top:-6px;font-size:14px}
+.taghead .pill{display:inline-block;min-width:0;max-width:140px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.taghead .taglink{flex:none;white-space:nowrap}  /* 標記內容太長時縮短標記內容，不擠壓「更改」 */
 .taglink{appearance:none;border:0;background:none;padding:6px 0;font:inherit;font-size:14px;font-weight:700;color:var(--ink);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 .tagzone .tagmenu{position:static;max-width:none;margin-top:8px;box-shadow:none}  /* 在卡片裡往下展開，不浮在別的內容上 */
 .tm-note{margin:0;padding:6px 10px 8px;line-height:1.5;border-bottom:1px solid var(--line)}
@@ -935,63 +936,136 @@ main section.card ul.small li:first-child{border-top:0}
   .fx-flash,.fx-sfx{display:none}
   .sheet.fx-in,.btn,.card.task,.favbtn,#toast{animation:none;transition:none}
 }
-/* ===== 方案 I・「我的案件」（只套在這一頁：.pg-mine） =====
-   原則：這是每天用的互動式平台，不是海報。分類要看起來像分類，案件要看起來像可以點的卡片。 */
-.pg-mine{--muted:#6b6459}  /* 灰字用暖灰，不偏藍紫 */
-/* 大分類（待你處理、全部案件）：靠左、16px 粗體，件數用括號接在後面；兩區之間只靠留白分開 */
-.pg-mine .grp{gap:8px}
-.pg-mine .grp-h::after{display:none}
-.pg-mine .grp-h:not(.sub){gap:0;margin:0;font-family:var(--font-body);font-size:16px;font-weight:700}
-.pg-mine .grp-h .cnt{font-weight:500}
+/* ===== 方案 I・互動式平台設計語言（2026-11-22：從「我的案件」推到全站） =====
+   原則：這是每天用的互動式平台，不是海報。分類看起來像分類，案件和人物看起來像可以點的卡片；
+   線一律 1px，粗線只用來表示「選中」；黑色只留給主要按鈕；紅色只代表需要你處理或有未讀。 */
+:root{--muted:#6b6459;--tag-poster:#e4d9c1;--tag-worker:#d5dfe9;--bar:#fffcf4}
+/* 標題欄、下方分頁：細線；選中的分頁上緣 3px */
+header.top{border-bottom-width:1px}
+nav.tabs{border-top-width:1px}
+nav.tabs button.on{box-shadow:inset 0 3px 0 var(--ink)}
+/* 標題：下一層頁面的頁名 22px；區塊標題、分類 16px 粗體（一般字體，不用海報式的大字） */
+h1{font-family:var(--font-body);font-size:22px;font-weight:900;letter-spacing:0}
+h2{font-family:var(--font-body);font-size:16px;font-weight:700;letter-spacing:0}
+.empty b{font-family:var(--font-body);font-size:16px;font-weight:700}
+/* 區塊（留言板、使用規則……）不用 3px 粗線開頭，只靠留白分開 */
+.card.card:not(.task):not(.linkrow):not(.sum):not(.next):not(.pcard){border-top:0;padding-top:4px}
+/* 分類：大分類 16px 粗體、件數用括號接在後面；小分類 14px 灰字 */
+.grp{gap:8px}
+.grp-h::after{display:none}
+.grp-h:not(.sub){gap:0;margin:0;font-family:var(--font-body);font-size:16px;font-weight:700}
+.hcnt{font-weight:500}
+.grp-h.sub{margin:6px 0 0;font-family:var(--font-body);font-size:14px;font-weight:600;color:var(--muted)}
+#blist>.small:first-child{color:var(--muted)}
+#blist>.small:first-child::after{display:none}
 .pg-mine .grp-h.grp-all{margin-top:24px}
-.pg-mine .mine-none{margin:0;font-size:15px;color:var(--ink)}
-/* 小分類（召喚替身、打掃、驗收與付款）：14px 灰字，像清單裡的分組名稱；沒有案件的階段不顯示 */
 .pg-mine .grp-idx{margin-top:4px}
-.pg-mine .grp-h.sub{margin:6px 0 0;font-family:var(--font-body);font-size:14px;font-weight:600;color:var(--muted)}
-/* 「我是替身／我是本體」：文字分頁，選中的粗字加底線（黑底只留給「我是本體」標籤） */
-.pg-mine .seg{display:flex;justify-content:flex-start;gap:28px;padding:0;border:0;border-bottom:1px solid var(--ink);background:transparent}
-.pg-mine .seg button{flex:none;gap:0;min-height:44px;padding:8px 0 6px;margin-bottom:-1px;border:0;border-bottom:3px solid transparent;background:transparent;color:var(--muted);font-size:15px;font-weight:500}
-.pg-mine .seg button+button{border-left:0}
-.pg-mine .seg button.on{background:transparent;color:var(--ink);font-weight:900;border-bottom-color:var(--ink)}
-.pg-mine .seg button .muted,.pg-mine .seg button.on .muted{color:inherit;font-size:15px}
-/* 案件卡片：兩區同一種，1px 外框，和頁面同一種紙色 */
-.pg-mine .card.task{border-width:1px}
-.pg-mine .card.task,.pg-mine .tc-d{background:transparent}
-.pg-mine .card.task.is-poster,.pg-mine .card.task.is-worker{margin-top:32px}
-.pg-mine .tc-tab{left:auto;right:-1px;bottom:calc(100% + 1px);height:24px;padding:0 8px;background:#e4d9c1;color:var(--ink);font-size:13px}  /* 右上角；「我是本體」淡米色底，不再用黑底 */
-.pg-mine .card.task.is-worker .tc-tab{border-width:1px 1px 0;padding:0 7px;background:transparent}
-.pg-mine .nbadge{top:8px;right:44px}  /* 右上角外側給身分標籤用，新留言數放到卡片裡、星號左邊 */
+.mine-none{margin:0;font-size:15px;color:var(--ink)}
+/* 切換畫面的分頁（我是替身／我是本體、已完成／已取消）：文字分頁，選中的粗字加 3px 底線 */
+.seg{display:flex;justify-content:flex-start;gap:28px;padding:0;border:0;border-bottom:1px solid var(--ink);background:transparent;box-shadow:none}
+.seg button{flex:none;gap:0;min-height:44px;padding:8px 0 6px;margin-bottom:-1px;border:0;border-bottom:3px solid transparent;border-radius:0;background:transparent;color:var(--muted);font-size:15px;font-weight:500}
+.seg button+button{border-left:0}
+.seg button.on{background:transparent;color:var(--ink);font-weight:900;border-bottom-color:var(--ink)}
+.seg button .muted,.seg button.on .muted{color:inherit;font-size:14px}
+/* 選項（篩選標籤、替身性別、付款方式、篩選按鈕）：選中的是近白底加 2px 黑框和粗字，不再反黑 */
+.chip.on,.checks label:has(input:checked),.tool.active{background:var(--bar);color:var(--ink);box-shadow:inset 0 0 0 2px var(--ink);font-weight:800}
+.chip.on{border-color:var(--ink)}
+.pway input:checked+.acc-h{background:var(--bar);color:var(--ink);box-shadow:inset 3px 0 0 var(--ink);font-weight:800}
+/* 案件卡片（全站同一種）：1px 外框、和頁面同一種紙色 */
+.card.task{border-width:1px}
+.card.task,.tc-d{background:transparent}
+.card.task.is-poster,.card.task.is-worker{margin-top:32px}
+/* 身分標籤：卡片右上角外側，兩種都不加框；本體＝淡米色＋房子符號，替身＝淡藍灰＋掃把符號 */
+.tc-tab{left:auto;right:-1px;bottom:calc(100% + 1px);display:flex;align-items:center;gap:4px;height:24px;padding:0 8px;border:0;background:var(--tag-poster);color:var(--ink);font-size:13px}
+.card.task.is-worker .tc-tab{border:0;padding:0 8px;background:var(--tag-worker)}
+.tc-tab svg,.sum-role svg{flex:none;width:12px;height:12px}
 /* 日期欄：月、日、星期靠左對齊，不加直線 */
-.pg-mine .tc-d{align-items:flex-start;gap:2px;padding:8px 0 8px 14px;border-right:0}
-.pg-mine .tc-d .dnum{font-size:40px}
-.pg-mine .tc-d .dw{color:var(--muted);margin-left:-.5em}  /* 全形括號左邊有留白，往左移半格，和月、日對齊 */
-.pg-mine .tc-d .dw .pa{font-weight:400}
-/* 內容：時間、地點（金額和地點同一條基線）、第三行（本體或性別）；粗體只留給狀態和日期 */
-.pg-mine .tc-time{padding:10px 44px 0 14px;font-size:16px;font-weight:500;line-height:22px}
-.pg-mine .tc-row{padding:2px 14px 10px;align-items:baseline}
-.pg-mine .tc-main{gap:2px;justify-content:flex-start}
-.pg-mine .tc-place,.pg-mine .tc-who,.pg-mine .tc-g{line-height:20px;min-height:0}
-.pg-mine .tc-side{justify-content:flex-start}
-.pg-mine .tc-bottom{margin-top:0}
-.pg-mine .tc-side .price{font-weight:500}
-.pg-mine .tc-side .price .cur{margin-right:-.1em;vertical-align:.45em;font-size:12px;font-weight:400;letter-spacing:.04em;color:var(--muted)}
-.pg-mine .pill.s-bid{display:none}  /* 底下的狀態已經寫了「已出價 NT$…」，不重複 */
-/* 收藏星號：灰色，收藏了才變黑 */
-.pg-mine .favbtn{top:4px;right:4px;width:36px;height:36px}
-.pg-mine .favbtn svg{width:18px;height:18px;stroke-width:2}
-.pg-mine .favbtn:not(.on){color:var(--muted)}
-/* 狀態行：卡片最下面一條，上面一條細線；輪到你時是淡紅底、深紅粗字，紅方塊貼著文字（紅色只代表需要你處理） */
-.pg-mine .tc-bar.bottom{display:flex;align-items:flex-start;gap:8px;min-height:36px;padding:7px 14px;border-top:1px solid var(--line);background:transparent;color:var(--muted);font-size:15px;font-weight:500;line-height:22px}
-.pg-mine .tc-bar.bottom.todo{border-top-color:#f0b4bb;background:#fce4e6;color:#9e0b22;font-weight:700}
-.pg-mine .tc-dot{position:static;width:8px;height:8px;margin:7px 0 0;transform:none}
-.pg-mine .tc-bar.bottom .grow{text-wrap:balance;word-break:keep-all;overflow-wrap:anywhere}  /* 窄螢幕要折行時，在標點處折、兩行長度平均 */
-/* 結尾記號：靠右，放在整頁最後 */
-.pg-mine .grp::after{display:none}
+.tc-body{grid-template-rows:auto 1fr}
+.tc-d{align-items:flex-start;gap:2px;padding:8px 0 8px 14px;border-right:0}
+.tc-d .dnum{font-size:40px}
+.tc-d .dw{color:var(--muted);margin-left:-.5em}  /* 全形括號左邊有留白，往左移半格，和月、日對齊 */
+.tc-d .dw .pa{font-weight:400}
+/* 內容：時間、地點、第三行（本體或性別）靠上；金額在右下角；粗體只留給狀態和日期 */
+.tc-time{padding:10px 44px 0 14px;font-size:16px;font-weight:500;line-height:22px}
+.tc-row{padding:2px 14px 10px;align-items:flex-end}
+.tc-main{align-self:flex-start;gap:2px;justify-content:flex-start}
+.tc-place,.tc-who,.tc-g{line-height:20px;min-height:0}
+.tc-side{align-self:stretch;justify-content:flex-end}
+.tc-bottom{margin-top:auto}
+.tc-side .price{font-weight:500}
+.tc-side .price .cur{margin-right:-.1em;vertical-align:.45em;font-size:12px;font-weight:400;letter-spacing:.04em;color:var(--muted)}
+.card.task:has(.tc-bar) .pill.s-bid{display:none}  /* 底下的狀態已經寫了「已出價 NT$…」，不重複 */
+/* 收藏星號：灰色，收藏了才變黑；新留言數放在卡片裡、星號左邊（右上角外側給身分標籤用） */
+.favbtn{top:4px;right:4px;width:36px;height:36px}
+.favbtn svg{width:18px;height:18px;stroke-width:2}
+.favbtn:not(.on){color:var(--muted)}
+.card.task .nbadge{top:8px;right:44px}
+/* 狀態行（卡片最下面）：近白底、上方一條淡色細線；輪到你時是淡紅底、深紅粗字，紅方塊貼著文字 */
+.tc-bar.bottom{display:flex;align-items:flex-start;gap:8px;min-height:36px;padding:7px 14px;border-top:1px solid var(--line);background:var(--bar);color:var(--muted);font-size:15px;font-weight:500;line-height:22px}
+.tc-bar.bottom.todo{border-top-color:#f0b4bb;background:#fce4e6;color:#9e0b22;font-weight:700}
+.tc-dot{position:static;width:8px;height:8px;margin:7px 0 0;transform:none}
+.tc-bar.bottom .grow{text-wrap:balance;word-break:keep-all;overflow-wrap:anywhere}  /* 窄螢幕要折行時，在標點處折、兩行長度平均 */
+/* 列表結尾記號：靠右，放在最後 */
+#blist:has(>.card.task)::after{align-self:flex-end}
+.grp::after{display:none}
 main.pg-mine .grp-idx.is-last.is-last::after{content:"";display:block;align-self:flex-end;width:9px;height:9px;margin-top:4px;background:var(--ink)}
 /* 沒有案件時：靠左，主要按鈕是黑色 */
-.pg-mine .mine-empty{align-items:flex-start;gap:8px;padding:16px 0 0;text-align:left}
-.pg-mine .mine-empty b{font-size:16px}
-.pg-mine .mine-empty .btn{margin-top:8px}
+.mine-empty{align-items:flex-start;gap:8px;padding:16px 0 0;text-align:left}
+.mine-empty .btn{margin-top:8px}
+/* 標記按鈕前面有標籤符號 */
+.taglink{display:inline-flex;align-items:center;gap:4px}
+.taglink svg{flex:none;width:14px;height:14px;stroke-width:2}
+.card.card.mini.pcard.pcard .tagbtn{margin-left:8px}
+
+/* ----- 案件詳情 ----- */
+/* 進度條：放在案件卡片上面，平面線段加標籤；完成＝黑線、目前＝階段色線加粗字、還沒到＝淡線 */
+.steps{margin:0;padding:0;background:transparent}
+.steps li{color:var(--muted)}
+.steps li::before,.steps li:first-child::before{background:var(--line)}
+.steps li.past{color:var(--ink)}
+.steps li.past::before{background:var(--ink)}
+.steps li.cur{color:var(--ink);font-weight:800}
+.stg-summon{--stg-bg:#7fb800}
+.stg-done{--stg-bg:var(--ink)}
+.steps+.card.sum,main>.card.sum:first-child{margin-top:0}
+/* 案件摘要：一張細框卡片（不再是滿版黑色資訊格），內容順序不變 */
+.card.sum{margin:0;border:1px solid var(--ink);background:transparent}
+.sum-top{padding:12px 14px 12px;background:transparent;color:var(--ink)}
+.sum-date{color:var(--ink)}
+.sum-date .dm{color:var(--muted);font-size:13px}
+.sum-date .dnum{font-size:48px}
+.sum-date .dday,.sum-date .dw{font-size:16px;font-weight:600}
+.sum-time{font-size:18px;font-weight:500}
+.sum-top .muted,.sum-time .small{color:var(--muted)}
+.sum-price,.card.sum.has-fav .sum-price{border-top:1px solid var(--line)}
+.sum-price .price{font-size:26px;font-weight:500}
+.sum-price .price .cur{color:var(--muted);font-weight:400}
+.sum-price .price .muted{font-size:18px;color:var(--muted)}
+.sum-who{border-top:1px solid var(--line)}
+.sum-who-l,.sum-who .idline{color:var(--muted)}
+.sum-who .idline .dot{color:var(--line)}
+.sum-role{top:12px;right:14px;display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border:0;color:var(--ink)}
+.sum-role.is-poster{background:var(--tag-poster);color:var(--ink)}
+.sum-role.is-worker{background:var(--tag-worker);color:var(--ink)}
+.card.sum .facts{padding:2px 14px 12px}
+@media (max-width:360px){.sum-date .dnum{font-size:42px}.sum-time{font-size:17px}.sum-price .price{font-size:23px}}
+/* 你的下一步：一律 1px 細框；輪到你時標題前一個紅色小方塊 */
+.card.next,.card.next:not(.act){border-width:1px}
+.card.next>h2:first-child{font-size:16px}
+
+/* ----- 我的 ----- */
+.card.me-card{border-top:0;padding:4px 56px 4px 0}
+.card.me-card .idblock .id-name{font-family:var(--font-body);font-size:22px;font-weight:900;letter-spacing:0}
+.me-edit{top:4px}
+.card.linkrow:not(.me-card) .grow>b{font-family:var(--font-body);font-size:16px;font-weight:700}
+.cnt{font-size:inherit;font-weight:500}
+main section.card ul.small li::before{font-family:var(--font-body);font-size:14px;font-weight:500;color:var(--muted)}
+
+/* ----- 發案 ----- 段落開頭不用 3px 粗線和 01～04 編號；日期時間用一般字體 */
+form[data-form="post"]>:is(.field:first-child,.field:has(#p-b),.field:has([aria-labelledby="p-g"]),.field:has(#p-budget)){border-top:0;padding-top:0}
+form[data-form="post"]>:is(.field:first-child,.field:has(#p-b),.field:has([aria-labelledby="p-g"]),.field:has(#p-budget))>:first-child::before{content:none}
+form[data-form="post"] .dt-btn{font-family:var(--font-body);font-size:17px;font-weight:600;min-height:48px}
+.field label,.field .lbl{font-size:14px}
 </style>
 </head>
 <body>
@@ -1016,6 +1090,8 @@ const IDX={open:0,pending:0,assigned:1,done:2,confirmed:3,paid:3,closed:4};
 const YEARS=['大一','大二','大三','大四','大五以上','碩一','碩二','博士班'];
 const AV=['#bfe3d8','#f6dca0','#c9d9f1','#f1c9bf','#d9d1ef'];
 const IC={
+  house:'<svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M8 1.6 1.2 7.4h1.9V14h3.7v-3.9h2.4V14h3.7V7.4h1.9z"/></svg>',
+  broom:'<svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M7.1.4h1.8v6.4H7.1zM4.6 7.3h6.8v1.9H4.6zM4.7 9.8h1.9l-.5 5.8H2.9zM7.1 9.8h1.8l.2 5.8H6.9zM9.4 9.8h1.9l1.8 5.8h-3.2z"/></svg>',
   search:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>',
   list:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01"/></svg>',
   plus:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>',
@@ -1347,7 +1423,7 @@ function taskCard(t,opt){
   let bar='';
   if(opt.bar)bar='<div class="tc-bar bottom'+(td?' todo':'')+'">'+(td?'<span class="tc-dot" aria-hidden="true"></span>':'')+'<span class="grow">'+(td?'<span class="vh">需要你處理：</span>':'')+esc(barText(t,S.me))+'</span></div>';
   const rk=own?'is-poster':role?'is-worker':'',boss=t.assignee===S.me&&S.me&&t.status!=='pending'?u(t.poster):null;
-  return '<div class="card task'+(rk?' '+rk:'')+'">'+(role?'<span class="tc-tab">'+role+'</span>':'')+
+  return '<div class="card task'+(rk?' '+rk:'')+'">'+(role?'<span class="tc-tab">'+(own?IC.house:IC.broom)+role+'</span>':'')+
     '<button class="tc-open" data-act="open" data-id="'+t.id+'" aria-label="查看 '+dateLabel(t)+esc(t.building)+' 的案件"></button>'+
     favBtn(t.id)+(unread(t)?'<span class="nbadge" aria-label="'+unread(t)+' 則新留言">'+unread(t)+'</span>':'')+
     '<div class="tc-body"><div class="tc-date"><span class="tc-d">'+cardDate(t)+'</span><span class="tc-time">'+cardTime(t)+'</span></div>'+
@@ -1451,7 +1527,7 @@ function mineView(){
     :'<div class="empty mine-empty"><b>你目前沒有當本體的案件</b><span class="small">填好日期、時間和地點就能發案。</span><button class="btn sm" data-act="tab" data-v="post">發案</button></div>';
   return '<h1 class="vh">我的案件</h1>'+
   (todos.length
-    ?'<section class="grp grp-todo" aria-label="待你處理"><h2 class="grp-h">待你處理<span class="cnt">（'+todos.length+'）</span></h2>'+todos.map(t=>taskCard(t,{bar:true})).join('')+'</section>'
+    ?'<section class="grp grp-todo" aria-label="待你處理"><h2 class="grp-h">待你處理<span class="hcnt">（'+todos.length+'）</span></h2>'+todos.map(t=>taskCard(t,{bar:true})).join('')+'</section>'
     :'<section class="grp grp-todo is-none"><h2 class="grp-h">待你處理</h2><p class="mine-none">目前沒有需要你處理的事。</p></section>')+
   '<h2 class="grp-h grp-all">全部案件</h2>'+
   '<div class="seg" role="tablist">'+[['work','我是替身'],['own','我是本體']].map(([v,l])=>'<button role="tab" aria-selected="'+(k===v)+'" class="'+(k===v?'on':'')+'" data-act="seg" data-k="mineRole" data-v="'+v+'">'+l+'<span class="muted small">（'+cnt(v)+'）</span></button>').join('')+'</div>'+
@@ -1589,7 +1665,7 @@ function tagsView(){
   const mine=S.tags[S.me]||{},ids=Object.keys(mine).filter(id=>u(id)).sort((a,b)=>mine[b].at-mine[a].at);
   return '<div class="sec-head"><h1>標記的人</h1><span class="small muted">共 '+ids.length+' 人</span></div>'+
   '<p class="small muted">只有你自己看得到。</p>'+
-  (ids.length?ids.map(id=>{const x=u(id);return '<section class="card mini"><div class="row between">'+idBlock(x)+tagButton(id)+'</div></section>';}).join('')
+  (ids.length?ids.map(id=>{const x=u(id);return '<section class="card mini pcard"><div class="row between">'+idBlock(x)+tagButton(id)+'</div></section>';}).join('')
     :empty('還沒有標記任何人','在案件詳情的本體或替身資訊卡上，按「標記」就能標記。'));
 }
 function historyList(id){return S.tasks.filter(t=>(t.poster===id||t.assignee===id)&&t.status==='closed');}
@@ -1599,7 +1675,7 @@ function pastView(){
   const id=S.me,kind=ui.pastKind==='cancelled'?'cancelled':'history',done=historyList(id),cc=cancelledList(id),all=kind==='cancelled'?cc:done,sg=ui.histSeg||'all';
   const list=all.filter(t=>sg==='all'||(sg==='work'?t.assignee===id:t.poster===id)).sort((a,b)=>b.start-a.start);
   return '<div class="sec-head"><h1>過去的案件</h1></div>'+
-  '<div class="seg" role="tablist">'+[['history','已完成',done.length],['cancelled','已取消',cc.length]].map(([k,l,n])=>'<button role="tab" aria-selected="'+(kind===k)+'" class="'+(kind===k?'on':'')+'" data-act="seg" data-k="pastKind" data-v="'+k+'">'+l+'<span class="muted small">'+n+'</span></button>').join('')+'</div>'+
+  '<div class="seg" role="tablist">'+[['history','已完成',done.length],['cancelled','已取消',cc.length]].map(([k,l,n])=>'<button role="tab" aria-selected="'+(kind===k)+'" class="'+(kind===k?'on':'')+'" data-act="seg" data-k="pastKind" data-v="'+k+'">'+l+'<span class="muted small">（'+n+'）</span></button>').join('')+'</div>'+
   '<div class="chips" role="group" aria-label="依身分篩選">'+[['all','全部'],['work','我是替身'],['post','我是本體']].map(([k,l])=>'<button class="chip'+(sg===k?' on':'')+'" aria-pressed="'+(sg===k)+'" data-act="seg" data-k="histSeg" data-v="'+k+'">'+l+'</button>').join('')+'</div>'+
   (list.length?list.map(t=>taskCard(t,{bar:true})).join(''):empty('還沒有紀錄',kind==='cancelled'?'取消的案件會出現在這裡。':'完成的案件會出現在這裡。'));
 }
@@ -1734,7 +1810,7 @@ function tagButton(uid){
 /* 人物卡右上角的標記：平常是低調的「標記」，標記了就顯示標記內容和「更改」；按了在卡片裡往下展開說明和選項（tagMenuFor） */
 function tagHead(uid,who){
   const g=tagOf(uid),open=ui.tagMenu===uid;
-  return '<span class="taghead">'+(g?tagChip(g):'')+'<button class="taglink" data-act="tagMenu" data-uid="'+uid+'" aria-haspopup="menu" aria-expanded="'+open+'" aria-label="'+(g?'更改標記，目前是「'+esc(tagText(g))+'」':'標記這位'+who)+'">'+(g?'更改':'標記')+'</button></span>';
+  return '<span class="taghead">'+(g?tagChip(g):'')+'<button class="taglink" data-act="tagMenu" data-uid="'+uid+'" aria-haspopup="menu" aria-expanded="'+open+'" aria-label="'+(g?'更改標記，目前是「'+esc(tagText(g))+'」':'標記這位'+who)+'">'+IC.tag+(g?'更改':'標記')+'</button></span>';
 }
 function tagMenuFor(uid,who){
   if(ui.tagMenu!==uid)return '';
@@ -1809,7 +1885,7 @@ function summaryCard(t){
     (t.status==='cancelled'?'<span class="pill s-off" style="align-self:flex-start">已取消</span>':'')+
     '<div class="sum-top" data-d="'+new Date(t.start).getDate()+'"><div class="grow"><div class="sum-date">'+dayHTML(new Date(t.start))+'</div><div class="sum-time"><span>'+hhmm(t.start)+' 至 '+hhmm(t.end)+'</span>'+(live?'<span class="small muted">'+when(t)+'</span>':'')+'</div>'+
     (who?'<div class="sum-who"><span class="sum-who-l">本體</span><b class="sum-who-n">'+esc(who.name)+'</b>'+idLine(who)+'</div>':'')+'</div>'+
-    (mine?'<span class="sum-role '+(mine==='poster'?'is-poster':'is-worker')+'">'+(mine==='poster'?'我是本體':'我是替身')+'</span>':'')+
+    (mine?'<span class="sum-role '+(mine==='poster'?'is-poster':'is-worker')+'">'+(mine==='poster'?IC.house+'我是本體':IC.broom+'我是替身')+'</span>':'')+
     '<div class="sum-price"><span class="small muted">'+pl+'</span><b class="price">'+pv+'</b></div></div>'+
     '<dl class="facts"><dt>地點</dt><dd>'+esc(t.building)+'</dd><dt>集合位置</dt><dd>'+esc(t.meet)+'</dd><dt>替身性別</dt><dd>'+genderText(t.gender)+'</dd><dt>備註</dt><dd>'+note+'</dd></dl></section>';
 }

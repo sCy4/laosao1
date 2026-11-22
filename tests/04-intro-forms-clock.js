@@ -37,7 +37,8 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
   ok((await js(() => Math.round(document.getElementById('toast').getBoundingClientRect().top))) < 150, '提示訊息出現在畫面上方');
   await go('#task-t3');
   // 資訊卡裡的標記改成低調的文字按鈕「標記」（沒有圖示，不會和收藏的星號混淆）；「標記的人」頁的按鈕仍是標籤圖示
-  ok(await js(() => { const b = document.querySelector('.card.mini .taglink'); return !!b && b.textContent === '標記' && !b.querySelector('svg') && !document.querySelector('.card.mini .tagbtn'); }), '資訊卡的標記是低調的文字按鈕「標記」');
+  // 使用者 2026-11-22：標記按鈕前面加符號（用標籤符號，不用書籤，避免和星號收藏混淆）
+  ok(await js(() => { const b = document.querySelector('.card.mini .taglink'), d = b && b.querySelector('svg path'); return !!b && b.textContent === '標記' && !!d && d.getAttribute('d').startsWith('M20.6') && !document.querySelector('.card.mini .tagbtn'); }), '資訊卡的標記是低調的文字按鈕「標記」，前面有標籤符號');
   await act('setTag', { uid: 'u2', type: 'trust' }); await go('#tags');
   ok((await js(() => document.querySelector('.tagbtn svg path').getAttribute('d'))).startsWith('M20.6'), '標記的人頁的按鈕仍是標籤圖示');
 
