@@ -28,8 +28,8 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
 
   // 接案頁頂端變矮、標記圖示、提示在上方
   await fresh('u1'); await go('#browse');
-  // 卡片有「我是本體／我是替身」標籤時，從標籤頂端算起
-  const top = await js(() => { const c = document.querySelector('#blist .card.task'), g = c.querySelector('.tc-tab'); return Math.round((g || c).getBoundingClientRect().top); });
+  // 方案 K 的「我是本體／我是替身」標籤在卡片裡面（方案 I 突出在卡片外側上方，所以當時從標籤頂端量），現在從卡片頂端量；標準不變
+  const top = await js(() => Math.round(document.querySelector('#blist .card.task').getBoundingClientRect().top));
   ok(top < 190, '第一張卡片從 ' + top + 'px 開始（原本約 260px）');
   ok(await js(() => { const h = document.querySelector('main h1'); return h && h.classList.contains('vh'); }), '頁面大標只留給螢幕閱讀器');
   ok(await js(() => { const r1 = document.querySelector('.search').getBoundingClientRect(), r2 = document.querySelector('[data-act="openFilter"]').getBoundingClientRect(); return Math.abs(r1.top - r2.top) < 4; }), '搜尋、排序、篩選在同一排');
@@ -39,7 +39,8 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
   // 資訊卡裡的標記改成低調的文字按鈕「標記」（沒有圖示，不會和收藏的星號混淆）；「標記的人」頁的按鈕仍是標籤圖示
   ok(await js(() => { const b = document.querySelector('.card.mini .taglink'); return !!b && b.textContent === '標記' && !b.querySelector('svg') && !document.querySelector('.card.mini .tagbtn'); }), '資訊卡的標記是低調的文字按鈕「標記」');
   await act('setTag', { uid: 'u2', type: 'trust' }); await go('#tags');
-  ok((await js(() => document.querySelector('.tagbtn svg path').getAttribute('d'))).startsWith('M20.6'), '標記的人頁的按鈕仍是標籤圖示');
+  // 方案 K 的圖示換成 Material Icons，標籤圖示是 Material 的「sell」（路徑開頭 M21.41），不是書籤
+  ok((await js(() => document.querySelector('.tagbtn svg path').getAttribute('d'))).startsWith('M21.41'), '標記的人頁的按鈕仍是標籤圖示');
 
   // 表單錯誤顯示在欄位下方
   await go('#post'); await p.click('form[data-form="post"] button[type="submit"]'); await W();
