@@ -40,12 +40,12 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
     // 元件的樣子
     ok(await js(() => { const on = document.querySelector('nav.tabs button.on'), bf = getComputedStyle(on, '::before'), f = on.querySelector('svg .i-f');
       return on.dataset.v === 'mine' && bf.backgroundColor === 'rgb(217, 226, 255)' && bf.width === '64px' && !!f && getComputedStyle(f).display !== 'none'; }), w + 'px 底部導覽列：圖示在膠囊裡，選中的分頁膠囊有底色、圖示換成實心');
-    ok(await js(() => { const c = getComputedStyle(document.querySelector('.card.task')); return c.borderRadius === '12px' && c.boxShadow !== 'none'; }), w + 'px 案件卡片：12px 圓角、浮起的陰影');
+    ok(await js(() => { const c = getComputedStyle(document.querySelector('.card.task')); return c.borderRadius === '12px' && c.boxShadow === 'none' && c.backgroundColor === 'rgb(255, 255, 255)' && c.borderTopWidth === '1px'; }), w + 'px 案件卡片：12px 圓角的白底外框卡（設計評論後）');
     ok(await js(() => { const t = document.querySelector('.tc-bar.todo'), n = document.querySelector('.tc-bar:not(.todo)');
-      return !!t && getComputedStyle(t).backgroundColor === 'rgb(255, 218, 214)' && !!n && getComputedStyle(n).backgroundColor === 'rgba(0, 0, 0, 0)'; }), w + 'px 輪到你的狀態列是淺紅底，其他是透明底灰字');
+      return !!t && getComputedStyle(t).color === 'rgb(186, 26, 26)' && !!t.querySelector('.tc-dot') && !!n && getComputedStyle(n).color !== getComputedStyle(t).color; }), w + 'px 輪到你的狀態列是紅點加紅字（設計評論後不用大片色塊），其他是灰字');
     // 我是本體＝琥珀、我是替身＝青：兩個都有醒目的底色，而且顏色不同
     ok(await js(() => { const bg = s => getComputedStyle(document.querySelector(s)).backgroundColor;
-      return bg('.card.task.is-poster .tc-tab') === 'rgb(255, 204, 133)' && bg('.card.task.is-worker .tc-tab') === 'rgb(122, 228, 239)'; }), w + 'px 身分標籤：我是本體是琥珀色、我是替身是青色');
+      return bg('.card.task.is-poster .tc-tab') === 'rgb(255, 214, 161)' && bg('.card.task.is-worker .tc-tab') === 'rgb(163, 233, 240)'; }), w + 'px 身分標籤：我是本體是琥珀色、我是替身是青色');
     ok(await js(() => Array.from(document.querySelectorAll('.tc-d')).every(d => /^\d+月\d+日（[日一二三四五六]）$/.test(d.textContent))), w + 'px 日期方塊的文字內容仍是「11月20日（五）」');
 
     // 動態只在「換了」的那一次播放：切換身分時勾勾長出來；收藏等其他原因重畫時不重播
