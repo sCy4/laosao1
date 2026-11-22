@@ -933,56 +933,67 @@ main section.card ul.small li:first-child{border-top:0}
 }
 /* ===== 方案 I・「我的案件」評論修改（只套在這一頁：.pg-mine） ===== */
 .pg-mine{--muted:#6b6459}  /* 灰字改成暖灰，不再偏藍紫 */
-/* 區段：「待你處理」是主角，「全部案件」小一號；區段之間多留白 */
+/* 區段：3px 粗線開頭；標題後面不再拖一條細線。「全部案件」小一號，上方多留白 */
 .pg-mine .grp{gap:8px}
-.pg-mine .grp-all{font-size:18px;margin-top:24px}
+.pg-mine .grp-h::after{display:none}
+.pg-mine .grp-all{font-size:18px;margin-top:32px;padding-top:12px;border-top:3px solid var(--ink)}
 .pg-mine .mine-none{margin:0;font-size:16px;color:var(--ink)}
+/* 卡片一律用和頁面同一種紙色，框線就代表一張卡片 */
+.pg-mine .card.task,.pg-mine .tc-d{background:transparent}
 /* 身分標籤大一點；卡片之間、標題和第一張卡片之間約 20px */
 .pg-mine .card.task.is-poster,.pg-mine .card.task.is-worker{margin-top:36px}
 .pg-mine .tc-tab{height:24px;padding:0 8px;font-size:13px}
 .pg-mine .card.task.is-worker .tc-tab{padding:0 5px}
-/* 卡片內容固定三行：時間、地點、（本體或性別）；金額固定在最後一行 */
+/* 卡片內容：時間、地點（金額和地點同一條基線）、第三行（本體或性別） */
 .pg-mine .tc-d{padding:8px 0;gap:2px}
 .pg-mine .tc-d .dnum{font-size:34px}
+.pg-mine .tc-d .dw .pa{color:var(--muted);font-weight:400}
 .pg-mine .tc-time{padding:10px 44px 0 14px;font-size:16px;line-height:22px}
-.pg-mine .tc-row{padding:2px 14px 10px;align-items:stretch}
+.pg-mine .tc-row{padding:2px 14px 10px;align-items:baseline}
 .pg-mine .tc-main{gap:2px;justify-content:flex-start}
 .pg-mine .tc-place,.pg-mine .tc-who,.pg-mine .tc-g{line-height:20px;min-height:0}
-.pg-mine .tc-side{justify-content:flex-end}
+.pg-mine .tc-side{justify-content:flex-start}
+.pg-mine .tc-bottom{margin-top:0}
+.pg-mine .tc-side .price .cur{font-size:14px;font-weight:600;letter-spacing:.04em}
 .pg-mine .pill.s-bid{display:none}  /* 底下的狀態已經寫了「已出價 NT$…」，不重複 */
-/* 收藏星號小一點、灰色，收藏了才變黑 */
+/* 收藏星號：灰色，線條粗細和鈴鐺一樣，收藏了才變黑 */
 .pg-mine .favbtn{top:4px;right:4px;width:36px;height:36px}
-.pg-mine .favbtn svg{width:16px;height:16px;stroke-width:1.5}
+.pg-mine .favbtn svg{width:18px;height:18px;stroke-width:2}
 .pg-mine .favbtn:not(.on){color:var(--muted)}
-/* 「輪到你」的記號全頁一律是紅色小方塊 */
-.pg-mine .tc-dot{width:7px;height:7px;transform:none}
-/* 待你處理：黑色橫條是卡片的標題，字放大 */
-.pg-mine .grp-todo .tc-bar.bottom.todo{min-height:38px;padding:8px 14px;font-size:15px;font-weight:900;gap:10px}
-@media (max-width:360px){.pg-mine .grp-todo .tc-bar.bottom.todo{font-size:14px}}
-/* 全部案件：像目錄一樣的列，不加粗框和黑橫條，只用細線分隔 */
-.pg-mine .grp-idx .card.task{border:0;border-top:1px solid var(--ink);background:transparent}
+/* 狀態那一行：紅色小方塊對齊日期欄中間，文字對齊內容欄（待你處理和全部案件一樣） */
+.pg-mine .tc-bar.bottom{position:relative;padding-left:86px}
+.pg-mine .tc-dot{position:absolute;left:32px;top:50%;width:8px;height:8px;margin-top:-4px;transform:none}
+/* 待你處理：黑色橫條細一點 */
+.pg-mine .grp-todo .tc-bar.bottom.todo{min-height:32px;padding-top:6px;padding-bottom:6px;font-size:14px;font-weight:800}
+/* 待你處理的日期欄鋪一層很淡的網點（全頁唯一的漫畫手法） */
+.pg-mine .grp-todo .tc-d{background-image:radial-gradient(rgba(10,10,10,.16) .8px,transparent 1px);background-size:5px 5px}
+/* 全部案件：像目錄一樣的列，不加粗框和黑橫條，只用細線分隔；日期欄不加直線 */
+.pg-mine .grp-idx .card.task{border:0;border-top:1px solid var(--ink)}
 .pg-mine .grp-idx .card.task:last-of-type{border-bottom:1px solid var(--ink)}
-.pg-mine .grp-idx .tc-d{background:transparent}
-.pg-mine .grp-idx .tc-bar.bottom{background:transparent;border-top:0;color:var(--muted);font-size:14px;font-weight:500;padding:0 14px 12px 86px;min-height:0}
+.pg-mine .grp-idx .tc-d{border-right:0}
+.pg-mine .grp-idx .tc-bar.bottom{background:transparent;border-top:0;color:var(--muted);font-size:14px;font-weight:500;padding-top:0;padding-bottom:12px;min-height:0}
 .pg-mine .grp-idx .tc-bar.bottom.todo{background:transparent;color:var(--ink);font-weight:700}
+.pg-mine .grp-idx .tc-dot{top:calc(50% - 6px)}
 .pg-mine .grp-idx .tc-tab{left:0;bottom:calc(100% + 1px)}
-.pg-mine .grp-idx .card.task.is-worker .tc-tab{border-width:1px;padding:0 7px}
-/* 階段編號：正體襯線數字，和卡片的日期數字對齊成同一欄；沒有案件的階段淡色 */
-.pg-mine .grp-h.sub{gap:14px;margin-top:8px}
-.pg-mine .grp-h.sub[data-n]::before{width:72px;flex:none;text-align:center;font-style:normal;font-size:28px}
-.pg-mine .grp-idx.is-empty .grp-h.sub{color:var(--muted)}
-.pg-mine .grp-idx.is-empty .grp-h.sub::after{background:var(--line)}
+.pg-mine .grp-idx .card.task.is-worker .tc-tab{border-width:1px 1px 0;padding:0 7px}
+/* 階段標題：「召喚替身（1）」16px 粗體，編號是同一條基線上的小號頁碼，不會被看成日期；沒有案件的階段只留一行淡色小字 */
+.pg-mine .grp-idx{margin-top:8px}
+.pg-mine .grp-h.sub{align-items:baseline;gap:10px;margin-top:0;font-family:var(--font-body);font-size:16px;font-weight:900}
+.pg-mine .grp-h.sub[data-n]::before{width:auto;font-family:var(--font-body);font-style:normal;font-size:12px;font-weight:500;letter-spacing:.14em;color:var(--muted)}
+.pg-mine .grp-idx.is-empty{margin-top:0}
+.pg-mine .grp-idx.is-empty .grp-h.sub{font-size:14px;font-weight:600;color:var(--muted)}
 /* 「我是替身／我是本體」改成文字分頁：選中的粗字加底線，不再用黑底（黑底只留給「我是本體」標籤） */
 .pg-mine .seg{display:flex;justify-content:flex-start;gap:28px;padding:0;border:0;border-bottom:1px solid var(--ink);background:transparent}
 .pg-mine .seg button{flex:none;min-height:44px;padding:8px 0 6px;margin-bottom:-1px;border:0;border-bottom:3px solid transparent;background:transparent;color:var(--muted);font-size:16px;font-weight:500}
 .pg-mine .seg button+button{border-left:0}
 .pg-mine .seg button.on{background:transparent;color:var(--ink);font-weight:900;border-bottom-color:var(--ink)}
 .pg-mine .seg button .muted,.pg-mine .seg button.on .muted{color:inherit;font-size:16px}
-/* 結尾記號：靠右，緊接在最後一張卡片後面 */
+/* 結尾記號：靠右，放在整頁最後 */
 .pg-mine .grp::after{display:none}
-main.pg-mine .grp-idx.is-last:has(>.card.task)::after{content:"";display:block;align-self:flex-end;width:9px;height:9px;margin-top:4px;background:var(--ink)}
-/* 沒有案件時：靠左，主要按鈕是黑色 */
+main.pg-mine .grp-idx.is-last.is-last::after{content:"";display:block;align-self:flex-end;width:9px;height:9px;margin-top:4px;background:var(--ink)}
+/* 沒有案件時：靠左，標題比區段標題小，主要按鈕是黑色 */
 .pg-mine .mine-empty{align-items:flex-start;padding:20px 0 0;gap:8px;text-align:left}
+.pg-mine .mine-empty b{font-size:16px}
 .pg-mine .mine-empty .btn{margin-top:8px}
 </style>
 </head>
@@ -1438,7 +1449,7 @@ function mineView(){
   /* 三個階段都列出來（沒有案件的階段只留一行淡色標題），編號 01～03 才不會跳號；最後一個有案件的階段後面放結尾記號 */
   const lists=G[k].map(([title,fn])=>[title,S.tasks.filter(fn).sort((a,b)=>a.start-b.start)]);
   const lastIdx=lists.map(x=>x[1].length>0).lastIndexOf(true);
-  const groups=lastIdx<0?'':lists.map(([title,list],gi)=>'<section class="grp grp-idx'+(list.length?'':' is-empty')+(gi===lastIdx?' is-last':'')+'"><h3 class="grp-h sub" data-n="0'+(gi+1)+'">'+title+'（'+list.length+'）</h3>'+list.map(t=>taskCard(t,{bar:true})).join('')+'</section>').join('');
+  const groups=lastIdx<0?'':lists.map(([title,list],gi)=>'<section class="grp grp-idx'+(list.length?'':' is-empty')+(gi===lists.length-1?' is-last':'')+'"><h3 class="grp-h sub" data-n="0'+(gi+1)+'">'+title+'（'+list.length+'）</h3>'+list.map(t=>taskCard(t,{bar:true})).join('')+'</section>').join('');
   const none=k==='work'
     ?'<div class="empty mine-empty"><b>你目前沒有當替身的案件</b><span class="small">出價後的案件會出現在這裡。</span><button class="btn sm" data-act="tab" data-v="browse">去看看有哪些案件</button></div>'
     :'<div class="empty mine-empty"><b>你目前沒有當本體的案件</b><span class="small">填好日期、時間和地點就能發案。</span><button class="btn sm" data-act="tab" data-v="post">發案</button></div>';
