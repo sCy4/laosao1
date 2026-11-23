@@ -599,17 +599,19 @@ main>h1.vh+p.small::before,.trouble summary::after,.intro-roles dt::before{
 
 /* ---------- 上方應用程式列（small top app bar）：往下捲時換成 surface-container 色 ---------- */
 body::before{background:var(--md-surface)}
-header.top{min-height:64px;padding:8px 4px 8px 16px;gap:4px;background:var(--md-surface);border-bottom:0;box-shadow:none;transition:background-color .2s var(--md-ease)}
+header.top{min-height:64px;padding:8px 16px;gap:4px;background:var(--md-surface);border-bottom:0;box-shadow:none;transition:background-color .2s var(--md-ease)}
 header.top.scrolled{background:var(--md-surface-container)}
 body:has(header.top.scrolled)::before{background:var(--md-surface-container)}
 .brand,.hd-brand .brand{font-family:var(--font-display);font-size:22px;line-height:28px;font-weight:500;letter-spacing:0;color:var(--md-on-surface)}
 .clock{font-size:12px;line-height:16px;letter-spacing:.4px;color:var(--md-on-surface-variant)}
 .clock .sim{border-radius:4px;background:var(--md-tertiary-container);color:var(--md-on-tertiary-container);font-weight:500}
-@media (max-width:360px){header.top{padding:8px 4px 8px 12px}.hd-brand .brand{font-size:20px}header.top .icon-btn{width:40px;height:40px}}
+@media (max-width:360px){header.top{padding:8px 16px 8px 12px}.hd-brand .brand{font-size:20px}header.top .icon-btn{width:40px;height:40px}}
 .icon-btn{width:40px;height:40px;color:var(--md-on-surface-variant)}
 header.top .icon-btn{color:var(--md-on-surface-variant)}
+.hd-act .bell{margin-right:-4px}  /* 鈴鐺、登入和下面卡片的右邊對齊（原本太靠右） */
 .nbadge.hdr{top:6px;right:auto;left:21px;min-width:16px;height:16px;padding:0 4px;border:0;border-radius:8px;font-size:12px;line-height:16px}
 header.top.sub{justify-content:flex-start;padding:8px 4px}
+@media (max-width:360px){header.top.sub{padding:8px 4px}}
 /* 案件詳情的「⋮」選單（M3 menu） */
 .morewrap{position:relative;flex:none}
 .moremenu{position:absolute;right:4px;top:calc(100% + 2px);z-index:8;min-width:168px;display:flex;flex-direction:column;padding:8px 0;border-radius:4px;background:var(--md-surface-container);box-shadow:var(--md-elev-2);animation:kMenu .15s var(--md-ease-decel)}
@@ -696,7 +698,7 @@ main>h1.vh+p.small::before{--ic:var(--ic-checkCircle);color:var(--md-primary)}
 .card.task.is-poster .tc-tab::before,.sum-role.is-poster::before{--ic:var(--ic-home)}
 .card.task.is-worker .tc-tab::before,.sum-role.is-worker::before{--ic:var(--ic-clean)}
 /* 第一排：日期（固定寬度）＋時間 */
-.tc-date{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 12px;padding:0;font-size:16px;line-height:24px;font-weight:500;letter-spacing:.15px;font-variant-numeric:tabular-nums;color:var(--md-on-surface);white-space:nowrap}  /* 一般手機寬度放得下一排；特別窄（300px 以下）時間才換到下一行 */
+.tc-date{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 12px;padding:0;font-size:16px;line-height:24px;font-weight:700;letter-spacing:.15px;font-variant-numeric:tabular-nums;color:var(--md-on-surface);white-space:nowrap}  /* 一般手機寬度放得下一排；特別窄（300px 以下）時間才換到下一行 */
 .tc-d{flex:none;min-width:7.6em}
 .tc-d>*{font:inherit;color:inherit}
 .tc-time{flex:none}
@@ -719,7 +721,7 @@ main>h1.vh+p.small::before{--ic:var(--ic-checkCircle);color:var(--md-primary)}
 /* 狀態列：平常是灰字；輪到你時是淺紅底（error container）＋紅點＋箭頭 */
 .tc-bar,.tc-bar.bottom{display:flex;align-items:center;gap:12px;min-height:40px;margin:12px -16px -12px;padding:8px 16px;
   border:0;border-top:1px solid var(--md-outline-variant);border-radius:0 0 12px 12px;background:transparent;
-  font-size:14px;line-height:20px;font-weight:400;letter-spacing:.25px;color:var(--md-on-surface-variant)}
+  font-size:14px;line-height:20px;font-weight:400;letter-spacing:.25px;color:var(--md-on-surface)}  /* 一般的狀態是黑字（使用者覺得灰字太淡）；輪到你是紅字 */
 .tc-bar.bottom.todo{background:transparent;color:var(--md-error);font-weight:500;border-top-color:var(--md-outline-variant)}  /* 輪到你：底部一行紅字（紅色只代表需要你處理），不做成像按鈕的膠囊 */
 .tc-bar.todo::after{content:"";flex:none;width:20px;height:20px;margin-right:-4px;background:currentColor;-webkit-mask:var(--ic-chev) center/contain no-repeat;mask:var(--ic-chev) center/contain no-repeat}
 .tc-dot{width:8px;height:8px;border-radius:50%;background:var(--md-error)}
@@ -845,9 +847,9 @@ form[data-form="post"] .two+p.small{margin-top:-12px}
 .sum-top{position:relative;display:flex;flex-direction:column;align-items:stretch;gap:0;padding:16px 16px 12px;background:transparent;color:var(--md-on-surface)}
 .card.sum>.pill+.sum-top{margin-top:16px}
 .sum-top .grow{display:flex;flex-direction:column;gap:4px}
-.sum-date{padding-right:96px;font-size:16px;line-height:24px;font-weight:500;color:var(--md-on-surface-variant)}
+.sum-date{padding-right:96px;font-size:24px;line-height:32px;font-weight:700;color:var(--md-on-surface)}  /* 日期和時間一樣重要：同樣大小、都粗體 */
 .sum-date>*{font:inherit;color:inherit}
-.sum-time{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;margin-top:2px;font-size:28px;line-height:36px;font-weight:500;font-variant-numeric:tabular-nums}
+.sum-time{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;margin-top:0;font-size:24px;line-height:32px;font-weight:700;font-variant-numeric:tabular-nums}
 .sum-top .muted{color:var(--md-on-surface-variant)}
 .sum-time .small{display:inline-flex;align-items:center;gap:4px;height:28px;padding:0 10px 0 8px;border-radius:8px;background:var(--md-surface-container-highest);color:var(--md-on-surface-variant);font-size:14px;line-height:20px;font-weight:500}
 .sum-time .small::before{content:"";width:16px;height:16px;background:currentColor;-webkit-mask:var(--ic-clock) center/contain no-repeat;mask:var(--ic-clock) center/contain no-repeat}
@@ -865,7 +867,7 @@ form[data-form="post"] .two+p.small{margin-top:-12px}
 .card.sum .facts{padding:12px 0;border-top:1px solid var(--md-outline-variant);margin:0 16px}
 .facts{gap:8px 16px;font-size:14px;line-height:20px}
 .facts dt{color:var(--md-on-surface-variant)}
-@media (max-width:360px){.sum-date{padding-right:84px}.sum-time{font-size:26px;line-height:34px}.steps li{font-size:12px;letter-spacing:0}}
+@media (max-width:360px){.sum-date{padding-right:84px;font-size:20px;line-height:28px}.sum-time{font-size:20px;line-height:28px}.steps li{font-size:12px;letter-spacing:0}}
 /* 你的下一步：輪到你時是浮起的白卡（全頁唯一有陰影的卡片），等別人時是一般的外框卡 */
 .card.next{gap:12px}
 .card.next.act{background:var(--md-surface-container-lowest);color:var(--md-on-surface);border-color:transparent;box-shadow:var(--md-elev-2)}
@@ -1041,11 +1043,11 @@ main>.btn[data-act="logout"]{display:flex;align-items:center;justify-content:fle
 .notes,.acct-list{gap:0;margin:0 -16px}
 .note,.acct-row{border:0;border-radius:0;background:transparent;padding:12px 24px;transition:background-color .15s linear}
 .note+.note{border-top:1px solid var(--md-outline-variant)}
-.note-txt{font-size:16px;line-height:24px;color:var(--md-on-surface)}
+.note-txt{font-size:16px;line-height:24px;font-weight:700;color:var(--md-on-surface)}  /* 通知內容粗體（使用者要求）；新的通知前面有紅點 */
 .note.new{border-color:var(--md-outline-variant)}
-.note.new .note-txt{font-weight:500}
 .note.new .note-txt::before{background:var(--md-error)}
-.note-time{font-size:14px;line-height:20px;color:var(--md-on-surface-variant)}
+.note-time{flex-wrap:wrap;column-gap:12px;font-size:14px;line-height:20px;color:var(--md-on-surface-variant)}
+.note-time>span:last-child{white-space:nowrap}
 .acct-row{min-height:64px}
 .acct-row.on{background:var(--md-secondary-container);color:var(--md-on-secondary-container)}
 /* 排序：整排的選項，選中的那一排有底色和勾勾 */
@@ -1273,7 +1275,7 @@ function fmtTime(ts){const d=new Date(ts);return (d.getMonth()+1)+'月'+d.getDat
 function fmtShort(ts){const d=new Date(ts);return (d.getMonth()+1)+'月'+d.getDate()+'日 '+pad(d.getHours())+':'+pad(d.getMinutes());}
 function toDate(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
 function fmtRange(t){const e=new Date(t.end);return fmtTime(t.start)+' 至 '+pad(e.getHours())+':'+pad(e.getMinutes());}
-function label(t){return t.building+'・'+fmtShort(t.start);}
+function label(t){return t.building+'・'+fmtRange(t);}  /* 「第二宿舍・11月24日（二）14:00 至 16:00」：通知第二行、時間重疊提醒 */
 function lowBid(t){return t.offers.length?Math.min.apply(null,t.offers.map(o=>o.price)):null;}
 function genderOk(t,x){return t.gender==='不限'||(t.gender==='限男生'&&x.gender==='男')||(t.gender==='限女生'&&x.gender==='女');}
 function span(ms){const a=Math.abs(ms),m=Math.round(a/M);if(m<60)return Math.max(1,m)+' 分鐘';const h=Math.round(a/H);if(h<24)return h+' 小時';return Math.round(a/D)+' 天';}
@@ -2102,7 +2104,9 @@ function nextStep(t,r){
 function exitArea(t,r){
   const s=t.status,n=now(),q=(act,label)=>'<button class="btn quiet" data-act="'+act+'" data-id="'+t.id+'">'+label+'</button>',tip=x=>'<p class="small muted center">'+x+'</p>';
   if(n<t.start){
-    if(r==='poster'&&(s==='open'||s==='pending'||s==='assigned'))return '<div class="exit">'+q('cancelTask','取消案件')+'<p class="small muted">開工前都可以取消。</p></div>';
+    /* 本體的「取消案件」也收在「案件遇到問題？」裡（2026-11 使用者要求），正常流程的按鈕比較顯眼 */
+    if(r==='poster'&&(s==='open'||s==='pending'||s==='assigned'))return '<div class="exit"><details class="trouble"><summary>案件遇到問題？</summary>'+
+      tip(s==='assigned'?'建議先在留言板跟替身說明。開工前都可以取消案件，替身會收到通知。':'開工前都可以取消案件'+(t.offers.length?'，出價的人會收到通知。':'。'))+q('cancelTask','取消案件')+'</details></div>';
     if(r==='worker'&&s==='assigned')return '<div class="exit">'+q('withdrawAssign','退出案件')+'<p class="small muted">開工前都可以退出。</p></div>';
     return '';
   }

@@ -30,7 +30,8 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
   ok(tr.includes('有疑慮請先在留言板跟替身溝通') && /也就是 \d+月\d+日（.）\d\d:\d\d 之後/.test(tr) && !(await js(() => !!document.querySelector('[data-act="openNotDone"]'))), '本體開工後看得到「案件遇到問題？」，裡面寫什麼時候才能結束，沒有按鈕');
   // 開工前沒有（t3：開工前）
   await fresh('u2'); await go('#task-t3');
-  ok(!(await js(() => !!document.querySelector('details.trouble'))), '開工前沒有「案件遇到問題？」（還可以直接取消）');
+  // 第八版：使用者要求把本體的「取消案件」也收進「案件遇到問題？」，所以開工前也有這一區，但裡面只有「取消案件」，沒有任何「結束案件」
+  ok(await js(() => { const d = document.querySelector('details.trouble'); return !!d && !!d.querySelector('[data-act="cancelTask"]') && !/結束案件/.test(d.textContent) && !d.querySelector('[data-act="openNotDone"],[data-act="failTask"],[data-act="unpaid"]'); }), '開工前的「案件遇到問題？」只有「取消案件」，沒有結束案件');
 
   // 2. 自行出價
   await fresh('u4'); await go('#task-t1');
