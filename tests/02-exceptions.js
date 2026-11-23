@@ -63,7 +63,8 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
   ok(!ids.includes('t2') && (await main()).includes('已隱藏 1 個黑名單本體的案件'), '黑名單本體的案件預設隱藏 ' + ids);
   await p.click('[data-act="toggleBlack"]'); await W();
   ids = await js(() => Array.from(document.querySelectorAll('#blist [data-act="open"]')).map(e => e.dataset.id));
-  ok(ids.includes('t2') && (await main()).includes('你的黑名單'), '按「顯示」後出現，並標示「你的黑名單」');
+  // 第七版：使用者要求標記全站都用書籤符號＋標記內容（和資訊卡的標記同一種樣子），所以卡片上寫「黑名單」（前面是書籤符號，螢幕閱讀器唸「你的標記：黑名單」）
+  ok(ids.includes('t2') && await js(() => { const c = document.querySelector('[data-act="open"][data-id="t2"]').closest('.card.task'), g = c.querySelector('.tagchip.tg-black'); return !!g && !!g.querySelector('svg') && g.textContent === '你的標記：黑名單'; }), '按「顯示」後出現，並標示書籤符號＋「黑名單」');
   await p.click('[data-act="toggleBlack"]'); await W();
 
   // E. 替身：結束案件：無法完成（t6：張書瑋是替身、已開工）

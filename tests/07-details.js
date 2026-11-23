@@ -166,12 +166,14 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
   const who = await js(() => (document.querySelector('.sum-who') || {}).innerText || '');
   ok(who.includes('本體') && who.includes('陳怡君') && /S\d{8}/.test(who), '替身確認接案後：日期時間下面有本體資料 → ' + who.replace(/\n/g, ' '));
   ok(await js(() => { const c = Array.from(document.querySelectorAll('.card.mini')).pop(); return !!c && c.innerText.includes('陳怡君') && !!c.querySelector('.idline') && !!c.querySelector('.taglink'); }), '下方的本體卡也完整顯示（名字、學號等資料、標記）');
-  // 標記：平常是右上角的「標記」按鈕，按了才出現說明和選項；標記後同一顆按鈕寫「可信賴」（使用者要求標記的資訊也放右上角）
+  // 標記：平常是右邊的「標記」按鈕，按了才出現說明和選項；標記後同一顆按鈕寫「可信賴」（使用者要求標記的資訊也放右上角）
+  // 第七版：使用者要求按鈕和人物姓名同一排（「本體／替身」是標題，自己一排），所以改成檢查「在右邊、和姓名同一排」
   await js(() => Array.from(document.querySelectorAll('.card.mini .taglink')).pop().click()); await W(200);
   ok(await js(() => { const m = document.querySelector('.tagline .tagmenu'); return !!m && m.querySelector('.tm-note').textContent.startsWith('只有你看得到') && m.querySelectorAll('[data-act="setTag"]').length === 2; }), '按「標記」才出現說明和選項');
   await js(() => document.querySelector('.tagline .tagmenu [data-act="setTag"][data-type="trust"]').click()); await W(200);
   ok(await js(() => { const c = Array.from(document.querySelectorAll('.card.mini')).pop(), b = c.querySelector('.taglink'), r = c.getBoundingClientRect(), br = b.getBoundingClientRect();
-    return !document.querySelector('.tagmenu') && b.classList.contains('tagged') && b.textContent.includes('你的標記') && b.textContent.includes('可信賴') && /更改標記/.test(b.getAttribute('aria-label')) && br.right > r.right - 24 && br.top < r.top + 24; }), '標記後：右上角的按鈕寫「可信賴」（實心書籤），按了可以更改');
+    const n = c.querySelector('.id-name').getBoundingClientRect();
+    return !document.querySelector('.tagmenu') && b.classList.contains('tagged') && b.textContent.includes('你的標記') && b.textContent.includes('可信賴') && /更改標記/.test(b.getAttribute('aria-label')) && br.right > r.right - 24 && Math.abs((br.top + br.bottom) / 2 - (n.top + n.bottom) / 2) < 3; }), '標記後：右邊、和姓名同一排的按鈕寫「可信賴」（實心書籤），按了可以更改');
   await fresh('u2'); await go('#task-t11');
   ok(await js(() => { const c = document.querySelector('.chosen'); return !!c && !c.querySelector('.tagbtn') && c.querySelector('.taglink').textContent === '標記'; }), '等替身確認的卡片也有「標記」按鈕');
   await fresh('u1'); await go('#task-t11'); await js(() => document.querySelector('[data-act="acceptMatch"]').click()); await W(300);

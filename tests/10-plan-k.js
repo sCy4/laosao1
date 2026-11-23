@@ -73,10 +73,12 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
     await go('#task-t1');
     ok(await js(() => { const d = document.querySelector('.sum-date').getBoundingClientRect(), t = document.querySelector('.sum-time').getBoundingClientRect(), pr = document.querySelector('.sum-price').getBoundingClientRect();
       return d.bottom <= t.top + 1 && t.bottom <= pr.top + 1 && !!document.querySelector('.steps li.cur'); }), w + 'px 詳情頁頂端：日期 → 時間 → 標價由上到下');
-    // 使用者意見：「標記」放在人物資料卡的右上角（還沒標記時，名字下面不多佔一行）
+    // 使用者意見：「標記」放在人物資料卡的右邊（還沒標記時，名字下面不多佔一行）
+    // 第七版：使用者要求和人物姓名同一排（「本體／替身」是標題，自己一排），學號那一行在下面用整張卡的寬度
     await go('#task-t3');
-    ok(await js(() => { const c = document.querySelector('.card.mini'), r = c.getBoundingClientRect(), t = c.querySelector('.taglink').getBoundingClientRect(), n = c.querySelector('.id-name').getBoundingClientRect();
-      return c.querySelector('.taglink').textContent === '標記' && Math.abs(t.right - (r.right - 17)) < 2 && Math.abs(t.top - (r.top + 17)) < 2 && t.bottom <= n.bottom + 12; }), w + 'px 人物資料卡：「標記」在右上角');
+    ok(await js(() => { const c = document.querySelector('.card.mini'), r = c.getBoundingClientRect(), t = c.querySelector('.taglink').getBoundingClientRect(), n = c.querySelector('.id-name').getBoundingClientRect(),
+        role = c.querySelector('.mini-role').getBoundingClientRect(), id = c.querySelector('.idline').getBoundingClientRect();
+      return c.querySelector('.taglink').textContent === '標記' && Math.abs(t.right - (r.right - 17)) < 2 && Math.abs((t.top + t.bottom) / 2 - (n.top + n.bottom) / 2) < 3 && t.top >= role.bottom && id.top >= t.bottom - 1; }), w + 'px 人物資料卡：「標記」在右邊、和姓名同一排');
     await go('#browse');
     // 使用者要求：卡片上不放收藏星號（只能在案件詳情的「⋮」收藏）；第一排是日期和時間，卡片疊起來時日期、時間各自對齊在同一條直線上
     ok(await js(() => { const cs = Array.from(document.querySelectorAll('#blist .card.task')); const xs = cs.map(c => Math.round(c.querySelector('.tc-time').getBoundingClientRect().left));

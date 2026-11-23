@@ -720,9 +720,10 @@ main>h1.vh+p.small::before{--ic:var(--ic-checkCircle);color:var(--md-primary)}
 .tc-bar,.tc-bar.bottom{display:flex;align-items:center;gap:12px;min-height:40px;margin:12px -16px -12px;padding:8px 16px;
   border:0;border-top:1px solid var(--md-outline-variant);border-radius:0 0 12px 12px;background:transparent;
   font-size:14px;line-height:20px;font-weight:400;letter-spacing:.25px;color:var(--md-on-surface-variant)}
-.tc-bar.bottom.todo{background:transparent;color:var(--md-error);font-weight:500}  /* 輪到你：底部一行紅字（紅色只代表需要你處理），不做成像按鈕的膠囊 */
+.tc-bar.bottom.todo{background:transparent;color:var(--md-error);font-weight:500;border-top-color:var(--md-outline-variant)}  /* 輪到你：底部一行紅字（紅色只代表需要你處理），不做成像按鈕的膠囊 */
 .tc-bar.todo::after{content:"";flex:none;width:20px;height:20px;margin-right:-4px;background:currentColor;-webkit-mask:var(--ic-chev) center/contain no-repeat;mask:var(--ic-chev) center/contain no-repeat}
 .tc-dot{width:8px;height:8px;border-radius:50%;background:var(--md-error)}
+.card.task .tc-bar .grow{display:block}.tc-bar .nw{white-space:nowrap}  /* 一般的文字排版（「（還剩 2 天）」不從中間斷行，放不下才整段換到下一行） */
 /* 狀態小標籤 */
 .pill{border:0;border-radius:8px;padding:4px 8px;font-size:12px;line-height:16px;font-weight:500;letter-spacing:.5px}
 .pill.s-bid{background:var(--md-secondary-container);color:var(--md-on-secondary-container)}
@@ -855,7 +856,9 @@ form[data-form="post"] .two+p.small{margin-top:-12px}
 .sum-who-n{font-size:16px;font-weight:500}
 .sum-who .num{color:var(--md-on-surface-variant)}
 .sum-role{position:absolute;top:16px;right:16px}
-.sum-price,.card.sum.has-fav .sum-price{display:flex;flex-direction:row;justify-content:space-between;align-items:baseline;gap:12px;margin:0 16px;padding:10px 0 14px;border-top:1px solid var(--md-outline-variant)}
+.sum-price,.card.sum.has-fav .sum-price{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:baseline;gap:0 12px;margin:0 16px;padding:10px 0 14px;border-top:1px solid var(--md-outline-variant)}
+.sum-price>.sum-pl{grid-column:1;grid-row:2;justify-self:start;text-align:left}.sum-price>.price{grid-column:2;grid-row:2;text-align:right}
+.sum-orig{grid-column:2;grid-row:1;justify-self:end;font-size:12px;line-height:16px;letter-spacing:.4px;color:var(--md-on-surface-variant)}  /* 成交價和原標價不同時，上方一行低調的小字 */
 .sum-price .small{color:var(--md-on-surface-variant)}
 .sum-price .price{font-size:24px;line-height:32px;font-weight:700;color:var(--md-on-surface)}
 .sum-price .price .muted{font-size:16px;color:var(--md-on-surface-variant)}
@@ -941,9 +944,11 @@ form[data-form="post"] .two+p.small{margin-top:-12px}
    標記後同一顆按鈕寫標記的內容（實心書籤＋標記的顏色），所以標記的資訊也在右上角。用 grid 排：左邊是名字和資料，右邊是按鈕，選單在下面整行 */
 .card.mini:has(.tagline),.chosen:has(.tagline){display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:12px;row-gap:4px;align-items:start}
 .card.mini .tagline,.card.mini .tagline .tagwrap,.chosen .tagline,.chosen .tagline .tagwrap{display:contents}
-.card.mini:has(.tagline)>.row{grid-column:1;grid-row:1}
-.card.mini:has(.tagline)>.idblock{grid-column:1/-1;grid-row:2}  /* 名字和學號那幾行用整張卡的寬度，只有最上面一行和按鈕並排 */
-.card.mini .taglink{grid-column:2;grid-row:1}
+.card.mini:has(.tagline)>.row{grid-column:1/-1;grid-row:1}  /* 「本體／替身」是標題，自己一排 */
+.card.mini:has(.tagline)>.idblock{display:contents}
+.card.mini:has(.tagline) .id-name{grid-column:1;grid-row:2;align-self:center}  /* 名字和「標記」按鈕同一排 */
+.card.mini:has(.tagline) .idline{grid-column:1/-1;grid-row:3}  /* 學號那一行用整張卡的寬度 */
+.card.mini .taglink{grid-column:2;grid-row:2}
 .chosen:has(.tagline)>.idblock{display:contents}
 .chosen:has(.tagline) .id-name{grid-column:1;grid-row:1;align-self:center}
 .chosen:has(.tagline) .idline{grid-column:1/-1;grid-row:2}
@@ -961,6 +966,16 @@ form[data-form="post"] .two+p.small{margin-top:-12px}
 .taglink.tg-trust{background:#c8f0cf;color:#00531f}
 .taglink.tg-black{background:var(--md-error-container);color:var(--md-on-error-container)}
 .taglink.tg-custom{background:var(--md-tertiary-container);color:var(--md-on-tertiary-container)}
+.tagchip{display:inline-flex;align-items:center;gap:4px;max-width:100%;height:24px;padding:0 8px 0 4px;border-radius:8px;font-size:12px;line-height:16px;font-weight:500;letter-spacing:.4px;vertical-align:middle;white-space:nowrap}
+.tagchip svg{flex:none;width:16px;height:16px}
+.tagchip .i-o{display:none}.tagchip .i-f{display:inline}
+.tagchip .tg-lbl{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.tagchip.tg-trust{background:#c8f0cf;color:#00531f}
+.tagchip.tg-black{background:var(--md-error-container);color:var(--md-on-error-container)}
+.tagchip.tg-custom{background:var(--md-tertiary-container);color:var(--md-on-tertiary-container)}
+.offer-tag{display:flex;margin-top:6px;min-width:0}
+.banner.tagnote{display:flex;align-items:center;flex-wrap:wrap;gap:8px}
+#cmt-sec{scroll-margin-top:72px}  /* 從留言通知捲到留言板時，不被標題欄擋住 */
 .tagmenu{border:1px solid var(--md-outline-variant);border-radius:12px;background:var(--md-surface-container-lowest);box-shadow:var(--md-elev-2);padding:8px 0}
 .tagline .tagmenu{box-shadow:none}
 .tagmenu>button{min-height:48px;padding:0 16px;border-radius:0;font-size:14px;font-weight:500}
@@ -1040,7 +1055,10 @@ main>.btn[data-act="logout"]{display:flex;align-items:center;justify-content:fle
 /* 出價：大號金額輸入 */
 .pc-label{font-size:14px;color:var(--md-on-surface-variant)}
 .pc-input{font-size:22px;font-weight:500;color:var(--md-on-surface-variant)}
-.pc-input input{width:170px;min-height:64px;font-size:32px;font-weight:400;text-align:center}
+.pc-input input{width:170px;min-height:64px;font-size:28px;font-weight:400;text-align:center}
+.btn.dl{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding-left:16px}  /* 放大照片的「下載」：圖示和字置中對齊（M3 帶圖示的按鈕） */
+.btn.dl svg{flex:none;width:18px;height:18px}
+.pc-input input::placeholder{font-size:16px;letter-spacing:.5px;color:var(--md-on-surface-variant);opacity:1}
 /* 第一次進入的介紹 */
 .intro{gap:16px}
 .intro-hero{align-items:flex-start;text-align:left;gap:8px;padding:8px 0 4px}
@@ -1135,6 +1153,7 @@ const KEY='swaptime-proto-v1';
 const MAIL_DOMAIN='@thu.edu.tw';  /* 學校信箱：學號@thu.edu.tw */
 const PH_MAX=12,END_MAX=6;      /* 照片張數上限 */
 const DRAFT_KEY='swaptime-postdraft-v1';  /* 發案草稿，每個帳號一份 */
+const FILTER_KEY='swaptime-filter-v1';    /* 接案頁的篩選條件和排序，這台裝置一份 */
 const M=60e3, H=60*M, D=24*H;
 const BUILDINGS=['第一宿舍','第二宿舍','第三宿舍','第四宿舍','研究生宿舍'];
 const GENDERS=['不限','限男生','限女生'];
@@ -1142,6 +1161,7 @@ const BANKS={'004':'臺灣銀行','013':'國泰世華','700':'中華郵政','808
 /* 狀態名稱：全站只用這一套（用詞表見 CLAUDE.md） */
 const ST={open:{label:'召喚替身',cls:'s-open'},pending:{label:'待替身確認',cls:'s-wait'},assigned:{label:'待開工',cls:'s-assigned'},done:{label:'待驗收',cls:'s-wait'},confirmed:{label:'待付款',cls:'s-wait'},paid:{label:'待確認收款',cls:'s-wait'},closed:{label:'已完成',cls:'s-good'},cancelled:{label:'已取消',cls:'s-off'}};
 const STEPS=['召喚替身','打掃','驗收','付款','完成'];
+const SORTS=[['created','desc','刊登時間：新到舊'],['created','asc','刊登時間：舊到新'],['price','desc','標價：高到低'],['price','asc','標價：低到高'],['start','asc','開工時間：近到遠'],['start','desc','開工時間：遠到近']];
 const IDX={open:0,pending:0,assigned:1,done:2,confirmed:3,paid:3,closed:4};
 const YEARS=['大一','大二','大三','大四','大五以上','碩一','碩二','博士班'];
 const AV=['#bfe3d8','#f6dca0','#c9d9f1','#f1c9bf','#d9d1ef'];
@@ -1164,6 +1184,7 @@ const IC={
   clip:'<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path class="i-o" d="M7 15h7v2H7zm0-4h10v2H7zm0-4h10v2H7zm12-4h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7-.25c.41 0 .75.34.75.75s-.34.75-.75.75-.75-.34-.75-.75.34-.75.75-.75zM19 19H5V5h14v14z"/><path class="i-f" d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>',
   back:'<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>',
   image:'<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4.86 8.86l-3 3.87L9 13.14 6 17h12l-3.86-5.14z"/></svg>',
+  download:'<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>',
   close:'<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>',
   more:'<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>',
   share:'<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>',
@@ -1224,16 +1245,16 @@ function seed(){
     base({id:'t7',budget:180,poster:'u4',building:'第三宿舍',meet:'第三宿舍門口',gender:'限女生',start:at(3,16),end:at(3,17),note:'單人房窗戶和窗溝。',status:'open'})
   ];
   const tags={u1:{u3:{type:'custom',text:'打掃很仔細，但遲到 20 分鐘',at:t0-D}}};
-  return {v:15,users,tasks,tags,favs:{},notes:[{id:'n2',to:'u1',text:'有人出價 NT$ 380',taskId:'t1',at:t0-H,read:false},{id:'n1',to:'u1',text:'本體選了你，請在 '+fmtTime(Math.min(t0+22*H,at(2,15)))+' 前確認接案',taskId:'t11',at:t0-2*H,read:false}],clockOffset:0,me:null,seq:100};
+  return {v:16,users,tasks,tags,favs:{},notes:[{id:'n2',to:'u1',text:'有人出價 NT$ 380',taskId:'t1',at:t0-H,read:false},{id:'n1',to:'u1',text:'本體選了你，請在開工前確認接案',taskId:'t11',at:t0-2*H,read:false}],clockOffset:0,me:null,seq:100};
 }
 
 /* ---------- 狀態 ---------- */
 let S=null;
 try{const raw=localStorage.getItem(KEY); if(raw) S=JSON.parse(raw);}catch(e){S=null;}
-if(!S||S.v!==15) S=seed();
+if(!S||S.v!==16) S=seed();
 if(!S.notes)S.notes=[];
 if(!S.favs)S.favs={};
-function freshUI(){return {tab:'browse',view:'list',detailId:null,mineRole:null,meSub:'main',cdraft:{},cimg:{},endDraft:null,showBlack:false,expanded:{},tagMenu:null,tagCustom:false,pf:pfdef(),editing:false,histSeg:'all',q:'',sort:'start',dir:'asc',f:fdef(),modal:null,pending:null,top:false,routed:false};}
+function freshUI(){const kept=loadFilter()||{f:fdef(),sort:'start',dir:'asc'};return {tab:'browse',view:'list',detailId:null,mineRole:null,meSub:'main',cdraft:{},cimg:{},endDraft:null,showBlack:false,expanded:{},tagMenu:null,tagCustom:false,pf:pfdef(),editing:false,histSeg:'all',q:'',sort:kept.sort,dir:kept.dir,f:kept.f,modal:null,pending:null,top:false,routed:false};}
 let ui=freshUI();
 let warned=false;
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){if(!warned){warned=true;toast('照片太多，瀏覽器存不下；重新整理後新照片會消失');}}}
@@ -1295,7 +1316,7 @@ function todo(t,id){
 /* 卡片底部橫條的文字：依看的人寫一句（本體看到／替身看到） */
 function barText(t,id){
   const r=role(t,id),s=t.status,mine=t.offers.find(o=>o.user===id),left=()=>'（還剩 '+span(deadline(t)-now())+'）';
-  if(s==='open'&&r==='poster')return t.offers.length?t.offers.length+' 人出價，請選替身':'還沒有人出價';
+  if(s==='open'&&r==='poster')return t.offers.length?t.offers.length+' 人出價，請選替身（還剩 '+span(t.start-now())+'）':'還沒有人出價';
   if(s==='open'&&mine)return '已出價 NT$ '+money(mine.price)+'，等本體選人';
   if(s==='pending'&&r==='poster')return '等'+u(t.assignee).name+'確認'+left();
   if(s==='pending'&&r==='worker')return '本體選了你，請確認'+left();
@@ -1307,8 +1328,8 @@ function barText(t,id){
   }
   if(s==='cancelled'){const k=endShort(t,r);return '已取消'+(k?'・'+k:'');}
   if(r!=='viewer'){
-    if(s==='done')return r==='poster'?'請驗收':'等本體驗收';
-    if(s==='confirmed')return r==='poster'?'請付款 NT$ '+money(t.price):'等本體付款';
+    if(s==='done')return r==='poster'?'請驗收（'+span(t.requestedAt+3*D-now())+'後自動驗收）':'等本體驗收';
+    if(s==='confirmed')return r==='poster'?'請付款 NT$ '+money(t.price)+(t.confirmedAt&&now()>=t.confirmedAt+D?'（已過 '+span(now()-t.confirmedAt)+'）':''):'等本體付款';
     if(s==='paid')return r==='poster'?'等替身確認收款':'本體已付款，請確認收款';
   }
   return stLabel(t);
@@ -1339,8 +1360,7 @@ function endReason(t,r){
 }
 /* 待辦的截止時間，用來排序「待你處理」 */
 function dueAt(t){
-  if(t.status==='pending')return deadline(t);
-  if(t.status==='open')return t.start;
+  if(t.status==='pending'||t.status==='open')return t.start;
   if(t.status==='assigned')return t.end;
   if(t.confirmedAt)return t.confirmedAt+24*H;
   return (t.requestedAt||t.start)+24*H;
@@ -1462,7 +1482,7 @@ function taskCard(t,opt){
   const price=t.price||t.budget;
   const role=!S.me?'':own?'我是本體':(t.assignee===S.me||t.offers.some(o=>o.user===S.me))?'我是替身':'';
   let bar='';
-  if(opt.bar||myBid)bar='<div class="tc-bar bottom'+(td?' todo':'')+'">'+(td?'<span class="tc-dot" aria-hidden="true"></span>':'')+'<span class="grow">'+(td?'<span class="vh">需要你處理：</span>':'')+esc(barText(t,S.me))+'</span></div>';
+  if(opt.bar||myBid)bar='<div class="tc-bar bottom'+(td?' todo':'')+'">'+(td?'<span class="tc-dot" aria-hidden="true"></span>':'')+'<span class="grow">'+(td?'<span class="vh">需要你處理：</span>':'')+esc(barText(t,S.me)).replace(/（[^（）]*）$/,'<span class="nw">$&</span>')+'</span></div>';  /* 「（還剩 2 天）」不從中間斷行 */
   const rk=own?'is-poster':role?'is-worker':'',boss=t.assignee===S.me&&S.me&&t.status!=='pending'?u(t.poster):null;
   return '<div class="card task'+(rk?' '+rk:'')+'">'+(role?'<span class="tc-tab">'+role+'</span>':'')+
     '<button class="tc-open" data-act="open" data-id="'+t.id+'" aria-label="查看 '+dateLabel(t)+esc(t.building)+' 的案件"></button>'+
@@ -1471,7 +1491,7 @@ function taskCard(t,opt){
     '<div class="tc-row"><div class="tc-main">'+
       '<div class="tc-place">'+esc(t.building)+'</div>'+(boss?'<div class="tc-who">本體 '+esc(boss.name)+'</div>':'')+
       (t.gender==='不限'?'':'<div class="tc-g">'+genderText(t.gender)+'</div>')+
-    '</div><div class="tc-side"><div class="tc-bottom">'+(opt.own&&isBlackPoster(t)?'<span class="pill s-bad">你的黑名單</span>':'')+
+    '</div><div class="tc-side"><div class="tc-bottom">'+(opt.own&&isBlackPoster(t)?tagChip(tagOf(t.poster)):'')+
       '<span class="price">'+(price?ntd(price):'<span class="muted">自由出價</span>')+'</span></div></div></div></div>'+bar+'</div>';
 }
 /* 備註超過兩行才顯示「展開」 */
@@ -1484,15 +1504,24 @@ function fixNotes(){
 }
 
 function fdef(){return {from:'',to:'',days:[],tmin:'',tmax:'',pmin:'',pmax:'',genders:GENDERS.slice()};}
-const SORTS=[['created','desc','刊登時間：新到舊'],['created','asc','刊登時間：舊到新'],['price','desc','標價：高到低'],['price','asc','標價：低到高'],['start','asc','開工時間：近到遠'],['start','desc','開工時間：遠到近']];
+/* 記住篩選條件和排序：存在瀏覽器（這台裝置一份），重新整理後還在；日期已經過了的那一端自動拿掉 */
+function loadFilter(){
+  try{const d=JSON.parse(localStorage.getItem(FILTER_KEY)||'null');if(!d||!d.f)return null;
+    const f=Object.assign(fdef(),d.f),today=toDate(new Date(now()));
+    if(f.to&&f.to<today){f.from='';f.to='';}else if(f.from&&f.from<today)f.from='';
+    if(!Array.isArray(f.days))f.days=[];if(!Array.isArray(f.genders)||!f.genders.length)f.genders=GENDERS.slice();
+    return {f:f,sort:SORTS.some(x=>x[0]===d.sort&&x[1]===d.dir)?d.sort:'start',dir:SORTS.some(x=>x[0]===d.sort&&x[1]===d.dir)?d.dir:'asc'};}catch(e){return null;}
+}
+let filterSaved='';
+function saveFilter(){const v=JSON.stringify({f:ui.f,sort:ui.sort,dir:ui.dir});if(v===filterSaved)return;filterSaved=v;
+  try{if(v===JSON.stringify({f:fdef(),sort:'start',dir:'asc'}))localStorage.removeItem(FILTER_KEY);else localStorage.setItem(FILTER_KEY,v);}catch(e){}}  /* 沒有任何條件時就不存 */
 function sortText(){const o=SORTS.find(x=>x[0]===ui.sort&&x[1]===ui.dir);return o?o[2]:'';}
 function filterCount(){const f=ui.f;return (f.from||f.to?1:0)+(f.days&&f.days.length?1:0)+(f.tmin!==''||f.tmax!==''?1:0)+(f.pmin!==''||f.pmax!==''?1:0)+(f.genders.length<GENDERS.length?1:0);}
 function matchBrowse(t){
   const f=ui.f;
   if(f.from&&t.start<new Date(f.from+'T00:00').getTime())return false;
   if(f.to&&t.start>=new Date(f.to+'T00:00').getTime()+D)return false;
-  if(f.pmin!==''||f.pmax!==''){
-    if(!t.budget)return false;
+  if((f.pmin!==''||f.pmax!=='')&&t.budget){  /* 自由出價的案件沒有標價，不管標價區間怎麼設都照樣顯示 */
     if(f.pmin!==''&&t.budget<Number(f.pmin))return false;
     if(f.pmax!==''&&t.budget>Number(f.pmax))return false;
   }
@@ -1755,7 +1784,7 @@ function meView(){
   row('tagsPage','標記過的人',cnt(Object.keys(S.tags[S.me]||{}).length)+' 人')+
   '<details class="card rules"><summary><h2>使用規則</h2></summary><ul class="small" style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px">'+
   '<li>本體：發案、請人打掃的人。替身：接案、去打掃的人。</li>'+
-  '<li>開工前，本體和替身都可以取消。</li><li>本體選了替身之後，替身要在 24 小時內、而且在開工前確認接案，逾時自動撤銷。本體選擇 1 小時後，可以改選別人。</li><li>開工時間結束 24 小時後，替身還沒按「打掃完成」，會自動算打掃完成。</li><li>替身打掃完成 3 天後，本體還沒驗收，會自動驗收完成。</li>'+
+  '<li>開工前，本體和替身都可以取消。</li><li>本體選了替身之後，替身要在開工前確認接案，開工時還沒確認，案件會自動取消。本體選擇 1 小時後，可以改選別人。</li><li>開工時間結束 24 小時後，替身還沒按「打掃完成」，會自動算打掃完成。</li><li>替身打掃完成 3 天後，本體還沒驗收，會自動驗收完成。</li>'+
   '<li>付款要雙方都確認：本體按「我已付款」，替身按「我已收款」。</li><li>打掃證明和留言板的照片只有雙方看得到，案件完成或取消 7 天後自動刪除。</li>'+
   '<li>平台不經手款項，本體驗收後直接付款給替身。</li>'+
   '<li>可以標記合作過的人（可信賴、黑名單或自訂內容），只有你自己看得到。接案頁不會顯示你標記為黑名單的本體的案件。</li>'+
@@ -1793,16 +1822,21 @@ function notesSheet(){
       return '<button class="note'+(fresh.indexOf(n.id)>=0?' new':'')+'" data-act="openNote" data-id="'+n.id+'"><span class="note-txt">'+esc(n.text)+'</span><span class="note-time"><span>'+(t?esc(label(t)):'')+'</span><span>'+ago(n.at)+'</span></span></button>';}).join('')+'</div>'
       :'<p class="small muted">目前沒有通知。</p>');
 }
-function deadline(t){return Math.min(t.pendingAt+24*H,t.start);}
+/* 替身確認接案的期限：開工時間（2026-11 取消了「選中後 24 小時」的規則，本體想等就等，不想等 1 小時後可以改選別人） */
+function deadline(t){return t.start;}
 function sweep(){
   let ch=false;
   S.tasks.forEach(t=>{
-    if(t.status==='pending'&&now()>=deadline(t)){
+    /* 到了開工時間替身還沒確認 → 整個案件自動取消 */
+    if(t.status==='pending'&&now()>=t.start){
       ch=true;const w=t.assignee;
-      if(now()>=t.start){t.status='cancelled';t.cancelKind='noconfirm';t.cancelAt=t.start;t.cancelReason='到了開工時間替身還沒確認，案件已自動取消';
-        notify(t.poster,'替身沒有在開工前確認，案件已自動取消',t.id);notify(w,'你沒有在開工前確認，案件已自動取消',t.id);}
-      else{t.offers=t.offers.filter(o=>o.user!==w);t.status='open';t.assignee=null;t.price=null;t.matchNote='替身沒有在期限內確認，這次選擇已自動撤銷，請改選其他出價。';
-        notify(t.poster,'替身沒有在期限內確認，這次選擇已自動撤銷，請改選其他人',t.id);notify(w,'你沒有在期限內確認，這次選擇已自動撤銷',t.id);}
+      t.status='cancelled';t.cancelKind='noconfirm';t.cancelAt=t.start;t.cancelReason='到了開工時間替身還沒確認，案件已自動取消';
+      notify(t.poster,'替身沒有在開工前確認，案件已自動取消',t.id);notify(w,'你沒有在開工前確認，案件已自動取消',t.id);
+    }
+    /* 開工前 5 小時還沒選替身：有人出價的話提醒本體一次（沒人出價不提醒） */
+    if(t.status==='open'&&!t.remind5&&now()>=t.start-5*H&&now()<t.start){
+      ch=true;t.remind5=true;
+      if(t.offers.length)notify(t.poster,when(t)+'，請盡快選替身，開工時還沒確定替身，案件會自動取消',t.id);
     }
     /* 到了開工時間還沒有確定替身 → 自動取消 */
     if(t.status==='open'&&now()>=t.start){
@@ -1849,9 +1883,10 @@ function sweep(){
 const TAGS=[['trust','可信賴'],['black','黑名單'],['custom','自訂內容']];
 function tagOf(uid){return (S.tags[S.me]||{})[uid]||null;}
 function tagText(g){return g.type==='trust'?'可信賴':g.type==='black'?'黑名單':g.text;}
+/* 標記的小標籤：書籤符號＋標記內容，顏色跟資訊卡右上角的標記按鈕一樣（可信賴綠、黑名單紅、自訂淡紫） */
 function tagChip(g){
   if(!g)return '';
-  return '<span class="pill '+(g.type==='trust'?'s-good':g.type==='black'?'s-bad':'s-assigned')+'">'+esc(tagText(g))+'</span>';
+  return '<span class="tagchip tg-'+g.type+'"><span class="vh">你的標記：</span>'+IC.bookmark+'<span class="tg-lbl">'+esc(tagText(g))+'</span></span>';
 }
 function tagButton(uid){
   const g=tagOf(uid),open=ui.tagMenu===uid;
@@ -1886,7 +1921,7 @@ function commentSection(t,r){
   if(r==='viewer'||!t.assignee)return '';
   const can=CMT_OPEN.indexOf(t.status)>=0,list=t.comments||[];
   if(!can&&!list.length)return '';
-  return '<section class="card"><div class="row between"><h2>留言板</h2><span class="small muted">只有你們兩人看得到</span></div>'+
+  return '<section class="card" id="cmt-sec"><div class="row between"><h2>留言板</h2><span class="small muted">只有你們兩人看得到</span></div>'+
     (list.length?'<div class="cmts">'+list.map(c=>{const mine=c.user===S.me,x=u(c.user);
       return '<div class="cmt'+(mine?' mine':'')+'"><div class="cmt-meta">'+(mine?'你':esc(x.name))+'・'+fmtShort(c.at)+'</div>'+(c.text?'<div class="cmt-txt">'+esc(c.text)+'</div>':'')+
         (c.imgs&&c.imgs.length?'<div class="cmt-imgs">'+c.imgs.map((src,i)=>'<img src="'+src+'" alt="留言照片 '+(i+1)+'" data-act="viewImg">').join('')+'</div>':'')+
@@ -1905,7 +1940,7 @@ function personCard(title,x,self){
 }
 function offerRow(t,o,i,canChoose){
   const x=u(o.user),sus=suspended(x),g=tagOf(x.id);
-  return '<div class="offer"><div class="row between offer-row"><div class="grow">'+idBlock(x)+(g?'<div class="row wrap small"><span class="muted">你的標記</span>'+tagChip(g)+'</div>':'')+'</div>'+
+  return '<div class="offer"><div class="row between offer-row"><div class="grow">'+idBlock(x)+(g?'<div class="offer-tag">'+tagChip(g)+'</div>':'')+'</div>'+
     '<div class="offer-side"><span class="price">'+ntd(o.price)+'</span>'+(!canChoose?'':sus?'<span class="pill s-bad">停權中，不能選擇</span>':'<button class="btn sm" data-act="choose" data-id="'+t.id+'" data-oid="'+o.id+'">選這位</button>')+'</div></div></div>';
 }
 /* ---------- 案件詳情 ----------
@@ -1914,18 +1949,24 @@ function photoBlock(t,editable){
   const ph=t.photos||[];
   const endedAt=t.status==='closed'?t.closedAt:t.status==='cancelled'?t.cancelAt:0;
   if(!editable&&!ph.length)return t.photosGone?'<p class="small muted">打掃證明已在案件'+endWord(t)+' 7 天後自動刪除。</p>':'';
-  const del=endedAt?'照片會在 '+fmtTime(endedAt+7*D)+' 自動刪除。':'照片只有你們兩人看得到。';
+  const del=endedAt?'照片會在 '+fmtTime(endedAt+7*D)+' 自動刪除，需要的話請點開照片下載。':'照片只有你們兩人看得到。';
   return '<div class="stack-s"><div class="row between"><b class="small">打掃證明</b><span class="small muted">'+(editable?'選填・'+ph.length+'／'+PH_MAX+' 張':ph.length+' 張')+'</span></div><div class="photos">'+
   ph.map((p,i)=>'<div class="ph"><img src="'+p.src+'" alt="打掃證明 '+(i+1)+'" data-act="viewPhoto" data-id="'+t.id+'" data-i="'+i+'"><span class="ph-time">'+fmtShort(p.at)+'</span>'+
     (editable?'<button class="ph-x" data-act="rmPhoto" data-id="'+t.id+'" data-i="'+i+'" aria-label="刪除這張">×</button>':'')+'</div>').join('')+
   (editable&&ph.length<PH_MAX?'<label class="ph add" for="f-ph">＋ 加照片<input class="vh" id="f-ph" type="file" accept="image/*" multiple data-upload="photos" data-id="'+t.id+'"></label>':'')+'</div>'+
   '<p class="small muted">'+del+'</p></div>';
 }
+/* 你當替身、而且同一段時間已經確定（或等你確認）的其他案件：出價和確認接案時提醒一句 */
+function clashes(t,uid){return S.tasks.filter(x=>x.id!==t.id&&x.assignee===uid&&(x.status==='pending'||x.status==='assigned')&&x.start<t.end&&t.start<x.end);}
+function clashNote(t){const c=S.me?clashes(t,S.me):[];return c.length?'<div class="banner warn clash">這段時間你已經有'+(c.length>1?' '+c.length+' 個':'')+'案件：'+c.map(x=>esc(label(x))).join('、')+'</div>':'';}
 function hhmm(ts){const d=new Date(ts);return pad(d.getHours())+':'+pad(d.getMinutes());}
 function summaryCard(t){
   const live=t.status==='open'||t.status==='pending'||t.status==='assigned';
-  const pl=t.price?'成交價':'本體標價';
-  const pv=t.price?ntd(t.price):t.budget?ntd(t.budget):'<span class="muted">自由出價</span>';
+  /* 瀏覽的人（包括沒被選上的替身）只看得到本體標價；本體和替身看成交價，替身還沒確認接案時叫「選中的出價」 */
+  const deal=role(t,S.me)!=='viewer'&&!!t.price;
+  const pl=deal?(t.status==='pending'?'選中的出價':'成交價'):'本體標價';
+  const pv=deal?ntd(t.price):t.budget?ntd(t.budget):'<span class="muted">自由出價</span>';
+  const orig=deal&&t.budget&&t.price!==t.budget?'<span class="sum-orig">原標價 '+ntd(t.budget)+'</span>':'';
   const clamp=t.note&&!(t.status==='open'||t.status==='pending'),exp=!!ui.expanded[t.id];
   const note=!t.note?'<span class="muted">無</span>'
     :clamp?'<div class="clamp'+(exp?' open':'')+'"><span class="clamp-txt">'+esc(t.note)+'</span><button class="tc-more" data-act="toggleNote" data-id="'+t.id+'" aria-expanded="'+exp+'">'+(exp?'收合':'展開')+'</button></div>'
@@ -1939,7 +1980,7 @@ function summaryCard(t){
     (mine?'<span class="sum-role '+(mine==='poster'?'is-poster':'is-worker')+'">'+(mine==='poster'?'我是本體':'我是替身')+'</span>':'')+
     '</div>'+
     '<dl class="facts"><dt>地點</dt><dd>'+esc(t.building)+'</dd><dt>集合位置</dt><dd>'+esc(t.meet)+'</dd><dt>替身性別</dt><dd>'+genderText(t.gender)+'</dd><dt>備註</dt><dd>'+note+'</dd></dl>'+
-    '<div class="sum-price"><span class="small muted">'+pl+'</span><b class="price">'+pv+'</b></div></section>';
+    '<div class="sum-price">'+orig+'<span class="small muted sum-pl">'+pl+'</span><b class="price">'+pv+'</b></div></section>';
 }
 /* 付款進度：從看的人的角度寫（你／本體／替身） */
 function payBanner(t,r){
@@ -1962,30 +2003,31 @@ function nextStep(t,r){
     else if(!genderOk(t,m))b+='<div class="banner warn">這個案件'+gLabel(t.gender)+'，'+(m.gender?'你沒辦法出價。':'你的個人資料沒有填性別，所以沒辦法出價。')+'</div>';
     else if(!hasPay(m))b+='<p class="small muted">出價前要先設定收款方式。</p><button class="btn block" data-act="setupPay" data-id="'+t.id+'">設定收款方式</button>';
     else{
-      if(t.budget)b+='<button class="btn block" data-act="acceptPrice" data-id="'+t.id+'"'+(took?' disabled':'')+'>'+(took?'已接受本體標價':'接受本體標價')+'</button>';
+      b+=clashNote(t);
+      if(t.budget)b+='<button class="btn block" data-act="acceptPrice" data-id="'+t.id+'"'+(took?' disabled':'')+'>'+(took?'已接受本體標價':mine?'改接受本體標價':'接受本體標價')+'</button>';
       b+='<button class="btn block'+(t.budget?' ghost':'')+'" data-act="openBid" data-id="'+t.id+'">'+(mine?'修改出價':'自行出價')+'</button>';
     }
     return card('出價',b,ok&&!mine);
   }
   if(t.status==='pending'){
-    const dl=fmtTime(deadline(t)),left=span(deadline(t)-now()),unAt=t.pendingAt+H,canUn=now()>=unAt;
+    const left=span(t.start-now()),unAt=t.pendingAt+H,canUn=now()>=unAt;
     if(r==='worker'){
       const re=canUn?'本體現在可以改選別人了。':'本體 1 小時後可以改選別人（還剩 '+span(unAt-now())+'）。';
       return card('確認接案','<p class="np-lead">本體選了你！</p>'+
-        '<dl class="facts np"><dt>你的出價</dt><dd><b class="price">NT$ '+money(t.price)+'</b></dd><dt>確認期限</dt><dd><b>'+dl+'</b> 前<span class="nw">（還剩 '+left+'）</span></dd></dl>'+
-        '<p class="small muted">逾時自動撤銷。'+re+'</p>'+
+        '<dl class="facts np"><dt>你的出價</dt><dd><b class="price">NT$ '+money(t.price)+'</b></dd><dt>確認期限</dt><dd><b>開工前</b><span class="nw">（還剩 '+left+'）</span></dd></dl>'+
+        '<p class="small muted">開工時還沒確認，案件會自動取消。'+re+'</p>'+clashNote(t)+
         '<button class="btn block" data-act="acceptMatch" data-id="'+t.id+'">確認接案</button><button class="btn ghost block" data-act="declineMatch" data-id="'+t.id+'">婉拒</button>',true);
     }
     if(r==='poster'){
-      const re=canUn?'你現在可以改選別人。':'1 小時後你能改選別人（還剩 '+span(unAt-now())+'）。';
-      return card('等替身確認','<div class="chosen">'+idBlock(w)+tagLine(w.id,'替身')+'<div class="row between"><span class="small muted">成交價</span><b class="price">'+ntd(t.price)+'</b></div></div>'+
-        '<dl class="facts np"><dt>確認期限</dt><dd><b>'+dl+'</b> 前<span class="nw">（還剩 '+left+'）</span></dd></dl>'+
-        '<p class="small muted">'+esc(w.name)+'要在期限前確認接案或婉拒，逾時沒確認，這次選擇會自動撤銷。'+re+'</p>'+
+      const re=canUn?'你可以繼續等，或現在改選別人。':'你可以繼續等，或在 1 小時後改選別人（還剩 '+span(unAt-now())+'）。';
+      return card('等替身確認接案','<div class="chosen">'+idBlock(w)+tagLine(w.id,'替身')+'<div class="row between"><span class="small muted">出價</span><b class="price">'+ntd(t.price)+'</b></div></div>'+
+        '<dl class="facts np"><dt>確認期限</dt><dd><b>開工前</b><span class="nw">（還剩 '+left+'）</span></dd></dl>'+
+        '<p class="small muted">開工時'+esc(w.name)+'還沒確認接案，案件會自動取消。'+re+'</p>'+
         '<button class="btn ghost block" data-act="unchoose" data-id="'+t.id+'"'+(canUn?'':' disabled')+'>改選別人</button>',false);
     }
     const mine=m?t.offers.find(o=>o.user===m.id):null;
     return card('',(mine?'<div class="row between pc-row"><span class="muted">你的出價</span><span class="price">'+ntd(mine.price)+'</span></div>':'')+
-      '<p class="small muted center">本體已選其他人，正在等對方確認。對方沒有確認的話，案件會重新召喚替身。</p>',false);
+      '<p class="small muted center">本體已選其他人，正在等對方確認接案。對方婉拒或本體改選的話，案件會重新召喚替身。</p>',false);
   }
   if(t.status==='assigned'){
     const begun=now()>=t.start,over=now()>=t.end,autoAt=fmtTime(t.end+24*H);
@@ -2041,7 +2083,7 @@ function nextStep(t,r){
     const k=t.cancelKind,n=t.endNote;
     /* 本體結束案件時寫的原因和照片，雙方都看得到 */
     if(k==='notdone'&&n&&r!=='viewer')h+=card(r==='poster'?'你寫的原因':'本體寫的原因','<p class="cmt-txt">'+esc(n.text)+'</p>'+
-      (n.photos&&n.photos.length?'<div class="endnote-photos">'+n.photos.map((src,i)=>'<div class="ph"><img src="'+src+'" alt="照片證明 '+(i+1)+'" data-act="viewImg"></div>').join('')+'</div><p class="small muted">照片會在 '+fmtTime(t.cancelAt+7*D)+' 自動刪除。</p>':'')+
+      (n.photos&&n.photos.length?'<div class="endnote-photos">'+n.photos.map((src,i)=>'<div class="ph"><img src="'+src+'" alt="照片證明 '+(i+1)+'" data-act="viewImg"></div>').join('')+'</div><p class="small muted">照片會在 '+fmtTime(t.cancelAt+7*D)+' 自動刪除，需要的話請點開照片下載。</p>':'')+
       (n.photosGone?'<p class="small muted">照片已在案件取消 7 天後自動刪除。</p>':''),false);
     /* 替身上傳過的打掃證明也留給雙方看 */
     const pb=r==='viewer'?'':photoBlock(t,false);if(pb)h+='<section class="card">'+pb+'</section>';
@@ -2088,7 +2130,7 @@ function detailView(){
   if(r!=='viewer')out.push(stepper(t));
   out.push(summaryCard(t));
   out.push(nextStep(t,r));
-  if(r==='viewer'){const g=tagOf(t.poster);if(g)out.push('<div class="banner warn row wrap">你標記過這位本體：'+tagChip(g)+'</div>');}
+  if(r==='viewer'){const g=tagOf(t.poster);if(g)out.push('<div class="banner tagnote">這位本體'+tagChip(g)+'</div>');}
   out.push(commentSection(t,r));
   if(w&&r!=='viewer'&&t.status!=='pending')out.push(r==='poster'?personCard('替身',w,false):personCard('本體',p,false));
   out.push(exitArea(t,r));
@@ -2170,7 +2212,7 @@ function dlgView(){
   const g=ui.dlg;if(!g)return '';
   return '<div class="scrim center d-layer" data-act="dlgScrim"><div class="sheet dlg" role="dialog" aria-modal="true">'+(g.kind==='date'?dateDlg():timeDlg())+'</div></div>';
 }
-function renderModal(){const sc=document.querySelector('.scrim.m-layer');if(sc)sc.outerHTML=modalView();kFields();}
+function renderModal(){const sc=document.querySelector('.scrim.m-layer');if(!sc)return;const top=sc.querySelector('.sheet').scrollTop;sc.outerHTML=modalView();const ns=document.querySelector('.m-layer .sheet');if(ns)ns.scrollTop=top;kFields();}
 function renderDlg(){const sc=document.querySelector('.scrim.d-layer');if(sc)sc.outerHTML=dlgView();}
 function dialSet(e){
   const el=document.querySelector('.dial');if(!el||!ui.dlg)return;
@@ -2273,20 +2315,16 @@ function modalView(){
       '<form data-form="offer" data-id="'+t.id+'" class="stack" novalidate><label class="pc-label" for="op">'+(mine?'新的出價':'你的出價')+'</label>'+
       '<div class="pc-input"><span>NT$</span><input id="op" name="price" type="number" inputmode="numeric" min="1" step="1" placeholder="輸入金額" value="'+(mine?mine.price:'')+'"></div>'+
       '<button class="btn block" type="submit">'+(mine?'更新出價':'送出出價')+'</button>'+
-      (mine?'<button class="btn quiet" type="button" data-act="withdrawOffer" data-id="'+t.id+'">撤回出價</button>':'')+
-      '<p class="small muted center">本體會看到你的姓名、學號和出價。</p></form>';
+      (mine?'<button class="btn quiet" type="button" data-act="withdrawOffer" data-id="'+t.id+'">撤回出價</button>':'')+'</form>';
   }
   if(md.type==='filter'){
     const f=ui.fd||ui.f,db=(k)=>'<button type="button" class="dt-btn" data-act="openDate" data-w="'+k+'">'+IC.cal+'<span>'+(f[k]?mdw(new Date(f[k]+'T00:00')):'不限')+'</span></button>',
       tb=(k)=>'<button type="button" class="dt-btn" data-act="openTime" data-w="'+k+'">'+IC.clock+'<span>'+(f[k]!==''?fromMin(Number(f[k])):'不限')+'</span></button>';
     inner='<h2>篩選案件</h2><form data-form="filter" class="stack" novalidate>'+
       '<div class="field"><span class="lbl">日期區間</span><div class="range">'+db('from')+'<span>到</span>'+db('to')+'</div></div>'+
-      '<div class="field"><span class="lbl" id="fl-d">星期</span><div class="checks days" role="group" aria-labelledby="fl-d">'+[1,2,3,4,5,6,0].map(d=>'<label for="fday'+d+'"><input type="checkbox" id="fday'+d+'" name="d" value="'+d+'"'+((f.days||[]).indexOf(d)>=0?' checked':'')+'><span class="vh">星期</span>'+'日一二三四五六'[d]+'</label>').join('')+'</div>'+
-        '<span class="small muted">只看這幾天開工的案件。沒選就是不限。</span></div>'+
-      '<div class="field"><span class="lbl">時段</span><div class="range">'+tb('tmin')+'<span>到</span>'+tb('tmax')+'</div>'+
-        '<span class="small muted">只顯示整個案件都在這段時間內的。</span></div>'+
-      '<div class="field"><span class="lbl">標價區間（NT$）</span><div class="range"><input type="number" name="pmin" inputmode="numeric" min="0" step="10" placeholder="最低" aria-label="最低標價" value="'+esc(f.pmin)+'"><span>到</span><input type="number" name="pmax" inputmode="numeric" min="0" step="10" placeholder="最高" aria-label="最高標價" value="'+esc(f.pmax)+'"></div>'+
-      '<span class="small muted">設定標價區間後，自由出價的案件不會顯示。</span></div>'+
+      '<div class="field"><span class="lbl" id="fl-d">星期</span><div class="checks days" role="group" aria-labelledby="fl-d">'+[1,2,3,4,5,6,0].map(d=>'<label for="fday'+d+'"><input type="checkbox" id="fday'+d+'" name="d" value="'+d+'"'+((f.days||[]).indexOf(d)>=0?' checked':'')+'><span class="vh">星期</span>'+'日一二三四五六'[d]+'</label>').join('')+'</div>'+'</div>'+
+      '<div class="field"><span class="lbl">時段</span><div class="range">'+tb('tmin')+'<span>到</span>'+tb('tmax')+'</div>'+'</div>'+
+      '<div class="field"><span class="lbl">標價區間（NT$）</span><div class="range"><input type="number" name="pmin" inputmode="numeric" min="0" step="10" placeholder="最低" aria-label="最低標價" value="'+esc(f.pmin)+'"><span>到</span><input type="number" name="pmax" inputmode="numeric" min="0" step="10" placeholder="最高" aria-label="最高標價" value="'+esc(f.pmax)+'"></div>'+'</div>'+
       '<div class="field"><span class="lbl" id="fl-g">替身性別</span><div class="checks" role="group" aria-labelledby="fl-g">'+GENDERS.map((x,i)=>'<label for="fg'+i+'"><input type="checkbox" id="fg'+i+'" name="g" value="'+x+'"'+(f.genders.indexOf(x)>=0?' checked':'')+'>'+gLabel(x)+'</label>').join('')+'</div></div>'+
       '<div class="two"><button type="button" class="btn ghost" data-act="resetFilter">清除</button><button class="btn" type="submit">套用</button></div></form>';
   }
@@ -2299,7 +2337,7 @@ function modalView(){
       '<div class="row end"><button type="button" class="btn ghost" data-act="close">返回</button><button class="btn danger-solid" type="submit">結束案件</button></div></form>';
   }
   if(md.type==='share')inner='<h2>分享案件</h2><p class="small muted">複製下面的文字，貼給朋友。</p><textarea id="share-text" rows="4" readonly data-autofocus onfocus="this.select()">'+esc(md.text)+'</textarea><div class="row end"><button class="btn" data-act="close">關閉</button></div>';
-  if(md.type==='photo')inner='<img src="'+md.src+'" alt="放大的照片" class="big-photo"><div class="row end"><button class="btn ghost" data-act="close">關閉</button></div>';
+  if(md.type==='photo')inner='<img src="'+md.src+'" alt="放大的照片" class="big-photo"><div class="row end"><button class="btn ghost dl" data-act="dlImg">'+IC.download+'<span>下載</span></button><button class="btn ghost" data-act="close">關閉</button></div>';
   return '<div class="scrim m-layer" data-act="scrim"><div class="sheet" role="dialog" aria-modal="true">'+inner+'</div></div>';
 }
 
@@ -2344,15 +2382,17 @@ function render(){
   else if(!S.me&&ui.tab!=='browse')body=gateView(ui.tab);
   else body=({browse:browseView,post:postView,mine:mineView,me:meView}[ui.tab]||browseView)();
   /* 示範工具只在原型裡用，放在每一頁內容的最下面，不佔標題欄 */
+  const keepM=app.querySelector('.m-layer .sheet'),keepD=app.querySelector('.d-layer .sheet'),topM=keepM?keepM.scrollTop:0,topD=keepD?keepD.scrollTop:0;
   app.innerHTML=headerView()+'<main>'+body+'<div class="demo-entry"><button class="btn ghost sm" data-act="openDemo">示範工具</button><span class="small muted">原型才有，正式版不會出現</span></div></main>'+tabsView()+modalView()+dlgView();
   const k={p:[ui.view,ui.tab,ui.detailId,ui.meSub,ui.mineRole,ui.pastKind,ui.histSeg].join('|'),
     m:ui.modal?[ui.modal.type,ui.modal.step||0,ui.modal.title||''].join('|'):'',d:ui.dlg?ui.dlg.kind+'|'+ui.dlg.target:''};
   const pk=fxKeys||{p:k.p,m:'',d:''};  /* 第一次畫面不播換頁動畫，但第一次進入的介紹視窗會播 */
   const ms=app.querySelector('.m-layer .sheet'),ds=app.querySelector('.d-layer .sheet');
-  if(ms&&k.m!==pk.m)ms.classList.add('fx-in');
-  if(ds&&k.d!==pk.d)ds.classList.add('fx-in');
+  if(ms&&k.m!==pk.m)ms.classList.add('fx-in');else if(ms&&topM)ms.scrollTop=topM;  /* 同一個視窗重畫時，停在原本捲到的位置 */
+  if(ds&&k.d!==pk.d)ds.classList.add('fx-in');else if(ds&&topD)ds.scrollTop=topD;
   fxKeys=k;
   if(ui.top){window.scrollTo(0,0);ui.top=false;}
+  if(ui.toCmt){ui.toCmt=false;const c=document.getElementById('cmt-sec');if(c)c.scrollIntoView({block:'start'});}  /* 從留言通知進來：直接看到留言板 */
   kMotion();topScrolled();kFields();
   fixNotes();
   centerTimeCols();
@@ -2361,6 +2401,7 @@ function render(){
   if(ui.tagCustom){const i=document.querySelector('.tm-custom input');if(i&&document.activeElement!==i)i.focus();}
   const af=document.querySelector('.sheet [data-autofocus]');if(af&&document.activeElement!==af){try{af.focus({preventScroll:true});}catch(x){}}
   if(S.me)saveDraft();
+  saveFilter();
 }
 
 /* ---------- 動作 ---------- */
@@ -2381,7 +2422,7 @@ const A={
   ok(){const f=ui.pending;ui.modal=null;ui.pending=null;if(f)f();},
   ff(d){S.clockOffset+=Number(d.v)*M;save();toast('時間快轉到 '+fmtTime(now()));},
   nowReset(){S.clockOffset=0;save();},
-  reset(){ask('重設示範資料？','你建立的案件、出價和照片都會清除。','重設',()=>{S=seed();ui=freshUI();try{localStorage.removeItem(DRAFT_KEY);}catch(e){}save();go('#browse');toast('已重設示範資料');},true);},
+  reset(){ask('重設示範資料？','你建立的案件、出價和照片都會清除。','重設',()=>{S=seed();try{localStorage.removeItem(DRAFT_KEY);localStorage.removeItem(FILTER_KEY);}catch(e){}filterSaved='';ui=freshUI();save();go('#browse');toast('已重設示範資料');},true);},
   logout(){S.me=null;const keep={q:ui.q,f:ui.f,sort:ui.sort,dir:ui.dir};ui=freshUI();Object.assign(ui,keep,{routed:true});save();go('#browse');},
   tab(d){
     if(ui.view==='list'&&curHash()===(TAB_HASH[d.v]||'#browse')){window.scrollTo(0,0);return false;}
@@ -2395,7 +2436,7 @@ const A={
   clearF(d){const f=ui.f,z=fdef();if(d.k==='date'){f.from='';f.to='';}else if(d.k==='days')f.days=[];else if(d.k==='time'){f.tmin='';f.tmax='';}else if(d.k==='price'){f.pmin='';f.pmax='';}else if(d.k==='gender')f.genders=z.genders;},
   openSort(){ui.modal={type:'sort'};},
   openNotes(){const mine=myNotes();ui.noteFresh=mine.filter(n=>!n.read).map(n=>n.id);mine.forEach(n=>{n.read=true;});save();ui.modal={type:'notes'};},
-  openNote(d){const n=(S.notes||[]).find(x=>x.id===d.id);ui.modal=null;if(n&&n.taskId&&T(n.taskId))go('#task-'+n.taskId);},
+  openNote(d){const n=(S.notes||[]).find(x=>x.id===d.id);ui.modal=null;if(n&&n.taskId&&T(n.taskId)){go('#task-'+n.taskId);if(n.kind==='cmt')ui.toCmt=true;}},
   pickSort(d){ui.sort=d.k;ui.dir=d.v;ui.modal=null;},
   favs(){go('#favs');},
   moreMenu(){ui.moreMenu=!ui.moreMenu;},
@@ -2430,7 +2471,7 @@ const A={
   acceptPrice(d){const m=me(),t=T(d.id);if(suspended(m))return toast('停權中不能出價');if(!genderOk(t,m))return toast('這個案件有指定性別，你沒辦法出價');if(!hasPay(m))return toast('出價前要先設定收款方式');const ex=t.offers.find(o=>o.user===m.id);if(ex){ex.price=t.budget;ex.at=now();}else{t.offers.push({id:nid('o'),user:m.id,price:t.budget,msg:'',at:now()});notify(t.poster,'有人接受你的標價',t.id);}save();toast('已接受本體標價，等本體選人');},
   withdrawOffer(d){const t=T(d.id);t.offers=t.offers.filter(o=>o.user!==S.me);ui.modal=null;save();toast('已撤回出價');},
   choose(d){const t=T(d.id),o=t.offers.find(x=>x.id===d.oid);
-    ask('選擇'+u(o.user).name+'作為你的替身（NT$ '+money(o.price)+'）？','','選擇',()=>{t.status='pending';t.assignee=o.user;t.price=o.price;t.pendingAt=now();t.matchNote=null;notify(o.user,'本體選了你，請在 '+fmtTime(deadline(t))+' 前確認接案',t.id);save();toast('已通知'+u(o.user).name+'確認接案');});},
+    ask('選擇'+u(o.user).name+'作為你的替身（NT$ '+money(o.price)+'）？','','選擇',()=>{t.status='pending';t.assignee=o.user;t.price=o.price;t.pendingAt=now();t.matchNote=null;notify(o.user,'本體選了你，請在開工前確認接案',t.id);save();toast('已通知'+u(o.user).name+'確認接案');});},
   acceptMatch(d){const t=T(d.id);if(t.status!=='pending')return toast('這次選擇已經失效');t.status='assigned';t.assignedAt=now();notify(t.poster,me().name+'確認接案了',t.id);save();toast('已確認接案');},
   declineMatch(d){const t=T(d.id);ask('婉拒接案？','你的出價會一起撤回，本體可以改選其他人。','婉拒',()=>{t.offers=t.offers.filter(o=>o.user!==S.me);t.status='open';t.assignee=null;t.price=null;t.matchNote='替身婉拒了，請改選其他出價。';notify(t.poster,me().name+'婉拒了，請改選其他人',t.id);save();toast('已婉拒');goBack(TAB_HASH[ui.tab]||'#mine');},true);},
   unchoose(d){const t=T(d.id);if(now()<t.pendingAt+H)return toast('選擇 1 小時後才能改選別人');ask('改選別人？','這次選擇會作廢並通知'+u(t.assignee).name+'，對方的出價仍會保留，你可以重新挑選。','改選',()=>{notify(t.assignee,'本體改選別人了，你的出價仍保留',t.id);t.status='open';t.assignee=null;t.price=null;t.matchNote=null;save();toast('這次選擇已作廢，可以重新挑選');},true);},
@@ -2501,6 +2542,16 @@ const A={
         S.tags[S.me]=S.tags[S.me]||{};S.tags[S.me][p.id]={type:'black',text:'',at:now()};save();toast('已把'+p.name+'加入黑名單');},false,'先不要');
       else toast('已結束案件');},true);},
   viewImg(d,el){ui.modal={type:'photo',src:el.getAttribute('src')};},
+  /* 下載照片：在 claude.ai 的 artifact 裡用它的下載功能（會先問使用者），其他地方用瀏覽器一般的下載。
+     檔名用英文（photo-日期-時間），有些瀏覽器不接受中文檔名，會變成「download」 */
+  dlImg(){const src=ui.modal&&ui.modal.src;if(!src)return false;
+    const mime=(src.match(/^data:([^;,]+)/)||[])[1]||'image/jpeg',ext=mime==='image/svg+xml'?'svg':mime==='image/png'?'png':'jpg';
+    const name='photo-'+toDate(new Date(now())).replace(/-/g,'')+'-'+pad(new Date().getHours())+pad(new Date().getMinutes())+pad(new Date().getSeconds())+'.'+ext,blob=dataBlob(src);
+    const plain=()=>{const a=document.createElement('a'),url=URL.createObjectURL(blob);a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),5000);};
+    const c=window.claude;
+    if(c&&typeof c.use==='function')c.use('downloads').then(dl=>{if(!dl)return plain();dl.save({filename:name,data:blob}).then(()=>toast('已下載照片'),err=>{if(!err||err.code!=='declined')plain();});},plain);
+    else plain();
+    return false;},
   rmCimg(d){const a=ui.cimg[d.id]||[];a.splice(Number(d.i),1);},
   toggleBlack(){ui.showBlack=!ui.showBlack;},
   copy(d){try{navigator.clipboard.writeText(d.v).then(()=>toast('已複製帳號'),()=>toast('無法複製，請手動選取帳號'));}catch(e){toast('無法複製，請手動選取帳號');}return false;}
@@ -2619,6 +2670,11 @@ const F={
 };
 
 /* ---------- 照片 ---------- */
+function dataBlob(src){
+  const i=src.indexOf(','),head=src.slice(5,i),body=src.slice(i+1),mime=head.split(';')[0]||'application/octet-stream';
+  if(/;base64$/.test(head)){const b=atob(body),a=new Uint8Array(b.length);for(let k=0;k<b.length;k++)a[k]=b.charCodeAt(k);return new Blob([a],{type:mime});}
+  return new Blob([decodeURIComponent(body)],{type:mime});
+}
 function shrink(file){
   return new Promise((res,rej)=>{
     const url=URL.createObjectURL(file),img=new Image();

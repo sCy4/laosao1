@@ -39,10 +39,11 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
   await js(() => document.querySelector('.sheet [data-act="ok"]').click()); await W();
   const pt = await js(() => document.querySelector('.card.next').innerText);
   // 使用者同意把長句拆開：期限一行（「確認期限 … 前（還剩 …）」），誰要確認、逾時和改選規則放下面小字
-  ok(/確認期限\s*.+ 前\s*（還剩 \d+ (小時|天)）/.test(pt) && /陳怡君要在期限前確認接案或婉拒，逾時沒確認，這次選擇會自動撤銷。1 小時後你能改選別人（還剩 \d+ (分鐘|小時)）。/.test(pt), 'poster pending: ' + pt.replace(/\n/g, ' | '));
+  // 第七版：使用者取消「選中後 24 小時沒確認就自動撤銷」，確認期限就是開工前；標題改成「等替身確認接案」，灰框裡的價格叫「出價」（還沒成交）
+  ok(/^等替身確認接案/.test(pt) && /出價\s*NT\$ 420/.test(pt) && !/成交價/.test(pt) && /確認期限\s*開工前（還剩 \d+ (小時|天)）/.test(pt) && /開工時陳怡君還沒確認接案，案件會自動取消。你可以繼續等，或在 1 小時後改選別人（還剩 \d+ (分鐘|小時)）。/.test(pt), 'poster pending: ' + pt.replace(/\n/g, ' | '));
   await act('pick', { id: 'u2' }); await W();
   const wt = await js(() => document.querySelector('.card.next').innerText);
-  ok(/本體選了你！/.test(wt) && /你的出價\s*NT\$ 420/.test(wt) && /確認期限\s*.+ 前\s*（還剩 \d+ (小時|天)）/.test(wt) && /逾時自動撤銷。本體 1 小時後可以改選別人（還剩 \d+ (分鐘|小時)）。/.test(wt), 'worker pending: ' + wt.replace(/\n/g, ' | '));
+  ok(/本體選了你！/.test(wt) && /你的出價\s*NT\$ 420/.test(wt) && /確認期限\s*開工前（還剩 \d+ (小時|天)）/.test(wt) && /開工時還沒確認，案件會自動取消。本體 1 小時後可以改選別人（還剩 \d+ (分鐘|小時)）。/.test(wt), 'worker pending: ' + wt.replace(/\n/g, ' | '));
   await act('openDemo'); await act('ff', { v: '60' }); await act('close');
   ok((await js(() => document.querySelector('.card.next').innerText)).includes('本體現在可以改選別人了。'), 'after 1h: 本體現在可以改選別人了');
   await act('pick', { id: 'u1' }); await W();
