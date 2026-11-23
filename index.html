@@ -530,6 +530,7 @@ label.btn{display:flex;align-items:center;justify-content:center}
   --md-elev-1:0 1px 2px rgba(0,0,0,.3),0 1px 3px 1px rgba(0,0,0,.15);
   --md-elev-2:0 1px 2px rgba(0,0,0,.3),0 2px 6px 2px rgba(0,0,0,.15);
   --md-elev-3:0 1px 3px rgba(0,0,0,.3),0 4px 8px 3px rgba(0,0,0,.15);
+  --tag-custom:#fbeeb0;--on-tag-custom:#4a3f00;  /* 標記「自訂內容」：淡黃色（不緊急的黃），和提示框的淡紫、本體標籤的琥珀分開 */
   --md-ease:cubic-bezier(.2,0,0,1);--md-ease-decel:cubic-bezier(.05,.7,.1,1);
   /* 基本樣式用的色票改指向 M3 顏色角色：這一段沒有特別寫到的元件也會跟著換色 */
   --bg:var(--md-surface);--surface:var(--md-surface-container-low);--ink:var(--md-on-surface);--muted:var(--md-on-surface-variant);--line:var(--md-outline-variant);
@@ -615,7 +616,15 @@ header.top.sub{justify-content:flex-start;padding:8px 4px}
 @media (max-width:360px){header.top.sub{padding:8px 4px}}
 /* 發案畫面（M3 full-screen dialog）：左上 ✕、標題「發案」，沒有下方分頁 */
 .hd-title{margin-left:4px;font-size:22px;line-height:28px;font-weight:400;color:var(--md-on-surface)}
-main.full{padding-bottom:32px}
+main.full{padding-bottom:32px;position:relative;z-index:1;background:var(--md-surface);min-height:calc(100vh - 64px)}
+.k-ghost{position:fixed;inset:0;overflow:hidden;pointer-events:none;background:var(--md-surface)}
+.k-ghost.under{z-index:0}
+.k-ghost.over{z-index:19;animation:kSlideDown .25s var(--md-ease-accel,cubic-bezier(.3,0,.8,.15)) forwards}
+.k-ghost-app{max-width:480px;margin:0 auto;min-height:100%;display:flex;flex-direction:column}
+header.top.full.slide-up,main.full.slide-up{animation:kSlideUp .3s var(--md-ease-decel) backwards}
+@keyframes kSlideUp{from{transform:translateY(100vh)}}
+@keyframes kSlideDown{to{transform:translateY(100vh)}}
+@media (prefers-reduced-motion:reduce){header.top.full.slide-up,main.full.slide-up,.k-ghost.over{animation:none}}
 /* 發案按鈕（M3 extended FAB）：右下角、下方分頁上面；對齊 480px 欄位的右邊 */
 .fab{position:fixed;z-index:7;right:max(16px,calc(50vw - 224px));bottom:calc(96px + env(safe-area-inset-bottom,0px));overflow:hidden;display:inline-flex;align-items:center;gap:12px;height:56px;padding:0 20px 0 16px;border:0;border-radius:16px;
   background:var(--md-primary-container);color:var(--md-on-primary-container);font:inherit;font-size:14px;line-height:20px;font-weight:500;letter-spacing:.1px;box-shadow:var(--md-elev-3);cursor:pointer}
@@ -983,14 +992,14 @@ form[data-form="post"] .two+p.small{margin-top:-12px}
 .taglink.tagged .i-o{display:none}.taglink.tagged .i-f{display:inline}
 .taglink.tg-trust{background:#c8f0cf;color:#00531f}
 .taglink.tg-black{background:var(--md-error-container);color:var(--md-on-error-container)}
-.taglink.tg-custom{background:var(--md-tertiary-container);color:var(--md-on-tertiary-container)}
+.taglink.tg-custom{background:var(--tag-custom);color:var(--on-tag-custom)}
 .tagchip{display:inline-flex;align-items:center;gap:4px;max-width:100%;height:24px;padding:0 8px 0 4px;border-radius:8px;font-size:12px;line-height:16px;font-weight:500;letter-spacing:.4px;vertical-align:middle;white-space:nowrap}
 .tagchip svg{flex:none;width:16px;height:16px}
 .tagchip .i-o{display:none}.tagchip .i-f{display:inline}
 .tagchip .tg-lbl{min-width:0;overflow:hidden;text-overflow:ellipsis}
 .tagchip.tg-trust{background:#c8f0cf;color:#00531f}
 .tagchip.tg-black{background:var(--md-error-container);color:var(--md-on-error-container)}
-.tagchip.tg-custom{background:var(--md-tertiary-container);color:var(--md-on-tertiary-container)}
+.tagchip.tg-custom{background:var(--tag-custom);color:var(--on-tag-custom)}
 .offer-tag{display:flex;margin-top:6px;min-width:0}
 .banner.tagnote{display:flex;align-items:center;flex-wrap:wrap;gap:8px}
 #cmt-sec{scroll-margin-top:72px}  /* 從留言通知捲到留言板時，不被標題欄擋住 */
@@ -1008,7 +1017,8 @@ form[data-form="post"] .two+p.small{margin-top:-12px}
 .tagbtn{max-width:100%;height:32px;min-height:32px;padding:0 12px 0 8px;gap:6px;border:1px solid var(--md-outline-variant);border-radius:8px;background:transparent;color:var(--md-on-surface-variant);font-size:14px;font-weight:500}
 .tagbtn.tg-trust{color:#00531f;border-color:transparent;background:#c8f0cf}
 .tagbtn.tg-black{color:var(--md-on-error-container);border-color:transparent;background:var(--md-error-container)}
-.tagbtn.tg-custom{color:var(--md-on-tertiary-container);border-color:transparent;background:var(--md-tertiary-container)}
+.tagbtn.tg-custom{color:var(--on-tag-custom);border-color:transparent;background:var(--tag-custom)}
+.tm-dot.custom{background:#9a8400}
 .tagbtn:not(.tg-none) .i-o{display:none}.tagbtn:not(.tg-none) .i-f{display:inline}
 /* 取消、退出、案件遇到問題？：最下面、最低調（text button） */
 .exit{gap:4px;margin-top:4px;padding:4px 0 16px}
@@ -1474,7 +1484,19 @@ function tabsView(){
   const badge=m?{mine:S.tasks.filter(t=>todo(t,m.id)).length}:{};
   return '<nav class="tabs n3">'+tabs.map(([k,l,ic])=>'<button class="'+(ui.tab===k?'on':'')+'" data-act="tab" data-v="'+k+'"'+(ui.tab===k&&ui.view==='list'?' aria-current="page"':'')+(badge[k]?' aria-label="'+l+'，'+badge[k]+' 件需要你處理"':'')+'>'+ic+'<span>'+l+'</span>'+(badge[k]?'<span class="badge">'+badge[k]+'</span>':'')+'</button>').join('')+'</nav>';
 }
-/* 發案：案件大廳和我的案件右下角的按鈕（M3 extended FAB），按了打開全螢幕的發案畫面 */
+/* 發案畫面打開、關掉時的滑動（M3 full-screen dialog）：把目前的畫面複製一份固定在原地，
+   打開時新畫面從下面滑上來蓋住它；關掉時複本（發案畫面）往下滑走，露出底下的頁面。0.3 秒後拿掉複本。手機設定「減少動態效果」時不滑 */
+function ghost(kind){
+  try{if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;}catch(x){}
+  const app=document.getElementById('app'),g=document.createElement('div');
+  g.className='k-ghost '+kind;  /* 不能叫 ghost：外框按鈕已經用了 .btn.ghost */g.setAttribute('aria-hidden','true');g.inert=true;
+  g.innerHTML='<div class="k-ghost-app">'+app.innerHTML+'</div>';
+  g.querySelectorAll('[id]').forEach(e=>e.removeAttribute('id'));  /* 複本裡不能有重複的 id */
+  g.querySelectorAll('.slide-up,.fx-in,.k-in').forEach(e=>e.classList.remove('slide-up','fx-in','k-in'));g.querySelectorAll('.k-ripple').forEach(e=>e.remove());  /* 複本不重播動畫 */
+  const y=window.scrollY;document.body.appendChild(g);g.scrollTop=y;
+  setTimeout(()=>g.remove(),kind==='over'?260:320);
+}
+/* 發案：案件大廳右下角的按鈕（M3 extended FAB），按了打開全螢幕的發案畫面（從下面滑上來） */
 function fabView(){return '<button class="fab" data-act="newPost">'+IC.add+'<span>發案</span></button>';}
 function gateView(tab){
   const g=GATE[tab];
@@ -1631,7 +1653,7 @@ function mineView(){
     return list.length?'<section class="grp"><h3 class="grp-h sub" data-n="0'+(gi+1)+'">'+title+'（'+list.length+'）</h3>'+list.map(t=>taskCard(t,{bar:true})).join('')+'</section>':'';}).join('');
   const none=k==='work'
     ?'<div class="empty"><b>你目前沒有當替身的案件</b><span class="small">出價後的案件會出現在這裡。</span><button class="btn ghost sm" data-act="tab" data-v="browse">去看看有哪些案件</button></div>'
-    :'<div class="empty"><b>你目前沒有當本體的案件</b><span class="small">填好日期、時間和地點就能發案。</span><button class="btn ghost sm" data-act="tab" data-v="post">發案</button></div>';
+    :'<div class="empty"><b>你目前沒有當本體的案件</b><span class="small">填好日期、時間和地點就能發案。</span><button class="btn ghost sm" data-act="newPost">發案</button></div>';
   return '<h1 class="vh">我的案件</h1>'+
   (todos.length
     ?'<section class="grp" aria-label="待你處理"><h2 class="grp-h">待你處理<span class="badge">'+todos.length+'</span></h2>'+todos.map(t=>taskCard(t,{bar:true})).join('')+'</section>'
@@ -2155,7 +2177,8 @@ function detailView(){
   const t=T(ui.detailId);
   if(!t)return '<div class="empty"><b>找不到這個案件</b><span class="small">可能是連結有誤，或示範資料已經重設。</span><button class="btn ghost sm" data-act="tab" data-v="browse">回到案件大廳</button></div>';
   const r=role(t,S.me),p=u(t.poster),w=t.assignee?u(t.assignee):null,out=[];
-  if(r!=='viewer')out.push(stepper(t));
+  const bid=S.me&&(t.status==='open'||t.status==='pending')&&t.offers.some(o=>o.user===S.me);
+  if(r!=='viewer'||bid)out.push(stepper(t));  /* 本體、替身，以及出過價的人（案件已經在他的「我的案件」裡）看得到進度條 */
   out.push(summaryCard(t));
   out.push(nextStep(t,r));
   if(r==='viewer'){const g=tagOf(t.poster);if(g)out.push('<div class="banner tagnote">這位本體'+tagChip(g)+'</div>');}
@@ -2415,7 +2438,7 @@ function render(){
   else body=({browse:browseView,post:postView,mine:mineView,me:meView}[ui.tab]||browseView)();
   /* 示範工具只在原型裡用，放在每一頁內容的最下面，不佔標題欄 */
   const keepM=app.querySelector('.m-layer .sheet'),keepD=app.querySelector('.d-layer .sheet'),topM=keepM?keepM.scrollTop:0,topD=keepD?keepD.scrollTop:0;
-  const full=ui.view==='list'&&ui.tab==='post',fab=ui.view==='list'&&(ui.tab==='browse'||(ui.tab==='mine'&&!!S.me));
+  const full=ui.view==='list'&&ui.tab==='post',fab=ui.view==='list'&&ui.tab==='browse';  /* 發案按鈕只在案件大廳（2026-11 使用者決定我的案件不放） */
   app.innerHTML=headerView()+'<main'+(full?' class="full"':fab?' class="has-fab"':'')+'>'+body+'<div class="demo-entry"><button class="btn ghost sm" data-act="openDemo">示範工具</button><span class="small muted">原型才有，正式版不會出現</span></div></main>'+(full?'':tabsView())+(fab?fabView():'')+modalView()+dlgView();
   const k={p:[ui.view,ui.tab,ui.detailId,ui.meSub,ui.mineRole,ui.pastKind,ui.histSeg].join('|'),
     m:ui.modal?[ui.modal.type,ui.modal.step||0,ui.modal.title||''].join('|'):'',d:ui.dlg?ui.dlg.kind+'|'+ui.dlg.target:''};
@@ -2425,6 +2448,7 @@ function render(){
   if(ds&&k.d!==pk.d)ds.classList.add('fx-in');else if(ds&&topD)ds.scrollTop=topD;
   fxKeys=k;
   if(ui.top){window.scrollTo(0,0);ui.top=false;fabMini=false;fabY=0;}
+  if(ui.slideUp){ui.slideUp=false;document.querySelectorAll('header.top.full, main.full').forEach(e=>e.classList.add('slide-up'));}
   {const f=document.querySelector('.fab');if(f&&fabMini&&window.scrollY>56)f.classList.add('mini');}
   if(ui.toCmt){ui.toCmt=false;const c=document.getElementById('cmt-sec');if(c)c.scrollIntoView({block:'start'});}  /* 從留言通知進來：直接看到留言板 */
   kMotion();topScrolled();kFields();
@@ -2464,8 +2488,8 @@ const A={
     go(TAB_HASH[d.v]||'#browse');
     if(!S.me&&GATE[d.v])openLogin(GATE[d.v][1]);
   },
-  newPost(){go('#post');if(!S.me)openLogin(GATE.post[1]);},
-  closePost(){return goBack(TAB_HASH[ui.lastTab]||'#browse');},
+  newPost(){if(!(ui.view==='list'&&ui.tab==='post')){ghost('under');ui.slideUp=true;}go('#post');if(!S.me)openLogin(GATE.post[1]);},
+  closePost(){ghost('over');return goBack(TAB_HASH[ui.lastTab]||'#browse');},
   openFilter(){ui.fd=JSON.parse(JSON.stringify(ui.f));ui.modal={type:'filter'};},
   resetFilter(){ui.fd=fdef();ui.dlg=null;},
   resetAll(){ui.f=fdef();ui.q='';ui.modal=null;},

@@ -131,8 +131,8 @@ const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); if (!c) fails++
   ok(after === before + 1, 'after start time, 打掃完成 becomes a todo (' + before + ' -> ' + after + ')');
   await click('[data-act="openDemo"]'); await click('[data-act="nowReset"]'); await click('.sheet [data-act="close"]');
 
-  // post a task -> detail -> back -> 我的案子 / 我發的
-  await click('.fab');
+  // post a task -> detail -> back -> 我的案子 / 我發的（第十版：發案按鈕只在案件大廳）
+  await click('nav.tabs [data-v="browse"]'); await click('.fab'); await W(300);
   await p.fill('#p-b', '第一宿舍'); await p.fill('#p-meet', '第一宿舍大廳'); await p.fill('#p-budget', '250');
   await click('form[data-form="post"] button[type="submit"]'); await W(300);
   ok((await p.$eval('.sheet', e => e.innerText)).includes('發布後不能修改'), 'confirm sheet before posting');

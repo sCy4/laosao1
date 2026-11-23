@@ -28,16 +28,16 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
     // 發案畫面是全螢幕：左上 ✕、標題「發案」，沒有下方分頁和發案按鈕
     ok(await js(() => { const h = document.querySelector('header.top'); return !!h.querySelector('[data-act="closePost"]') && h.querySelector('.hd-title').textContent === '發案' && !document.querySelector('nav.tabs') && !document.querySelector('.fab') && !h.querySelector('.brand'); }), w + 'px 發案畫面：左上 ✕＋「發案」，沒有下方分頁');
 
-    // 哪些頁有發案按鈕：案件大廳、我的案件有；我的、案件詳情、我的底下的頁面沒有
+    // 哪些頁有發案按鈕：第十版使用者決定只有案件大廳有（我的案件也拿掉）
     const where = {};
     for (const h of ['#browse', '#mine', '#me', '#bank', '#task-t1']) { await go(h); where[h] = await hasFab(); }
-    ok(where['#browse'] && where['#mine'] && !where['#me'] && !where['#bank'] && !where['#task-t1'], w + 'px 發案按鈕只在案件大廳和我的案件 ' + JSON.stringify(where));
+    ok(where['#browse'] && !where['#mine'] && !where['#me'] && !where['#bank'] && !where['#task-t1'], w + 'px 發案按鈕只在案件大廳 ' + JSON.stringify(where));
 
-    // 從我的案件按「發案」，按 ✕ 回到我的案件；草稿還在
-    await go('#mine'); await p.click('.fab'); await W(250); await p.fill('#p-b', '第五宿舍'); await W();
+    // 從案件大廳按「發案」，按 ✕ 回到案件大廳；草稿還在（第十版：我的案件沒有發案按鈕，改從案件大廳）
+    await go('#browse'); await p.click('.fab'); await W(400); await p.fill('#p-b', '第五宿舍'); await W();
     await p.click('[data-act="closePost"]'); await W(600);
-    ok(await js(() => location.hash === '#mine'), w + 'px 按 ✕ 回到原本的頁面（我的案件）');
-    await p.click('.fab'); await W(250);
+    ok(await js(() => location.hash === '#browse'), w + 'px 按 ✕ 回到原本的頁面（案件大廳）');
+    await p.click('.fab'); await W(400);
     ok(await js(() => document.querySelector('#p-b').value === '第五宿舍'), w + 'px 關掉再打開，填到一半的內容還在');
     // 重新整理後沒有上一頁：按 ✕ 回到打開發案前的分頁（沒有就回案件大廳）
     await p.reload(); await W(400); await p.click('[data-act="closePost"]'); await W(600);
@@ -48,15 +48,17 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
     const f = await js(() => { const r = document.querySelector('.fab').getBoundingClientRect(), n = document.querySelector('nav.tabs').getBoundingClientRect(), c = getComputedStyle(document.querySelector('.fab'));
       return { right: Math.round(innerWidth - r.right), gap: Math.round(n.top - r.bottom), h: Math.round(r.height), radius: c.borderRadius, label: document.querySelector('.fab').textContent }; });
     ok(f.right === 16 && f.gap === 16 && f.h === 56 && f.radius === '16px' && f.label === '發案', w + 'px 發案按鈕：右下角、離下方分頁 16px、高 56 ' + JSON.stringify(f));
-    await go('#mine'); await js(() => window.scrollTo(0, 1e6)); await W(300);
+    await go('#browse'); await js(() => window.scrollTo(0, 1e6)); await W(300);
     ok(await js(() => { const cards = Array.from(document.querySelectorAll('main .card.task')), last = cards[cards.length - 1].getBoundingClientRect(), fr = document.querySelector('.fab').getBoundingClientRect(); return last.bottom <= fr.top; }), w + 'px 捲到底時，最後一張卡片在發案按鈕上面');
 
-    // 往下捲時縮成只有「＋」，往上捲時展開
+    // 往下捲時縮成只有「＋」，往上捲時展開（案件大廳的案件不多，把畫面調矮才捲得動）
+    await p.setViewportSize({ width: w, height: 420 }); await go('#mine'); await go('#browse');
     await js(() => window.scrollTo(0, 0)); await W(300); await js(() => window.scrollTo(0, 300)); await W(400);
     const mini = await js(() => { const f = document.querySelector('.fab'); return f.classList.contains('mini') && f.getBoundingClientRect().width <= 60; });
     await js(() => window.scrollTo(0, 100)); await W(400);
     const big = await js(() => { const f = document.querySelector('.fab'); return !f.classList.contains('mini') && f.getBoundingClientRect().width > 80; });
     ok(mini && big, w + 'px 往下捲時縮成「＋」，往上捲時展開');
+    await p.setViewportSize({ width: w, height: 700 });
 
     // 用詞：「接案頁」改叫「案件大廳」
     await go('#me');
