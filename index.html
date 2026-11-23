@@ -668,37 +668,39 @@ main>h1.vh+p.small::before{--ic:var(--ic-checkCircle);color:var(--md-primary)}
 .chip{display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 16px;border:1px solid var(--md-outline-variant);border-radius:8px;background:transparent;font-size:14px;line-height:20px;font-weight:500;color:var(--md-on-surface-variant)}
 .chip.on{padding-left:8px;border-color:transparent;background:var(--md-secondary-container);color:var(--md-on-secondary-container)}
 .chip.on::before{width:18px;height:18px;--ic:var(--ic-check)}
+.checks.days{display:flex;height:auto;gap:4px;border:0;border-radius:0;overflow:visible}
+.checks.days label,.checks.days label+label{flex:1 1 0;max-width:40px;height:40px;padding:0;border:1px solid var(--md-outline-variant);border-radius:50%;justify-content:center;font-size:14px}
+.checks.days label:has(input:checked){background:var(--md-primary);border-color:var(--md-primary);color:var(--md-on-primary)}
+.checks.days label:has(input:checked)::before{display:none}
 
 /* ---------- 卡片 ---------- */
 .card{background:var(--md-surface-container-lowest);border:1px solid var(--md-outline-variant);border-radius:12px;padding:16px;gap:12px;box-shadow:none}
 .card.linkrow,.card.me-card,.card.rules{border:0}  /* 「我的」的設定清單維持淺灰填色 */
 .card h2{font-size:22px;line-height:28px}
 
-/* 案件卡片（elevated card）：左邊日期方塊，右邊身分標籤 → 時間 → 地點、標價；底部是狀態列 */
-.card.task{display:grid;grid-template-columns:48px minmax(0,1fr);column-gap:16px;align-items:start;padding:12px 16px;margin:0;
+/* 案件卡片（outlined card）：第一排「11月23日（一）  14:00 至 16:00」（日期固定寬度，卡片疊起來時日期和時間各自對齊在同一條直線上），
+   第二排地點、限男／限女，標價在右邊；替身確認後多一行「本體 王小明」；底部是狀態列。身分標籤在右上角、壓在外框上緣 */
+.card.task{display:flex;flex-direction:column;padding:14px 16px 12px;margin:0;
   background:var(--md-surface-container-lowest);border:1px solid var(--md-outline-variant);border-radius:12px;box-shadow:none;transition:box-shadow .2s var(--md-ease)}
-.card.task.is-poster,.card.task.is-worker{margin-top:0}
-.tc-body,.tc-date{display:contents}
+.card.task+.card.task:is(.is-poster,.is-worker){margin-top:6px}  /* 身分標籤往上突出，多留一點縫 */
+.tc-body{display:flex;flex-direction:column;gap:4px;padding:0}
 .tc-open{border-radius:12px;overflow:hidden;color:var(--md-on-surface);transition:background-color .15s linear}
 @media (hover:hover){.card.task:hover{box-shadow:var(--md-elev-1)}.tc-open:hover{background:var(--st-hover)}}
 .tc-open:focus-visible{outline:3px solid var(--md-secondary);outline-offset:2px}
-/* 我是本體／我是替身：卡片內容區最上面的小標籤，不黏在日期上 */
+/* 我是本體／我是替身：右上角的小標籤（壓在外框上緣，像輸入框的欄位名稱），不佔第一排的位置 */
 .tc-tab,.sum-role{display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px 0 6px;border:0;border-radius:8px;font-size:12px;line-height:16px;font-weight:500;letter-spacing:.5px;white-space:nowrap}
-.tc-tab{grid-column:2;grid-row:1;justify-self:start;margin:0 44px 4px 0}
+.tc-tab{position:absolute;top:-13px;right:16px;z-index:2;box-shadow:0 0 0 3px var(--md-surface)}
 .tc-tab::before,.sum-role::before{width:16px;height:16px}
 .card.task.is-poster .tc-tab,.sum-role.is-poster{background:var(--role-p);color:var(--on-role-p)}
 .card.task.is-worker .tc-tab,.sum-role.is-worker{background:var(--role-w);color:var(--on-role-w)}
 .card.task.is-poster .tc-tab::before,.sum-role.is-poster::before{--ic:var(--ic-home)}
 .card.task.is-worker .tc-tab::before,.sum-role.is-worker::before{--ic:var(--ic-clean)}
-/* 日期方塊：月／日／週幾（文字內容仍是「11月19日（四）」） */
-.tc-d{grid-column:1;grid-row:1/4;align-self:center;display:flex;flex-direction:column;align-items:center;padding:0;color:var(--md-on-surface);text-align:center}  /* 日期欄跨整張卡的內容、上下置中，左右才對稱 */
-.tc-d .dm,.tc-d .dw{font-size:12px;line-height:16px;font-weight:500;letter-spacing:.5px;color:var(--md-on-surface-variant)}
-.tc-d .dnum{font-size:26px;line-height:32px;font-weight:400;font-variant-numeric:tabular-nums}
-.tc-d .dday,.tc-d .pa{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-.tc-d .dw::before{content:"週";content:"週"/""}
-.tc-time{grid-column:2;grid-row:2;padding-right:44px;font-size:16px;line-height:24px;font-weight:500;letter-spacing:.15px;font-variant-numeric:tabular-nums;color:var(--md-on-surface)}
-.card.task:is(.is-poster,.is-worker) .tc-time{padding-right:0}
-.tc-row{grid-column:2;grid-row:3;display:flex;align-items:flex-start;gap:12px;padding:0}
+/* 第一排：日期（固定寬度）＋時間 */
+.tc-date{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 12px;padding:0;font-size:16px;line-height:24px;font-weight:500;letter-spacing:.15px;font-variant-numeric:tabular-nums;color:var(--md-on-surface);white-space:nowrap}  /* 一般手機寬度放得下一排；特別窄（300px 以下）時間才換到下一行 */
+.tc-d{flex:none;min-width:7.6em}
+.tc-d>*{font:inherit;color:inherit}
+.tc-time{flex:none}
+.tc-row{display:flex;align-items:center;gap:12px;padding:0}
 .tc-main{flex-direction:row;flex-wrap:wrap;align-items:center;gap:0 8px}
 .tc-main>.tc-place{flex:0 1 auto;min-width:0}
 .tc-main>.tc-g{order:1}
@@ -709,15 +711,13 @@ main>h1.vh+p.small::before{--ic:var(--ic-checkCircle);color:var(--md-primary)}
 .gtxt,.gtxt.male,.gtxt.female{display:inline-flex;align-items:center;gap:2px;height:24px;padding:0 8px;border:0;border-radius:8px;background:var(--md-surface-container-highest);color:var(--md-on-surface-variant);font-size:12px;line-height:24px;font-weight:500;letter-spacing:.5px}
 .gtag.any{background:transparent;color:inherit;padding:0;font-size:inherit;font-weight:inherit}
 .tc-side,.tc-bottom{gap:4px}
-.tc-side .price{margin-top:-2px;font-size:20px;line-height:24px;color:var(--md-on-surface)}
+.tc-side .price{font-size:20px;line-height:24px;color:var(--md-on-surface)}
 .tc-side .price .muted{font-size:14px;line-height:20px;font-weight:500;letter-spacing:.1px;color:var(--md-on-surface-variant)}
-/* 收藏（standard icon button）：收藏了是主色實心星星 */
-.favbtn{top:4px;right:4px;width:40px;height:40px;color:var(--md-outline)}
-.favbtn.on{color:var(--md-primary)}
+@media (max-width:360px){.tc-date{column-gap:8px;font-size:15px}}
 /* 新留言數（large badge）：卡片右上角外側 */
 .nbadge{top:-6px;right:-6px;min-width:20px;height:20px;padding:0 6px;border:2px solid var(--md-surface);border-radius:10px;background:var(--md-error);color:var(--md-on-error);font-size:12px;line-height:16px;font-weight:500}
 /* 狀態列：平常是灰字；輪到你時是淺紅底（error container）＋紅點＋箭頭 */
-.tc-bar,.tc-bar.bottom{grid-column:1/-1;grid-row:4;display:flex;align-items:center;gap:12px;min-height:40px;margin:12px -16px -12px;padding:8px 16px;
+.tc-bar,.tc-bar.bottom{display:flex;align-items:center;gap:12px;min-height:40px;margin:12px -16px -12px;padding:8px 16px;
   border:0;border-top:1px solid var(--md-outline-variant);border-radius:0 0 12px 12px;background:transparent;
   font-size:14px;line-height:20px;font-weight:400;letter-spacing:.25px;color:var(--md-on-surface-variant)}
 .tc-bar.bottom.todo{background:transparent;color:var(--md-error);font-weight:500}  /* 輪到你：底部一行紅字（紅色只代表需要你處理），不做成像按鈕的膠囊 */
@@ -743,7 +743,21 @@ main>h1.vh+p.small::before{--ic:var(--ic-checkCircle);color:var(--md-primary)}
 .tool.active{background:var(--md-secondary-container);color:var(--md-on-secondary-container)}
 .tool .badge,.btn .badge{position:absolute;top:2px;right:0;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--md-primary);color:var(--md-on-primary);font-size:12px;line-height:16px}  /* 篩選條件數：主色，不是提醒 */
 #blist{gap:12px}
-#blist>.small:first-child{margin-top:4px;color:var(--md-on-surface-variant)}
+/* 搜尋框下面一行：左邊是排序（按了打開排序），右邊是件數 */
+.bl-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:-4px 0 -4px}
+.sortbtn{position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:6px;min-width:0;min-height:36px;margin-left:-8px;padding:0 12px 0 8px;border:0;border-radius:18px;background:none;
+  font:inherit;font-size:14px;line-height:20px;font-weight:500;color:var(--md-primary);cursor:pointer}
+.sortbtn svg{flex:none;width:18px;height:18px}
+.sortbtn span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media (hover:hover){.sortbtn:hover{background:var(--st-p-hover)}}
+.bl-count{flex:none;color:var(--md-on-surface-variant)}
+/* 目前套用的篩選：每一種一個小標籤（M3 input chip），按 ✕ 移除 */
+.fchips{display:flex;flex-wrap:wrap;gap:8px;margin-top:-4px}
+.fchip{position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:4px;max-width:100%;height:32px;padding:0 6px 0 12px;border:0;border-radius:8px;
+  background:var(--md-secondary-container);color:var(--md-on-secondary-container);font:inherit;font-size:14px;line-height:20px;font-weight:500;cursor:pointer}
+.fchip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fchip svg{flex:none}
+@media (hover:hover){.fchip:hover{background-image:linear-gradient(var(--st-hover),var(--st-hover))}}
 
 /* ---------- 按鈕：filled（主要）、outlined（次要）、text（最低調）；全圓角、高 40 ---------- */
 .btn{min-height:40px;padding:10px 24px;border:0;border-radius:20px;background:var(--md-primary);color:var(--md-on-primary);
@@ -1150,6 +1164,7 @@ const IC={
   clip:'<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path class="i-o" d="M7 15h7v2H7zm0-4h10v2H7zm0-4h10v2H7zm12-4h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7-.25c.41 0 .75.34.75.75s-.34.75-.75.75-.75-.34-.75-.75.34-.75.75-.75zM19 19H5V5h14v14z"/><path class="i-f" d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>',
   back:'<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>',
   image:'<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4.86 8.86l-3 3.87L9 13.14 6 17h12l-3.86-5.14z"/></svg>',
+  close:'<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>',
   more:'<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>',
   share:'<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>',
   shield:'<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm7 10c0 4.52-2.98 8.69-7 9.93-4.02-1.24-7-5.41-7-9.93V6.3l7-3.11 7 3.11V11z"/></svg>'
@@ -1431,11 +1446,6 @@ function genderIcon(g){
 function dateLabel(t){return mdw(new Date(t.start));}
 function timeLabel(t){const d=new Date(t.start),e=new Date(t.end);return pad(d.getHours())+':'+pad(d.getMinutes())+' 至 '+pad(e.getHours())+':'+pad(e.getMinutes());}
 function isFav(id){return (S.favs[S.me]||[]).indexOf(id)>=0;}
-function favBtn(id,withText){
-  if(!S.me)return '';  /* 未登入只能觀看，不顯示收藏 */
-  const on=isFav(id);
-  return '<button class="favbtn'+(on?' on':'')+(withText?' txt':'')+'" data-act="fav" data-id="'+id+'" aria-pressed="'+on+'" aria-label="'+(on?'取消收藏':'收藏這個案件')+'">'+IC.star+(withText?'<span>'+(on?'已收藏':'收藏')+'</span>':'')+'</button>';
-}
 /* 日期拆成月、日、星期幾段，方便不同畫面排版（文字內容不變，仍是「11月19日（四）」） */
 function dayHTML(d){return '<span class="dm">'+(d.getMonth()+1)+'月</span><b class="dnum" data-d="'+d.getDate()+'">'+d.getDate()+'</b><span class="dday">日</span><span class="dw"><span class="pa">（</span>'+'日一二三四五六'[d.getDay()]+'<span class="pa">）</span></span>';}
 /* 金額的「NT$」可以單獨設定樣子（文字內容仍是「NT$ 400」） */
@@ -1452,16 +1462,16 @@ function taskCard(t,opt){
   const price=t.price||t.budget;
   const role=!S.me?'':own?'我是本體':(t.assignee===S.me||t.offers.some(o=>o.user===S.me))?'我是替身':'';
   let bar='';
-  if(opt.bar)bar='<div class="tc-bar bottom'+(td?' todo':'')+'">'+(td?'<span class="tc-dot" aria-hidden="true"></span>':'')+'<span class="grow">'+(td?'<span class="vh">需要你處理：</span>':'')+esc(barText(t,S.me))+'</span></div>';
+  if(opt.bar||myBid)bar='<div class="tc-bar bottom'+(td?' todo':'')+'">'+(td?'<span class="tc-dot" aria-hidden="true"></span>':'')+'<span class="grow">'+(td?'<span class="vh">需要你處理：</span>':'')+esc(barText(t,S.me))+'</span></div>';
   const rk=own?'is-poster':role?'is-worker':'',boss=t.assignee===S.me&&S.me&&t.status!=='pending'?u(t.poster):null;
   return '<div class="card task'+(rk?' '+rk:'')+'">'+(role?'<span class="tc-tab">'+role+'</span>':'')+
     '<button class="tc-open" data-act="open" data-id="'+t.id+'" aria-label="查看 '+dateLabel(t)+esc(t.building)+' 的案件"></button>'+
-    favBtn(t.id)+(unread(t)?'<span class="nbadge" aria-label="'+unread(t)+' 則新留言">'+unread(t)+'</span>':'')+
+    (unread(t)?'<span class="nbadge" aria-label="'+unread(t)+' 則新留言">'+unread(t)+'</span>':'')+
     '<div class="tc-body"><div class="tc-date"><span class="tc-d">'+cardDate(t)+'</span><span class="tc-time">'+cardTime(t)+'</span></div>'+
     '<div class="tc-row"><div class="tc-main">'+
       '<div class="tc-place">'+esc(t.building)+'</div>'+(boss?'<div class="tc-who">本體 '+esc(boss.name)+'</div>':'')+
       (t.gender==='不限'?'':'<div class="tc-g">'+genderText(t.gender)+'</div>')+
-    '</div><div class="tc-side"><div class="tc-bottom">'+(myBid?'<span class="pill s-bid">你已出價 NT$ '+money(myBid.price)+'</span>':'')+(opt.own&&isBlackPoster(t)?'<span class="pill s-bad">你的黑名單</span>':'')+
+    '</div><div class="tc-side"><div class="tc-bottom">'+(opt.own&&isBlackPoster(t)?'<span class="pill s-bad">你的黑名單</span>':'')+
       '<span class="price">'+(price?ntd(price):'<span class="muted">自由出價</span>')+'</span></div></div></div></div>'+bar+'</div>';
 }
 /* 備註超過兩行才顯示「展開」 */
@@ -1473,10 +1483,10 @@ function fixNotes(){
   });
 }
 
-function fdef(){return {from:'',to:'',tmin:'',tmax:'',pmin:'',pmax:'',genders:GENDERS.slice()};}
+function fdef(){return {from:'',to:'',days:[],tmin:'',tmax:'',pmin:'',pmax:'',genders:GENDERS.slice()};}
 const SORTS=[['created','desc','刊登時間：新到舊'],['created','asc','刊登時間：舊到新'],['price','desc','標價：高到低'],['price','asc','標價：低到高'],['start','asc','開工時間：近到遠'],['start','desc','開工時間：遠到近']];
 function sortText(){const o=SORTS.find(x=>x[0]===ui.sort&&x[1]===ui.dir);return o?o[2]:'';}
-function filterCount(){const f=ui.f;return (f.from||f.to?1:0)+(f.tmin!==''||f.tmax!==''?1:0)+(f.pmin!==''||f.pmax!==''?1:0)+(f.genders.length<GENDERS.length?1:0);}
+function filterCount(){const f=ui.f;return (f.from||f.to?1:0)+(f.days&&f.days.length?1:0)+(f.tmin!==''||f.tmax!==''?1:0)+(f.pmin!==''||f.pmax!==''?1:0)+(f.genders.length<GENDERS.length?1:0);}
 function matchBrowse(t){
   const f=ui.f;
   if(f.from&&t.start<new Date(f.from+'T00:00').getTime())return false;
@@ -1487,6 +1497,7 @@ function matchBrowse(t){
     if(f.pmax!==''&&t.budget>Number(f.pmax))return false;
   }
   if(f.genders.indexOf(t.gender)<0)return false;
+  if(f.days&&f.days.length&&f.days.indexOf(new Date(t.start).getDay())<0)return false;
   if(f.tmin!==''||f.tmax!==''){const d=new Date(t.start),e=new Date(t.end),sm=d.getHours()*60+d.getMinutes(),em=e.getHours()*60+e.getMinutes();
     if(f.tmin!==''&&sm<Number(f.tmin))return false;if(f.tmax!==''&&em>Number(f.tmax))return false;}
   const q=ui.q.trim().toLowerCase();
@@ -1511,15 +1522,26 @@ function browseList(){
   });
   const total=S.tasks.filter(t=>t.status==='open'&&browseVisible(t)).length;
   const blackLine=hid?'<div class="small muted">'+(ui.showBlack?'正在顯示黑名單本體的案件。<button class="link-btn" data-act="toggleBlack">隱藏</button>':'已隱藏 '+hid+' 個黑名單本體的案件。<button class="link-btn" data-act="toggleBlack">顯示</button>')+'</div>':'';
-  return '<div class="small muted">'+sortText()+'・'+(list.length===total?total+' 個案件':'符合 '+list.length+' 個，共 '+total+' 個案件')+'</div>'+blackLine+
+  return '<div class="bl-head"><button class="sortbtn" data-act="openSort" aria-haspopup="dialog" aria-label="排序，目前是'+sortText()+'">'+IC.sort+'<span>'+sortText()+'</span></button>'+
+    '<span class="small muted bl-count">'+(list.length===total?total+' 件':'符合 '+list.length+' 件（共 '+total+' 件）')+'</span></div>'+
+    (filterCount()?'<div class="fchips" role="group" aria-label="目前套用的篩選">'+filterChips()+'</div>':'')+blackLine+
   (list.length?list.map(t=>taskCard(t,{own:true})).join(''):'<div class="empty"><b>沒有符合條件的案件</b><button class="btn ghost sm" data-act="resetAll">清除搜尋和篩選</button></div>');
+}
+/* 目前套用的篩選，每一種一個小標籤，按 ✕ 就移除那一種 */
+function filterChips(){
+  const f=ui.f,out=[],dd=s=>{const p=s.split('-');return Number(p[1])+'月'+Number(p[2])+'日';};
+  if(f.from||f.to)out.push(['date',f.from&&f.to?dd(f.from)+' 至 '+dd(f.to):f.from?dd(f.from)+' 起':'到 '+dd(f.to)]);
+  if(f.days&&f.days.length)out.push(['days',[1,2,3,4,5,6,0].filter(d=>f.days.indexOf(d)>=0).map(d=>'週'+'日一二三四五六'[d]).join('、')]);
+  if(f.tmin!==''||f.tmax!=='')out.push(['time',f.tmin!==''&&f.tmax!==''?fromMin(Number(f.tmin))+' 至 '+fromMin(Number(f.tmax)):f.tmin!==''?fromMin(Number(f.tmin))+' 起':'到 '+fromMin(Number(f.tmax))]);
+  if(f.pmin!==''||f.pmax!=='')out.push(['price',f.pmin!==''&&f.pmax!==''?'NT$ '+money(f.pmin)+' 至 '+money(f.pmax):f.pmin!==''?'NT$ '+money(f.pmin)+' 以上':'NT$ '+money(f.pmax)+' 以下']);
+  if(f.genders.length<GENDERS.length)out.push(['gender',f.genders.map(gLabel).join('、')]);
+  return out.map(([k,l])=>'<button class="fchip" data-act="clearF" data-k="'+k+'" aria-label="移除篩選：'+esc(l)+'"><span>'+esc(l)+'</span>'+IC.close+'</button>').join('');
 }
 function browseView(){
   const m=me(),n=filterCount();
   return suspendBanner(m)+
   '<h1 class="vh">接案</h1>'+
   '<div class="toolbar"><div class="search">'+IC.search+'<input id="q" type="search" enterkeyhint="search" placeholder="搜尋地點、集合位置、備註" aria-label="搜尋案件" value="'+esc(ui.q)+'"></div>'+
-  '<button class="icon-btn tool" data-act="openSort" aria-haspopup="dialog" aria-label="排序，目前是'+sortText()+'" title="排序">'+IC.sort+'<span class="tl" aria-hidden="true">排序</span></button>'+
   '<button class="icon-btn tool'+(n?' active':'')+'" data-act="openFilter" aria-haspopup="dialog" aria-label="篩選'+(n?'，已套用 '+n+' 個條件':'')+'" title="篩選">'+IC.filter+'<span class="tl" aria-hidden="true">篩選</span>'+(n?'<span class="badge">'+n+'</span>':'')+'</button>'+
   '</div>'+
   '<div id="blist" class="stack">'+browseList()+'</div>';
@@ -1713,7 +1735,7 @@ function favList(){const ids=S.favs[S.me]||[];return S.tasks.filter(t=>ids.index
 function favView(){
   const list=favList().sort((a,b)=>a.start-b.start);
   return '<div class="sec-head"><h1>收藏的案件</h1><span class="small muted">共 '+list.length+' 筆</span></div>'+
-  (list.length?list.map(t=>taskCard(t,{bar:true})).join(''):empty('還沒有收藏','在案件卡片右上角按星號，或在案件詳情的「⋮」選單裡，就能收藏。'));
+  (list.length?list.map(t=>taskCard(t,{bar:true})).join(''):empty('還沒有收藏','在案件詳情右上角的「⋮」選單裡，就能收藏。'));
 }
 function meView(){
   const m=me();
@@ -2259,6 +2281,8 @@ function modalView(){
       tb=(k)=>'<button type="button" class="dt-btn" data-act="openTime" data-w="'+k+'">'+IC.clock+'<span>'+(f[k]!==''?fromMin(Number(f[k])):'不限')+'</span></button>';
     inner='<h2>篩選案件</h2><form data-form="filter" class="stack" novalidate>'+
       '<div class="field"><span class="lbl">日期區間</span><div class="range">'+db('from')+'<span>到</span>'+db('to')+'</div></div>'+
+      '<div class="field"><span class="lbl" id="fl-d">星期</span><div class="checks days" role="group" aria-labelledby="fl-d">'+[1,2,3,4,5,6,0].map(d=>'<label for="fday'+d+'"><input type="checkbox" id="fday'+d+'" name="d" value="'+d+'"'+((f.days||[]).indexOf(d)>=0?' checked':'')+'><span class="vh">星期</span>'+'日一二三四五六'[d]+'</label>').join('')+'</div>'+
+        '<span class="small muted">只看這幾天開工的案件。沒選就是不限。</span></div>'+
       '<div class="field"><span class="lbl">時段</span><div class="range">'+tb('tmin')+'<span>到</span>'+tb('tmax')+'</div>'+
         '<span class="small muted">只顯示整個案件都在這段時間內的。</span></div>'+
       '<div class="field"><span class="lbl">標價區間（NT$）</span><div class="range"><input type="number" name="pmin" inputmode="numeric" min="0" step="10" placeholder="最低" aria-label="最低標價" value="'+esc(f.pmin)+'"><span>到</span><input type="number" name="pmax" inputmode="numeric" min="0" step="10" placeholder="最高" aria-label="最高標價" value="'+esc(f.pmax)+'"></div>'+
@@ -2368,6 +2392,7 @@ const A={
   openFilter(){ui.fd=JSON.parse(JSON.stringify(ui.f));ui.modal={type:'filter'};},
   resetFilter(){ui.fd=fdef();ui.dlg=null;},
   resetAll(){ui.f=fdef();ui.q='';ui.modal=null;},
+  clearF(d){const f=ui.f,z=fdef();if(d.k==='date'){f.from='';f.to='';}else if(d.k==='days')f.days=[];else if(d.k==='time'){f.tmin='';f.tmax='';}else if(d.k==='price'){f.pmin='';f.pmax='';}else if(d.k==='gender')f.genders=z.genders;},
   openSort(){ui.modal={type:'sort'};},
   openNotes(){const mine=myNotes();ui.noteFresh=mine.filter(n=>!n.read).map(n=>n.id);mine.forEach(n=>{n.read=true;});save();ui.modal={type:'notes'};},
   openNote(d){const n=(S.notes||[]).find(x=>x.id===d.id);ui.modal=null;if(n&&n.taskId&&T(n.taskId))go('#task-'+n.taskId);},
@@ -2564,7 +2589,8 @@ const F={
     if(pmin!==''&&pmax!==''&&Number(pmax)<Number(pmin))return ferr(f.elements.pmax,'最高標價不能低於最低標價');
     const genders=Array.from(f.querySelectorAll('input[name=g]:checked')).map(x=>x.value);
     if(!genders.length)return ferr(f.elements.g,'至少勾選一種替身性別');
-    ui.f={from,to,tmin,tmax,pmin,pmax,genders};ui.fd=null;ui.modal=null;
+    const days=Array.from(f.querySelectorAll('input[name=d]:checked')).map(x=>Number(x.value));
+    ui.f={from,to,days,tmin,tmax,pmin,pmax,genders};ui.fd=null;ui.modal=null;
   },
   comment(f,d){
     const t=T(d.id),text=v(f,'text'),imgs=(ui.cimg[t.id]||[]).slice();
@@ -2625,7 +2651,7 @@ document.addEventListener('input',e=>{
   if(el.id==='cmt-in'&&el.form){ui.cdraft[el.form.dataset.id]=el.value;return;}
   if(el.id==='nd-text'&&ui.endDraft){ui.endDraft.text=el.value;return;}
   if(el.id==='lg-code'&&el.form&&el.value.replace(/\D/g,'').length===6){if(el.form.requestSubmit)el.form.requestSubmit();else el.form.dispatchEvent(new Event('submit',{cancelable:true,bubbles:true}));return;}
-  if(el.form&&el.form.dataset.form==='filter'&&ui.fd){if(el.name==='pmin'||el.name==='pmax')ui.fd[el.name]=el.value;if(el.name==='g')ui.fd.genders=Array.from(el.form.querySelectorAll('input[name=g]:checked')).map(x=>x.value);return;}
+  if(el.form&&el.form.dataset.form==='filter'&&ui.fd){if(el.name==='pmin'||el.name==='pmax')ui.fd[el.name]=el.value;if(el.name==='g')ui.fd.genders=Array.from(el.form.querySelectorAll('input[name=g]:checked')).map(x=>x.value);if(el.name==='d')ui.fd.days=Array.from(el.form.querySelectorAll('input[name=d]:checked')).map(x=>Number(x.value));return;}
   if(pf&&['building','meet','budget','note','gender'].indexOf(el.name)>=0){ui.pf[el.name]=el.value;saveDraft();return;}
   if(el.id!=='q')return;
   ui.q=el.value;const box=document.getElementById('blist');if(box){box.innerHTML=browseList();fixNotes();}

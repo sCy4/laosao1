@@ -51,8 +51,7 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
     // 動態只在「換了」的那一次播放：切換身分時勾勾長出來；收藏等其他原因重畫時不重播
     await act('seg', { k: 'mineRole', v: 'own' });
     ok(await js(() => !!document.querySelector('.seg button.on.k-in')), w + 'px 切換「我是替身／我是本體」時勾勾有動畫');
-    const fid = await js(() => document.querySelector('.favbtn').dataset.id);
-    await act('fav', { id: fid }); await act('fav', { id: fid });
+    await act('fav', { id: 't2' }); await act('fav', { id: 't2' });
     ok(!(await js(() => !!document.querySelector('.seg button.on.k-in, nav.tabs button.on.k-in'))), w + 'px 其他原因重畫畫面時不重播動畫');
     await go('#browse'); await p.click('nav.tabs [data-v="mine"]'); await W(250);
     ok(await js(() => !!document.querySelector('nav.tabs button.on.k-in')), w + 'px 換到別的分頁時，膠囊從中間展開');
@@ -79,8 +78,21 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
     ok(await js(() => { const c = document.querySelector('.card.mini'), r = c.getBoundingClientRect(), t = c.querySelector('.taglink').getBoundingClientRect(), n = c.querySelector('.id-name').getBoundingClientRect();
       return c.querySelector('.taglink').textContent === '標記' && Math.abs(t.right - (r.right - 17)) < 2 && Math.abs(t.top - (r.top + 17)) < 2 && t.bottom <= n.bottom + 12; }), w + 'px 人物資料卡：「標記」在右上角');
     await go('#browse');
-    ok(await js(() => { const c = document.querySelector('.card.task').getBoundingClientRect(), f = document.querySelector('.card.task .favbtn').getBoundingClientRect();
-      return Math.abs(f.right - (c.right - 5)) < 2 && Math.abs(f.top - (c.top + 5)) < 2; }), w + 'px 收藏星號在卡片右上角（卡片變矮後離角落 4px）');
+    // 使用者要求：卡片上不放收藏星號（只能在案件詳情的「⋮」收藏）；第一排是日期和時間，卡片疊起來時日期、時間各自對齊在同一條直線上
+    ok(await js(() => { const cs = Array.from(document.querySelectorAll('#blist .card.task')); const xs = cs.map(c => Math.round(c.querySelector('.tc-time').getBoundingClientRect().left));
+      return cs.length >= 2 && !document.querySelector('.card.task .favbtn') && xs.every(x => x === xs[0]) && cs.every(c => /^\d+月\d+日（[日一二三四五六]）$/.test(c.querySelector('.tc-d').textContent)); }), w + 'px 卡片沒有收藏星號；每張卡片的時間對齊在同一條直線上');
+    // 使用者要求：出過價的案件，「已出價 NT$…」寫在卡片底部的橫條，不再標在標價上面
+    await act('pick', { id: 'u3' }); await go('#browse');
+    ok(await js(() => { const c = document.querySelector('[data-act="open"][data-id="t1"]').closest('.card.task'), bar = c.querySelector('.tc-bar');
+      return !!bar && /^已出價 NT\$ \d+，等本體選人$/.test(bar.textContent) && !c.querySelector('.s-bid'); }), w + 'px 出過價的案件：底部橫條寫「已出價 NT$…，等本體選人」');
+    // 使用者要求：篩選可以只看某幾個星期幾開工的案件；套用後搜尋框下面出現可以移除的小標籤
+    await act('openFilter'); await W(200);
+    const dayOf = await js(() => { const s = JSON.parse(localStorage.getItem('swaptime-proto-v1')), t = s.tasks.find(x => x.id === 't1'); return new Date(t.start).getDay(); });
+    await js(d => { document.querySelector('#fday' + d).click(); document.querySelector('form[data-form="filter"] button[type="submit"]').click(); }, dayOf); await W(250);
+    ok(await js(d => { const s = JSON.parse(localStorage.getItem('swaptime-proto-v1')); const ids = Array.from(document.querySelectorAll('#blist [data-act="open"]')).map(e => e.dataset.id);
+      return ids.length > 0 && ids.every(id => new Date(s.tasks.find(t => t.id === id).start).getDay() === d) && document.querySelectorAll('.fchip').length === 1 && document.querySelector('.toolbar .tool .badge').textContent === '1'; }, dayOf), w + 'px 篩選星期：只剩那一天開工的案件，下面出現一個篩選小標籤');
+    await p.click('.fchip'); await W(250);
+    ok(await js(() => !document.querySelector('.fchip') && !document.querySelector('.toolbar .tool .badge')), w + 'px 按篩選小標籤的 ✕ 就移除那個篩選');
     ok(errs.length === 0, w + 'px no console errors ' + JSON.stringify(errs));
     await p.close();
   }

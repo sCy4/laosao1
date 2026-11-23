@@ -32,7 +32,8 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
   const top = await js(() => Math.round(document.querySelector('#blist .card.task').getBoundingClientRect().top));
   ok(top < 190, '第一張卡片從 ' + top + 'px 開始（原本約 260px）');
   ok(await js(() => { const h = document.querySelector('main h1'); return h && h.classList.contains('vh'); }), '頁面大標只留給螢幕閱讀器');
-  ok(await js(() => { const r1 = document.querySelector('.search').getBoundingClientRect(), r2 = document.querySelector('[data-act="openFilter"]').getBoundingClientRect(); return Math.abs(r1.top - r2.top) < 4; }), '搜尋、排序、篩選在同一排');
+  // 使用者同意：排序移到搜尋框下面那一行（和件數同一行），搜尋框變寬；篩選仍和搜尋在同一排
+  ok(await js(() => { const r1 = document.querySelector('.search').getBoundingClientRect(), r2 = document.querySelector('[data-act="openFilter"]').getBoundingClientRect(), r3 = document.querySelector('.sortbtn').getBoundingClientRect(); return Math.abs(r1.top - r2.top) < 4 && r3.top >= r1.bottom; }), '搜尋、篩選在同一排，排序在下面那一行');
   await act('fav', { id: 't2' });
   ok((await js(() => Math.round(document.getElementById('toast').getBoundingClientRect().top))) < 150, '提示訊息出現在畫面上方');
   await go('#task-t3');
