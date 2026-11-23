@@ -28,13 +28,13 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
     await W(600);
     ok(close.ghost && close.anim && await js(() => location.hash === '#browse' && !document.querySelector('.k-ghost')), w + 'px 3 按 ✕：發案畫面往下滑走，回到案件大廳 ' + JSON.stringify(close));
 
-    // 4. 標記「自訂內容」是淡黃色，和提示框（淡紫、淺藍紫）、本體標籤（琥珀）都不一樣
+    // 4. 標記「自訂內容」：第十版是淡黃色；第十一版使用者改成淡藍色。仍要和提示框（淡紫、淺藍紫）、本體標籤（琥珀）不一樣
     await go('#task-t1');  /* 示範資料：王小明把林柏翰標成自訂內容 */
     const col = await js(() => { const bg = e => e ? getComputedStyle(e).backgroundColor : null; const tmp = document.createElement('div'); tmp.innerHTML = '<div class="banner warn">x</div><div class="banner info">x</div>'; document.querySelector('main').appendChild(tmp);
       const r = { chip: bg(document.querySelector('.tagchip.tg-custom')), warn: bg(tmp.children[0]), info: bg(tmp.children[1]), role: bg(document.querySelector('.sum-role')) }; tmp.remove(); return r; });
-    ok(col.chip === 'rgb(251, 238, 176)' && new Set(Object.values(col)).size === 4, w + 'px 4 自訂標記是淡黃色，和提示框、本體標籤分得開 ' + JSON.stringify(col));
+    ok(col.chip === 'rgb(207, 229, 255)' && new Set(Object.values(col)).size === 4, w + 'px 4 自訂標記是淡藍色，和提示框、本體標籤分得開 ' + JSON.stringify(col));
     await go('#tags');
-    ok(await js(() => getComputedStyle(document.querySelector('.tagbtn.tg-custom')).backgroundColor === 'rgb(251, 238, 176)'), w + 'px 4 標記過的人頁的自訂標記也是淡黃色');
+    ok(await js(() => getComputedStyle(document.querySelector('.tagbtn.tg-custom')).backgroundColor === 'rgb(207, 229, 255)'), w + 'px 4 標記過的人頁的自訂標記也是淡藍色');
 
     // 5. 出過價的案件顯示進度條（召喚替身階段）；沒出價的人照樣看不到
     await act('pick', { id: 'u3' }); await go('#task-t1');

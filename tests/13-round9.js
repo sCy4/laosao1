@@ -18,6 +18,8 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
     // 下方分頁剩三個，第一個叫「案件大廳」
     await fresh();
     ok(await js(() => Array.from(document.querySelectorAll('nav.tabs button span:not(.badge)')).map(e => e.textContent).join('/') === '案件大廳/我的案件/我的' && document.querySelector('main h1.vh').textContent === '案件大廳'), w + 'px 下方分頁：案件大廳／我的案件／我的');
+    // 第十一版：使用者選了公事包當案件大廳的圖示（選中時是實心的公事包）
+    ok(await js(() => { const b = document.querySelector('nav.tabs [data-v="browse"]'), f = b.querySelector('svg .i-f'); return b.classList.contains('on') && !!f && f.getAttribute('d').startsWith('M20 6h-4V4') && getComputedStyle(f).display !== 'none'; }), w + 'px 案件大廳的圖示是公事包');
 
     // 未登入按「發案」：到發案畫面並打開登入，登入後就是發案表單
     await p.click('.fab'); await W(250);
