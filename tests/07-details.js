@@ -166,13 +166,14 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
   const who = await js(() => (document.querySelector('.sum-who') || {}).innerText || '');
   ok(who.includes('本體') && who.includes('陳怡君') && /S\d{8}/.test(who), '替身確認接案後：日期時間下面有本體資料 → ' + who.replace(/\n/g, ' '));
   ok(await js(() => { const c = Array.from(document.querySelectorAll('.card.mini')).pop(); return !!c && c.innerText.includes('陳怡君') && !!c.querySelector('.idline') && !!c.querySelector('.taglink'); }), '下方的本體卡也完整顯示（名字、學號等資料、標記）');
-  // 標記：平常只有低調的「標記」，按了才出現說明和選項；標記後寫「你的標記［可信賴］ 更改」
+  // 標記：平常是右上角的「標記」按鈕，按了才出現說明和選項；標記後同一顆按鈕寫「可信賴」（使用者要求標記的資訊也放右上角）
   await js(() => Array.from(document.querySelectorAll('.card.mini .taglink')).pop().click()); await W(200);
   ok(await js(() => { const m = document.querySelector('.tagline .tagmenu'); return !!m && m.querySelector('.tm-note').textContent.startsWith('只有你看得到') && m.querySelectorAll('[data-act="setTag"]').length === 2; }), '按「標記」才出現說明和選項');
   await js(() => document.querySelector('.tagline .tagmenu [data-act="setTag"][data-type="trust"]').click()); await W(200);
-  ok(await js(() => { const l = Array.from(document.querySelectorAll('.card.mini .tagline')).pop(); return !document.querySelector('.tagmenu') && l.innerText.includes('你的標記') && l.innerText.includes('可信賴') && l.querySelector('.taglink').textContent === '更改'; }), '標記後：「你的標記［可信賴］ 更改」');
+  ok(await js(() => { const c = Array.from(document.querySelectorAll('.card.mini')).pop(), b = c.querySelector('.taglink'), r = c.getBoundingClientRect(), br = b.getBoundingClientRect();
+    return !document.querySelector('.tagmenu') && b.classList.contains('tagged') && b.textContent.includes('你的標記') && b.textContent.includes('可信賴') && /更改標記/.test(b.getAttribute('aria-label')) && br.right > r.right - 24 && br.top < r.top + 24; }), '標記後：右上角的按鈕寫「可信賴」（實心書籤），按了可以更改');
   await fresh('u2'); await go('#task-t11');
-  ok(await js(() => { const c = document.querySelector('.chosen'); return !!c && !c.querySelector('.tagbtn') && c.querySelector('.taglink').textContent === '標記'; }), '等替身確認的卡片也改成低調的「標記」');
+  ok(await js(() => { const c = document.querySelector('.chosen'); return !!c && !c.querySelector('.tagbtn') && c.querySelector('.taglink').textContent === '標記'; }), '等替身確認的卡片也有「標記」按鈕');
   await fresh('u1'); await go('#task-t11'); await js(() => document.querySelector('[data-act="acceptMatch"]').click()); await W(300);
   await go('#mine');
   ok(await js(() => { const c = document.querySelector('[data-act="open"][data-id="t11"]').closest('.card.task'); return c.classList.contains('is-worker') && c.querySelector('.tc-tab').textContent === '我是替身' && c.querySelector('.tc-who').textContent === '本體 陳怡君'; }), '我的案件：替身的卡片左上角標籤「我是替身」，地點下面有「本體 陳怡君」');

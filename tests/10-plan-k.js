@@ -77,10 +77,10 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
     // 使用者意見：「標記」放在人物資料卡的右上角（還沒標記時，名字下面不多佔一行）
     await go('#task-t3');
     ok(await js(() => { const c = document.querySelector('.card.mini'), r = c.getBoundingClientRect(), t = c.querySelector('.taglink').getBoundingClientRect(), n = c.querySelector('.id-name').getBoundingClientRect();
-      return c.querySelector('.taglink').textContent === '標記' && Math.abs(t.right - (r.right - 8)) < 2 && Math.abs(t.top - (r.top + 8)) < 2 && t.bottom <= n.bottom + 12; }), w + 'px 人物資料卡：「標記」在右上角');
+      return c.querySelector('.taglink').textContent === '標記' && Math.abs(t.right - (r.right - 17)) < 2 && Math.abs(t.top - (r.top + 17)) < 2 && t.bottom <= n.bottom + 12; }), w + 'px 人物資料卡：「標記」在右上角');
     await go('#browse');
     ok(await js(() => { const c = document.querySelector('.card.task').getBoundingClientRect(), f = document.querySelector('.card.task .favbtn').getBoundingClientRect();
-      return Math.abs(f.right - (c.right - 8)) < 2 && Math.abs(f.top - (c.top + 8)) < 2; }), w + 'px 收藏星號在卡片右上角');
+      return Math.abs(f.right - (c.right - 5)) < 2 && Math.abs(f.top - (c.top + 5)) < 2; }), w + 'px 收藏星號在卡片右上角（卡片變矮後離角落 4px）');
     ok(errs.length === 0, w + 'px no console errors ' + JSON.stringify(errs));
     await p.close();
   }

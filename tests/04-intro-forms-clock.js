@@ -36,11 +36,11 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
   await act('fav', { id: 't2' });
   ok((await js(() => Math.round(document.getElementById('toast').getBoundingClientRect().top))) < 150, '提示訊息出現在畫面上方');
   await go('#task-t3');
-  // 資訊卡裡的標記改成低調的文字按鈕「標記」（沒有圖示，不會和收藏的星號混淆）；「標記的人」頁的按鈕仍是標籤圖示
-  ok(await js(() => { const b = document.querySelector('.card.mini .taglink'); return !!b && b.textContent === '標記' && !b.querySelector('svg') && !document.querySelector('.card.mini .tagbtn'); }), '資訊卡的標記是低調的文字按鈕「標記」');
+  // 使用者要求（方案 K）：「標記」配一個像 Google 地圖「儲存」的書籤圖示，看起來像按鈕，好辨認（原本是沒有圖示的文字按鈕）
+  ok(await js(() => { const b = document.querySelector('.card.mini .taglink'); return !!b && b.textContent === '標記' && !!b.querySelector('svg .i-o') && getComputedStyle(b).borderTopStyle === 'solid' && !document.querySelector('.card.mini .tagbtn'); }), '資訊卡的標記是有書籤圖示、像按鈕的「標記」');
   await act('setTag', { uid: 'u2', type: 'trust' }); await go('#tags');
-  // 方案 K 的圖示換成 Material Icons，標籤圖示是 Material 的「sell」（路徑開頭 M21.41），不是書籤
-  ok((await js(() => document.querySelector('.tagbtn svg path').getAttribute('d'))).startsWith('M21.41'), '標記的人頁的按鈕仍是標籤圖示');
+  // 「標記過的人」頁的按鈕和資訊卡用同一個書籤圖示（使用者要求的 Google 地圖「儲存」樣式；收藏是星號，不會混淆）
+  ok((await js(() => document.querySelector('.tagbtn svg path').getAttribute('d'))).startsWith('M17 3H7'), '標記過的人頁的按鈕是書籤圖示');
 
   // 表單錯誤顯示在欄位下方
   await go('#post'); await p.click('form[data-form="post"] button[type="submit"]'); await W();

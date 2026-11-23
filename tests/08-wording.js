@@ -38,10 +38,11 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
   ok(dlg.startsWith('選擇陳怡君作為你的替身（NT$ 420）？') && !(await js(() => !!document.querySelector('.sheet p'))), 'choose dialog: title only → ' + dlg.split('\n')[0]);
   await js(() => document.querySelector('.sheet [data-act="ok"]').click()); await W();
   const pt = await js(() => document.querySelector('.card.next').innerText);
-  ok(/1 小時後你能改選別人（還剩 \d+ (分鐘|小時)）。陳怡君將在 .+ 前確認接案或婉拒（還剩 \d+ (小時|天)）。/.test(pt), 'poster pending sentence: ' + pt.split('\n').find(l => l.includes('改選')));
+  // 使用者同意把長句拆開：期限一行（「確認期限 … 前（還剩 …）」），誰要確認、逾時和改選規則放下面小字
+  ok(/確認期限\s*.+ 前\s*（還剩 \d+ (小時|天)）/.test(pt) && /陳怡君要在期限前確認接案或婉拒，逾時沒確認，這次選擇會自動撤銷。1 小時後你能改選別人（還剩 \d+ (分鐘|小時)）。/.test(pt), 'poster pending: ' + pt.replace(/\n/g, ' | '));
   await act('pick', { id: 'u2' }); await W();
   const wt = await js(() => document.querySelector('.card.next').innerText);
-  ok(/本體選了你！你的出價 NT\$ 420。請在 .+ 前確認接案（還剩 \d+ (小時|天)），逾時自動撤銷。本體 1 小時後可以改選別人（還剩 \d+ (分鐘|小時)）。/.test(wt), 'worker pending sentence: ' + wt.split('\n')[1]);
+  ok(/本體選了你！/.test(wt) && /你的出價\s*NT\$ 420/.test(wt) && /確認期限\s*.+ 前\s*（還剩 \d+ (小時|天)）/.test(wt) && /逾時自動撤銷。本體 1 小時後可以改選別人（還剩 \d+ (分鐘|小時)）。/.test(wt), 'worker pending: ' + wt.replace(/\n/g, ' | '));
   await act('openDemo'); await act('ff', { v: '60' }); await act('close');
   ok((await js(() => document.querySelector('.card.next').innerText)).includes('本體現在可以改選別人了。'), 'after 1h: 本體現在可以改選別人了');
   await act('pick', { id: 'u1' }); await W();
