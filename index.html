@@ -57,6 +57,7 @@ main{flex:1;padding:16px 16px 104px;display:flex;flex-direction:column;gap:12px}
 
 nav.tabs{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;display:grid;background:var(--surface);border-top:1px solid var(--line);z-index:6;padding-bottom:env(safe-area-inset-bottom,0px)}
 nav.tabs.n4{grid-template-columns:repeat(4,1fr)}
+nav.tabs.n3{grid-template-columns:repeat(3,1fr)}
 nav.tabs.n2{grid-template-columns:repeat(2,1fr)}
 nav.tabs button{position:relative;appearance:none;background:none;border:0;font:inherit;font-size:12px;color:var(--muted);padding:9px 0 12px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;min-height:56px}
 nav.tabs button.on{color:var(--accent);font-weight:700}
@@ -612,6 +613,20 @@ header.top .icon-btn{color:var(--md-on-surface-variant)}
 .nbadge.hdr{top:6px;right:auto;left:21px;min-width:16px;height:16px;padding:0 4px;border:0;border-radius:8px;font-size:12px;line-height:16px}
 header.top.sub{justify-content:flex-start;padding:8px 4px}
 @media (max-width:360px){header.top.sub{padding:8px 4px}}
+/* 發案畫面（M3 full-screen dialog）：左上 ✕、標題「發案」，沒有下方分頁 */
+.hd-title{margin-left:4px;font-size:22px;line-height:28px;font-weight:400;color:var(--md-on-surface)}
+main.full{padding-bottom:32px}
+/* 發案按鈕（M3 extended FAB）：右下角、下方分頁上面；對齊 480px 欄位的右邊 */
+.fab{position:fixed;z-index:7;right:max(16px,calc(50vw - 224px));bottom:calc(96px + env(safe-area-inset-bottom,0px));overflow:hidden;display:inline-flex;align-items:center;gap:12px;height:56px;padding:0 20px 0 16px;border:0;border-radius:16px;
+  background:var(--md-primary-container);color:var(--md-on-primary-container);font:inherit;font-size:14px;line-height:20px;font-weight:500;letter-spacing:.1px;box-shadow:var(--md-elev-3);cursor:pointer}
+@media (hover:hover){.fab:hover{background-image:linear-gradient(var(--st-p-hover),var(--st-p-hover))}}
+.fab:focus-visible{outline:3px solid var(--md-secondary);outline-offset:2px}
+.fab svg{flex:none}
+.fab span{max-width:4em;overflow:hidden;white-space:nowrap;transition:max-width .2s var(--md-ease),opacity .15s linear}
+.fab.mini{gap:0;padding:0 16px}
+.fab.mini span{max-width:0;opacity:0}
+@media (prefers-reduced-motion:reduce){.fab span{transition:none}}
+main.has-fab{padding-bottom:176px}  /* 最下面的卡片和示範工具不會被發案按鈕蓋住 */
 /* 案件詳情的「⋮」選單（M3 menu） */
 .morewrap{position:relative;flex:none}
 .moremenu{position:absolute;right:4px;top:calc(100% + 2px);z-index:8;min-width:168px;display:flex;flex-direction:column;padding:8px 0;border-radius:4px;background:var(--md-surface-container);box-shadow:var(--md-elev-2);animation:kMenu .15s var(--md-ease-decel)}
@@ -698,10 +713,11 @@ main>h1.vh+p.small::before{--ic:var(--ic-checkCircle);color:var(--md-primary)}
 .card.task.is-poster .tc-tab::before,.sum-role.is-poster::before{--ic:var(--ic-home)}
 .card.task.is-worker .tc-tab::before,.sum-role.is-worker::before{--ic:var(--ic-clean)}
 /* 第一排：日期（固定寬度）＋時間 */
-.tc-date{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 12px;padding:0;font-size:16px;line-height:24px;font-weight:700;letter-spacing:.15px;font-variant-numeric:tabular-nums;color:var(--md-on-surface);white-space:nowrap}  /* 一般手機寬度放得下一排；特別窄（300px 以下）時間才換到下一行 */
+.tc-date{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 12px;padding:0;font-size:16px;line-height:24px;font-weight:400;letter-spacing:.15px;font-variant-numeric:tabular-nums;color:var(--md-on-surface);white-space:nowrap}  /* 一般手機寬度放得下一排；特別窄（300px 以下）時間才換到下一行 */
 .tc-d{flex:none;min-width:7.6em}
 .tc-d>*{font:inherit;color:inherit}
 .tc-time{flex:none}
+.tc-date .tc-time{font-weight:400}  /* 日期和時間都是一般字體（使用者覺得粗體太重） */
 .tc-row{display:flex;align-items:center;gap:12px;padding:0}
 .tc-main{flex-direction:row;flex-wrap:wrap;align-items:center;gap:0 8px}
 .tc-main>.tc-place{flex:0 1 auto;min-width:0}
@@ -847,9 +863,9 @@ form[data-form="post"] .two+p.small{margin-top:-12px}
 .sum-top{position:relative;display:flex;flex-direction:column;align-items:stretch;gap:0;padding:16px 16px 12px;background:transparent;color:var(--md-on-surface)}
 .card.sum>.pill+.sum-top{margin-top:16px}
 .sum-top .grow{display:flex;flex-direction:column;gap:4px}
-.sum-date{padding-right:96px;font-size:24px;line-height:32px;font-weight:700;color:var(--md-on-surface)}  /* 日期和時間一樣重要：同樣大小、都粗體 */
+.sum-date{padding-right:96px;font-size:24px;line-height:32px;font-weight:400;color:var(--md-on-surface)}  /* 日期比時間大一點，都不粗體（使用者要求） */
 .sum-date>*{font:inherit;color:inherit}
-.sum-time{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;margin-top:0;font-size:24px;line-height:32px;font-weight:700;font-variant-numeric:tabular-nums}
+.sum-time{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;margin-top:0;font-size:20px;line-height:28px;font-weight:400;font-variant-numeric:tabular-nums}
 .sum-top .muted{color:var(--md-on-surface-variant)}
 .sum-time .small{display:inline-flex;align-items:center;gap:4px;height:28px;padding:0 10px 0 8px;border-radius:8px;background:var(--md-surface-container-highest);color:var(--md-on-surface-variant);font-size:14px;line-height:20px;font-weight:500}
 .sum-time .small::before{content:"";width:16px;height:16px;background:currentColor;-webkit-mask:var(--ic-clock) center/contain no-repeat;mask:var(--ic-clock) center/contain no-repeat}
@@ -867,7 +883,7 @@ form[data-form="post"] .two+p.small{margin-top:-12px}
 .card.sum .facts{padding:12px 0;border-top:1px solid var(--md-outline-variant);margin:0 16px}
 .facts{gap:8px 16px;font-size:14px;line-height:20px}
 .facts dt{color:var(--md-on-surface-variant)}
-@media (max-width:360px){.sum-date{padding-right:84px;font-size:20px;line-height:28px}.sum-time{font-size:20px;line-height:28px}.steps li{font-size:12px;letter-spacing:0}}
+@media (max-width:360px){.sum-date{padding-right:84px;font-size:22px;line-height:28px}.sum-time{font-size:18px;line-height:24px}.steps li{font-size:12px;letter-spacing:0}}
 /* 你的下一步：輪到你時是浮起的白卡（全頁唯一有陰影的卡片），等別人時是一般的外框卡 */
 .card.next{gap:12px}
 .card.next.act{background:var(--md-surface-container-lowest);color:var(--md-on-surface);border-color:transparent;box-shadow:var(--md-elev-2)}
@@ -1172,6 +1188,9 @@ const IC={
   search:'<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>',
   list:'<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path d="M4 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm0-6c-.83 0-1.5.67-1.5 1.5S3.17 7.5 4 7.5 5.5 6.83 5.5 6 4.83 4.5 4 4.5zm0 12c-.83 0-1.5.68-1.5 1.5s.68 1.5 1.5 1.5 1.5-.68 1.5-1.5-.67-1.5-1.5-1.5zM7 19h14v-2H7v2zm0-6h14v-2H7v2zm0-8v2h14V5H7z"/></svg>',
   plus:'<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path class="i-o" d="M13 7h-2v4H7v2h4v4h2v-4h4v-2h-4V7zm-1-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/><path class="i-f" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>',
+  lobby:'<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path class="i-o" d="M19 5v2h-4V5h4M9 5v6H5V5h4m10 8v6h-4v-6h4M9 17v2H5v-2h4M21 3h-8v6h8V3zM11 3H3v10h8V3zm10 8h-8v10h8V11zm-10 4H3v6h8v-6z"/><path class="i-f" d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>',
+  add:'<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>',
+  x:'<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>',
   user:'<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path class="i-o" d="M12 5.9a2.1 2.1 0 1 1 0 4.2 2.1 2.1 0 0 1 0-4.2m0 9c2.97 0 6.1 1.46 6.1 2.1v1.1H5.9V17c0-.64 3.13-2.1 6.1-2.1M12 4C9.79 4 8 5.79 8 8s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 9c-2.67 0-8 1.34-8 4v3h16v-3c0-2.66-5.33-4-8-4z"/><path class="i-f" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>',
   pen:'<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM5.92 19H5v-.92l9.06-9.06.92.92L5.92 19zM20.71 5.63l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83a.996.996 0 0 0 0-1.41z"/></svg>',
   clock:'<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>',
@@ -1391,6 +1410,7 @@ function markSeen(t){
 }
 function applyRoute(){
   const r=parseHash(curHash());
+  if(ui.view==='list'&&ui.tab!=='post')ui.lastTab=ui.tab;
   ui.modal=null;ui.pending=null;ui.dlg=null;ui.tagMenu=null;ui.tagCustom=false;ui.moreMenu=false;
   if(r.view==='detail'){
     const t=T(r.id);
@@ -1434,6 +1454,7 @@ function headerView(){
   /* 仿 Google Play：四個主分頁的標題欄是刊頭（左邊品牌名和時間，右邊鈴鐺；未登入時是「登入」）；
      下一層頁面（案件詳情、「我的」底下的頁面）是工具列：左邊返回鍵、沒有品牌名；案件詳情右邊是「⋮」，選單裡有分享和收藏。
      標題欄固定一排；示範工具不放這裡，放在每一頁內容的最下面。螢幕太窄時時間會用「…」省略，不會換行 */
+  if(ui.view==='list'&&ui.tab==='post')return '<header class="top sub full"><button class="icon-btn" data-act="closePost" aria-label="關閉發案">'+IC.x+'</button><span class="hd-title" aria-hidden="true">發案</span><span class="grow"></span></header>';
   const detail=ui.view==='detail',sub=ui.view==='list'&&ui.tab==='me'&&S.me&&ui.meSub&&ui.meSub!=='main';
   if(detail||sub){
     const t=detail?T(ui.detailId):null,fav=t&&S.me&&isFav(t.id);
@@ -1448,10 +1469,13 @@ function headerView(){
 }
 function tabsView(){
   const m=me();
-  const tabs=[['browse','接案',IC.search],['post','發案',IC.plus],['mine','我的案件',IC.clip],['me','我的',IC.user]];
+  /* 2026-11：「發案」改成右下角的按鈕（fabView），下方分頁剩三個；「接案」改名「案件大廳」 */
+  const tabs=[['browse','案件大廳',IC.lobby],['mine','我的案件',IC.clip],['me','我的',IC.user]];
   const badge=m?{mine:S.tasks.filter(t=>todo(t,m.id)).length}:{};
-  return '<nav class="tabs n4">'+tabs.map(([k,l,ic])=>'<button class="'+(ui.tab===k?'on':'')+'" data-act="tab" data-v="'+k+'"'+(ui.tab===k&&ui.view==='list'?' aria-current="page"':'')+(badge[k]?' aria-label="'+l+'，'+badge[k]+' 件需要你處理"':'')+'>'+ic+'<span>'+l+'</span>'+(badge[k]?'<span class="badge">'+badge[k]+'</span>':'')+'</button>').join('')+'</nav>';
+  return '<nav class="tabs n3">'+tabs.map(([k,l,ic])=>'<button class="'+(ui.tab===k?'on':'')+'" data-act="tab" data-v="'+k+'"'+(ui.tab===k&&ui.view==='list'?' aria-current="page"':'')+(badge[k]?' aria-label="'+l+'，'+badge[k]+' 件需要你處理"':'')+'>'+ic+'<span>'+l+'</span>'+(badge[k]?'<span class="badge">'+badge[k]+'</span>':'')+'</button>').join('')+'</nav>';
 }
+/* 發案：案件大廳和我的案件右下角的按鈕（M3 extended FAB），按了打開全螢幕的發案畫面 */
+function fabView(){return '<button class="fab" data-act="newPost">'+IC.add+'<span>發案</span></button>';}
 function gateView(tab){
   const g=GATE[tab];
   return '<h1 class="vh">'+g[0]+'</h1><div class="empty"><b>'+g[1]+'</b><button class="btn" data-act="login" data-why="'+g[1]+'">登入</button></div>';
@@ -1571,7 +1595,7 @@ function filterChips(){
 function browseView(){
   const m=me(),n=filterCount();
   return suspendBanner(m)+
-  '<h1 class="vh">接案</h1>'+
+  '<h1 class="vh">案件大廳</h1>'+
   '<div class="toolbar"><div class="search">'+IC.search+'<input id="q" type="search" enterkeyhint="search" placeholder="搜尋地點、集合位置、備註" aria-label="搜尋案件" value="'+esc(ui.q)+'"></div>'+
   '<button class="icon-btn tool'+(n?' active':'')+'" data-act="openFilter" aria-haspopup="dialog" aria-label="篩選'+(n?'，已套用 '+n+' 個條件':'')+'" title="篩選">'+IC.filter+'<span class="tl" aria-hidden="true">篩選</span>'+(n?'<span class="badge">'+n+'</span>':'')+'</button>'+
   '</div>'+
@@ -1789,7 +1813,7 @@ function meView(){
   '<li>開工前，本體和替身都可以取消。</li><li>本體選了替身之後，替身要在開工前確認接案，開工時還沒確認，案件會自動取消。本體選擇 1 小時後，可以改選別人。</li><li>開工時間結束 24 小時後，替身還沒按「打掃完成」，會自動算打掃完成。</li><li>替身打掃完成 3 天後，本體還沒驗收，會自動驗收完成。</li>'+
   '<li>付款要雙方都確認：本體按「我已付款」，替身按「我已收款」。</li><li>打掃證明和留言板的照片只有雙方看得到，案件完成或取消 7 天後自動刪除。</li>'+
   '<li>平台不經手款項，本體驗收後直接付款給替身。</li>'+
-  '<li>可以標記合作過的人（可信賴、黑名單或自訂內容），只有你自己看得到。接案頁不會顯示你標記為黑名單的本體的案件。</li>'+
+  '<li>可以標記合作過的人（可信賴、黑名單或自訂內容），只有你自己看得到。案件大廳不會顯示你標記為黑名單的本體的案件。</li>'+
   '<li>平台以信任為基礎，不處理糾紛。遇到問題請先在留言板溝通。</li></ul></details>'+
   '<button class="btn ghost block" data-act="logout">登出</button>';
 }
@@ -1898,7 +1922,7 @@ function tagButton(uid){
 /* 資訊卡裡的標記：右上角一顆書籤圖示的按鈕「標記」，按了才出現說明和選項；標記後同一顆按鈕改成標記的內容（實心書籤＋標記顏色） */
 function tagLine(uid,who){
   const g=tagOf(uid),open=ui.tagMenu===uid;
-  const note=who==='本體'?'只有你看得到。之後打開這位本體的案件時會提醒你；標成黑名單的本體，案件在接案頁會自動隱藏。':'只有你看得到。之後這位替身出價時會提醒你。';
+  const note=who==='本體'?'只有你看得到。之後打開這位本體的案件時會提醒你；標成黑名單的本體，案件在案件大廳會自動隱藏。':'只有你看得到。之後這位替身出價時會提醒你。';
   return '<div class="tagline"><span class="tagwrap">'+
     '<button class="taglink'+(g?' tagged tg-'+g.type:'')+'" data-act="tagMenu" data-uid="'+uid+'" aria-haspopup="menu" aria-expanded="'+open+'" aria-label="'+(g?'更改標記，目前是「'+esc(tagText(g))+'」':'標記這位'+who)+'">'+
       IC.bookmark+'<span class="tg-lbl">'+(g?'<span class="vh">你的標記：</span>'+esc(tagText(g)):'標記')+'</span></button>'+
@@ -2107,7 +2131,7 @@ function exitArea(t,r){
     /* 本體的「取消案件」也收在「案件遇到問題？」裡（2026-11 使用者要求），正常流程的按鈕比較顯眼 */
     if(r==='poster'&&(s==='open'||s==='pending'||s==='assigned'))return '<div class="exit"><details class="trouble"><summary>案件遇到問題？</summary>'+
       tip(s==='assigned'?'建議先在留言板跟替身說明。開工前都可以取消案件，替身會收到通知。':'開工前都可以取消案件'+(t.offers.length?'，出價的人會收到通知。':'。'))+q('cancelTask','取消案件')+'</details></div>';
-    if(r==='worker'&&s==='assigned')return '<div class="exit">'+q('withdrawAssign','退出案件')+'<p class="small muted">開工前都可以退出。</p></div>';
+    if(r==='worker'&&s==='assigned')return '<div class="exit"><details class="trouble"><summary>案件遇到問題？</summary>'+tip('建議先在留言板跟本體說明。開工前都可以退出案件，本體會收到通知。')+q('withdrawAssign','退出案件')+'</details></div>';  /* 2026-11 使用者要求：退出也收起來 */
     return '';
   }
   /* 開工後（替身收款問題：驗收後）就出現「案件遇到問題？」；還不能結束案件時，只說明什麼時候可以，先引導溝通 */
@@ -2129,7 +2153,7 @@ function exitArea(t,r){
 }
 function detailView(){
   const t=T(ui.detailId);
-  if(!t)return '<div class="empty"><b>找不到這個案件</b><span class="small">可能是連結有誤，或示範資料已經重設。</span><button class="btn ghost sm" data-act="tab" data-v="browse">回到接案</button></div>';
+  if(!t)return '<div class="empty"><b>找不到這個案件</b><span class="small">可能是連結有誤，或示範資料已經重設。</span><button class="btn ghost sm" data-act="tab" data-v="browse">回到案件大廳</button></div>';
   const r=role(t,S.me),p=u(t.poster),w=t.assignee?u(t.assignee):null,out=[];
   if(r!=='viewer')out.push(stepper(t));
   out.push(summaryCard(t));
@@ -2352,6 +2376,10 @@ document.addEventListener('input',e=>{const i=e.target;if(i.matches&&i.matches('
 /* 上方應用程式列：往下捲時換底色（M3 的捲動狀態） */
 function topScrolled(){const h=document.querySelector('header.top');if(h)h.classList.toggle('scrolled',window.scrollY>0);}
 window.addEventListener('scroll',topScrolled,{passive:true});
+/* 發案按鈕：往下捲時縮成只有「＋」，往上捲或回到最上面時再展開（M3 extended FAB 的做法，少蓋住一點卡片） */
+let fabY=0,fabMini=false;
+function fabScroll(){const y=window.scrollY;if(Math.abs(y-fabY)<8&&y>56)return;fabMini=y>fabY&&y>56;fabY=y;const f=document.querySelector('.fab');if(f)f.classList.toggle('mini',fabMini);}
+window.addEventListener('scroll',fabScroll,{passive:true});
 /* 底部分頁的膠囊、分段按鈕的勾勾：只在「換了」的那一次播放動畫，其他原因重畫畫面時不重播 */
 let kPrev=null;
 function kMotion(){
@@ -2365,7 +2393,7 @@ function kMotion(){
 /* 按下時的水波紋（Material 的按壓回饋）：圓形圖示按鈕從中間擴散，其他從手指的位置擴散 */
 document.addEventListener('pointerdown',e=>{
   if(e.button>0)return;
-  const el=e.target.closest&&e.target.closest('.tc-open,.seg button,.btn,.icon-btn,.favbtn,.tool,.note,.acct-row,.card.linkrow,.opt-row,.acc-h,.moremenu>button,.chip,.checks label,.tagmenu>button,.dd');
+  const el=e.target.closest&&e.target.closest('.tc-open,.fab,.seg button,.btn,.icon-btn,.favbtn,.tool,.note,.acct-row,.card.linkrow,.opt-row,.acc-h,.moremenu>button,.chip,.checks label,.tagmenu>button,.dd');
   if(!el||el.disabled)return;
   try{if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;}catch(x){}
   const r=el.getBoundingClientRect(),round=el.matches('.icon-btn,.favbtn,.tool,.dd');
@@ -2387,7 +2415,8 @@ function render(){
   else body=({browse:browseView,post:postView,mine:mineView,me:meView}[ui.tab]||browseView)();
   /* 示範工具只在原型裡用，放在每一頁內容的最下面，不佔標題欄 */
   const keepM=app.querySelector('.m-layer .sheet'),keepD=app.querySelector('.d-layer .sheet'),topM=keepM?keepM.scrollTop:0,topD=keepD?keepD.scrollTop:0;
-  app.innerHTML=headerView()+'<main>'+body+'<div class="demo-entry"><button class="btn ghost sm" data-act="openDemo">示範工具</button><span class="small muted">原型才有，正式版不會出現</span></div></main>'+tabsView()+modalView()+dlgView();
+  const full=ui.view==='list'&&ui.tab==='post',fab=ui.view==='list'&&(ui.tab==='browse'||(ui.tab==='mine'&&!!S.me));
+  app.innerHTML=headerView()+'<main'+(full?' class="full"':fab?' class="has-fab"':'')+'>'+body+'<div class="demo-entry"><button class="btn ghost sm" data-act="openDemo">示範工具</button><span class="small muted">原型才有，正式版不會出現</span></div></main>'+(full?'':tabsView())+(fab?fabView():'')+modalView()+dlgView();
   const k={p:[ui.view,ui.tab,ui.detailId,ui.meSub,ui.mineRole,ui.pastKind,ui.histSeg].join('|'),
     m:ui.modal?[ui.modal.type,ui.modal.step||0,ui.modal.title||''].join('|'):'',d:ui.dlg?ui.dlg.kind+'|'+ui.dlg.target:''};
   const pk=fxKeys||{p:k.p,m:'',d:''};  /* 第一次畫面不播換頁動畫，但第一次進入的介紹視窗會播 */
@@ -2395,7 +2424,8 @@ function render(){
   if(ms&&k.m!==pk.m)ms.classList.add('fx-in');else if(ms&&topM)ms.scrollTop=topM;  /* 同一個視窗重畫時，停在原本捲到的位置 */
   if(ds&&k.d!==pk.d)ds.classList.add('fx-in');else if(ds&&topD)ds.scrollTop=topD;
   fxKeys=k;
-  if(ui.top){window.scrollTo(0,0);ui.top=false;}
+  if(ui.top){window.scrollTo(0,0);ui.top=false;fabMini=false;fabY=0;}
+  {const f=document.querySelector('.fab');if(f&&fabMini&&window.scrollY>56)f.classList.add('mini');}
   if(ui.toCmt){ui.toCmt=false;const c=document.getElementById('cmt-sec');if(c)c.scrollIntoView({block:'start'});}  /* 從留言通知進來：直接看到留言板 */
   kMotion();topScrolled();kFields();
   fixNotes();
@@ -2434,6 +2464,8 @@ const A={
     go(TAB_HASH[d.v]||'#browse');
     if(!S.me&&GATE[d.v])openLogin(GATE[d.v][1]);
   },
+  newPost(){go('#post');if(!S.me)openLogin(GATE.post[1]);},
+  closePost(){return goBack(TAB_HASH[ui.lastTab]||'#browse');},
   openFilter(){ui.fd=JSON.parse(JSON.stringify(ui.f));ui.modal={type:'filter'};},
   resetFilter(){ui.fd=fdef();ui.dlg=null;},
   resetAll(){ui.f=fdef();ui.q='';ui.modal=null;},
@@ -2542,7 +2574,7 @@ const A={
       t.status='cancelled';t.cancelKind='unpaid';t.cancelAt=now();t.cancelReason='替身表示沒收到款項，結束了案件';
       notify(t.poster,me().name+'結束了案件：沒收到款項',t.id);save();
       const g=tagOf(p.id);
-      if(!(g&&g.type==='black'))ask('要把'+p.name+'加入黑名單嗎？','只有你自己看得到。之後在接案頁，會自動避開這位本體的案件。','加入黑名單',()=>{
+      if(!(g&&g.type==='black'))ask('要把'+p.name+'加入黑名單嗎？','只有你自己看得到。之後在案件大廳，會自動避開這位本體的案件。','加入黑名單',()=>{
         S.tags[S.me]=S.tags[S.me]||{};S.tags[S.me][p.id]={type:'black',text:'',at:now()};save();toast('已把'+p.name+'加入黑名單');},false,'先不要');
       else toast('已結束案件');},true);},
   viewImg(d,el){ui.modal={type:'photo',src:el.getAttribute('src')};},

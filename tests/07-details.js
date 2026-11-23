@@ -90,6 +90,7 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
 
   // D1. 替身退出後，舊留言清掉（t3：王小明是替身，開工前）
   await fresh('u1'); await go('#task-t3');
+  await p.click('.exit details.trouble summary'); await W();  /* 第九版：使用者要求「退出案件」收進「案件遇到問題？」，先展開 */
   await p.click('[data-act="withdrawAssign"]'); await W(); await okDlg();
   const t3 = (await st()).tasks.find(t => t.id === 't3');
   ok(t3.status === 'open' && t3.comments.length === 0, '替身退出後，留言清空，新的替身看不到');

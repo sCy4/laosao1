@@ -20,14 +20,15 @@ const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); if (!c) fails++
   const visibleInFirstScreen = sel => p.evaluate(s => { const el = document.querySelector(s); if (!el) return 'missing'; const r = el.getBoundingClientRect(); const tab = document.querySelector('nav.tabs').getBoundingClientRect().top; return r.bottom <= tab ? true : ('bottom ' + Math.round(r.bottom) + ' > ' + Math.round(tab)); }, sel);
 
   await p.goto(BASE); await p.evaluate(() => (localStorage.clear(),localStorage.setItem('swaptime-intro-v1','1'))); await p.goto(BASE); await W(500);
-  ok((await hash()) === '' && (await txt()).includes('接案'), 'guest lands on 接案');
+  // 第九版：使用者要求「接案」改名「案件大廳」、「發案」改成右下角的按鈕（下方分頁剩三個）
+  ok((await hash()) === '' && (await txt()).includes('案件大廳'), 'guest lands on 案件大廳');
   ok(await p.isVisible('header [data-act="login"]'), 'header shows 登入 for guest');
   const tabs = await p.$$eval('nav.tabs button span:not(.badge)', els => els.map(e => e.textContent));
-  ok(JSON.stringify(tabs) === JSON.stringify(['接案','發案','我的案件','我的']), 'tabs = ' + tabs.join('/'));
+  ok(JSON.stringify(tabs) === JSON.stringify(['案件大廳','我的案件','我的']) && await p.isVisible('.fab'), 'tabs = ' + tabs.join('/') + '，右下角有「發案」按鈕');
   await shot('01-guest-browse');
 
   // guest -> 發案 : route + login modal, then login resumes on 發案
-  await click('nav.tabs [data-v="post"]');
+  await click('.fab');
   ok((await hash()) === '#post', 'guest tap 發案 -> #post');
   ok(await p.isVisible('.sheet form[data-form="loginEmail"]'), 'login modal opens (school email)');
   ok((await p.innerText('.sheet')).includes('登入後才能發案'), 'login modal explains why');
@@ -37,7 +38,8 @@ const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); if (!c) fails++
   await p.fill('#lg-code', code); await p.waitForTimeout(200);
   ok((await txt()).includes('發布案件'), 'after login (school email + code), lands on 發案 form');
 
-  // 我的案子
+  // 我的案子（第九版：發案畫面是全螢幕、沒有下方分頁，先按左上 ✕ 關掉）
+  await click('header [data-act="closePost"]'); await W(500);
   await click('nav.tabs [data-v="mine"]');
   ok((await hash()) === '#mine', '#mine');
   const mine = await txt();
@@ -130,7 +132,7 @@ const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); if (!c) fails++
   await click('[data-act="openDemo"]'); await click('[data-act="nowReset"]'); await click('.sheet [data-act="close"]');
 
   // post a task -> detail -> back -> 我的案子 / 我發的
-  await click('nav.tabs [data-v="post"]');
+  await click('.fab');
   await p.fill('#p-b', '第一宿舍'); await p.fill('#p-meet', '第一宿舍大廳'); await p.fill('#p-budget', '250');
   await click('form[data-form="post"] button[type="submit"]'); await W(300);
   ok((await p.$eval('.sheet', e => e.innerText)).includes('發布後不能修改'), 'confirm sheet before posting');

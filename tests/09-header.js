@@ -35,8 +35,10 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
       await p.evaluate(() => window.scrollTo(0, 1e6)); await p.waitForTimeout(150);
       const r = await p.evaluate(() => {
         const d = document.querySelector('main .demo-entry button'); if (!d) return { missing: true };
-        const br = d.getBoundingClientRect(), tab = document.querySelector('nav.tabs').getBoundingClientRect();
-        return { inHeader: !!document.querySelector('header [data-act="openDemo"]'), clear: br.bottom <= tab.top && br.top >= 0 };
+        /* 第九版：發案畫面是全螢幕（沒有下方分頁），以畫面底邊為準；有「發案」按鈕的頁面，示範工具也不能被它蓋住 */
+        const br = d.getBoundingClientRect(), nav = document.querySelector('nav.tabs'), limit = nav ? nav.getBoundingClientRect().top : innerHeight, fab = document.querySelector('.fab'), fr = fab && fab.getBoundingClientRect();
+        const underFab = !!fr && br.bottom > fr.top && br.top < fr.bottom && br.right > fr.left && br.left < fr.right;
+        return { inHeader: !!document.querySelector('header [data-act="openDemo"]'), clear: br.bottom <= limit && br.top >= 0 && !underFab };
       });
       ok(!r.missing && !r.inHeader && r.clear, h + '：示範工具在頁面最下面，捲到底看得到，不在標題欄');
     }
