@@ -47,8 +47,9 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
   await go('#post'); await p.click('form[data-form="post"] button[type="submit"]'); await W();
   ok((await js(() => { const e = document.querySelector('.ferr'); return e && e.closest('.field').querySelector('#p-b') && e.textContent; })) === '請填地點', '發案沒填地點 → 地點欄位下方顯示錯誤');
   await p.fill('#p-b', '第一宿舍'); await W(100); ok(!(await js(() => !!document.querySelector('.ferr'))), '開始打字後錯誤消失');
-  await p.fill('#p-meet', '大廳'); await p.fill('#p-budget', '30'); await p.click('form[data-form="post"] button[type="submit"]'); await W();
-  ok((await js(() => document.querySelector('.ferr').textContent)) === '標價請在 NT$ 50 到 5,000 之間', '標價錯誤顯示在標價欄位下');
+  // 第十二版：使用者把標價範圍改成 NT$ 1～5,000（原本 50～5,000），所以改用 6000 測超出範圍
+  await p.fill('#p-meet', '大廳'); await p.fill('#p-budget', '6000'); await p.click('form[data-form="post"] button[type="submit"]'); await W();
+  ok((await js(() => document.querySelector('.ferr').textContent)) === '標價請在 NT$ 1 到 5,000 之間', '標價錯誤顯示在標價欄位下');
   await p.click('[data-act="openTime"][data-w="start"]'); await W(); await p.click('[data-act="tInput"]'); await W(); await p.fill('#dlg-h', '25'); await p.click('[data-act="tOk"]'); await W();
   ok((await js(() => document.querySelector('.d-layer .ferr') && document.querySelector('.d-layer .ferr').textContent)) === '小時請填 0 到 23，分鐘請填 0 到 59', '時間視窗的錯誤顯示在視窗裡');
   await act('dlgClose');
