@@ -1260,7 +1260,7 @@ function ask(title,body,ok,fn,danger,cancel){ui.modal={type:'confirm',title,body
 function todo(t,id){
   const r=role(t,id),s=t.status;
   return (s==='open'&&r==='poster'&&t.offers.length>0)||(s==='pending'&&r==='worker')||(s==='assigned'&&r==='worker'&&now()>=t.start)||
-    (s==='done'&&r==='poster')||(s==='confirmed'&&r==='poster')||(s==='paid'&&r==='worker');
+    (s==='done'&&r==='poster')||(s==='confirmed'&&r==='poster'&&hasPay(u(t.assignee)))||(s==='confirmed'&&r==='worker'&&!hasPay(u(t.assignee)))||(s==='paid'&&r==='worker');  /* 替身沒有收款方式時，本體不能付款，改成輪到替身設定 */
 }
 /* 卡片底部橫條的文字：依看的人寫一句（本體看到／替身看到） */
 function barText(t,id){
@@ -1278,6 +1278,7 @@ function barText(t,id){
   if(s==='cancelled'){const k=endShort(t,r);return '已取消'+(k?'・'+k:'');}
   if(r!=='viewer'){
     if(s==='done')return r==='poster'?'請驗收（'+span(autoCheckAt(t)-now())+'後自動驗收）':'等本體驗收';
+    if(s==='confirmed'&&!hasPay(u(t.assignee)))return r==='poster'?'等替身設定收款方式':'請設定收款方式，本體才能付款';
     if(s==='confirmed')return r==='poster'?'請付款 NT$ '+money(t.price)+(t.confirmedAt&&now()>=payRemindAt(t)?'（已過 '+span(now()-t.confirmedAt)+'）':''):'等本體付款';
     if(s==='paid')return r==='poster'?'等替身確認收款':'本體已付款，請確認收款';
   }
@@ -1636,6 +1637,11 @@ function profileForm(m){
 /* 收款方式：銀行轉帳、LINE Pay（收款碼圖片），至少設定一種才能出價 */
 function hasPay(x){return !!(x&&(x.bank||x.linepay));}
 function payList(x){return [x.bank?'銀行轉帳 ****'+x.bank.acct.slice(-4):'',x.linepay?'LINE Pay':''].filter(Boolean).join('、');}
+/* 移除最後一種收款方式前的提醒：有等本體付款的案件時，多說一句本體會沒辦法付款 */
+function waitPay(uid){return S.tasks.filter(t=>t.assignee===uid&&t.status==='confirmed');}
+function lastPayWarn(){return '移除後沒有任何收款方式，要重新設定才能出價'+(waitPay(S.me).length?'；等本體付款的案件，本體也沒辦法付款。':'。');}
+/* 替身從沒有收款方式變成有：通知等著付款的本體 */
+function payReady(had){if(had)return;waitPay(S.me).forEach(t=>notify(t.poster,'替身設定好收款方式了，請付款 NT$ '+money(t.price),t.id));}
 function accHead(k,title,status,on){
   return '<button type="button" class="acc-h'+(on?' on':'')+'" data-act="payToggle" data-v="'+k+'" aria-expanded="'+on+'"><span class="acc-t">'+title+'</span><span class="acc-s'+(status?' set':'')+'">'+(status||'未設定')+'</span><span class="chev" aria-hidden="true">›</span></button>';
 }
@@ -1966,7 +1972,8 @@ function nextStep(t,r){
     }
     const mine=m?offerOf(t,m.id):null;
     return card('',(mine?'<div class="row between pc-row"><span class="muted">你的出價</span><span class="price">'+ntd(mine.price)+'</span></div>':'')+
-      '<p class="small muted center">本體已選其他人，正在等對方確認接案。對方婉拒或本體改選的話，案件會重新召喚替身。</p>',false);
+      '<p class="small muted center">本體已選其他人，正在等對方確認接案。對方婉拒或本體改選的話，案件會重新召喚替身。</p>'+
+      (mine?'<button class="btn quiet" data-act="withdrawPending" data-id="'+t.id+'">撤回出價</button>':''),false);  /* 沒被選上的替身，不想等也可以撤回 */
   }
   if(t.status==='assigned'){
     const begun=now()>=t.start,over=now()>=t.end,autoAt=fmtTime(autoDoneAt(t));
@@ -1986,9 +1993,11 @@ function nextStep(t,r){
   if(t.status==='confirmed'){
     const b=w.bank,autoNote=t.autoConfirmed?'<p class="small muted">'+(r==='poster'?'你沒有在 3 天內驗收，已自動驗收完成。':'本體沒有在 3 天內驗收，已自動驗收完成。')+'</p>':'';
     if(r==='poster'){
-      const lp=w.linepay,ways=[b?'bank':'',lp?'linepay':''].filter(Boolean),opts=ways.length?ways:['bank','linepay'],one=opts.length===1,WN={bank:'銀行轉帳',linepay:'LINE Pay'};
-      let body=autoNote+payBanner(t,r)+'<div class="row between pc-row"><span class="muted">金額</span><b class="price">'+ntd(t.price)+'</b></div>'+
-        (ways.length?'':'<p>替身還沒設定收款方式，請在留言板跟替身確認。</p>')+
+      const lp=w.linepay,ways=[b?'bank':'',lp?'linepay':''].filter(Boolean),opts=ways,one=opts.length===1,WN={bank:'銀行轉帳',linepay:'LINE Pay'};
+      let body=autoNote+payBanner(t,r)+'<div class="row between pc-row"><span class="muted">金額</span><b class="price">'+ntd(t.price)+'</b></div>';
+      /* 替身把收款方式全部移除了：不能按「我已付款」，等替身設定好（設定後會通知你） */
+      if(!ways.length)return card('付款給替身',body+'<div class="banner warn">替身還沒設定收款方式，設定好之後你才能付款，到時會通知你。可以先在留言板提醒替身。</div>',false);
+      body+=
         '<form data-form="pay" data-id="'+t.id+'" class="stack" novalidate><div class="field"><span class="lbl" id="pw">'+(one?'付款方式':'選一種付款方式')+'</span><div class="pay-acc" role="radiogroup" aria-labelledby="pw">';
       opts.forEach(k=>{
         body+='<div class="pway"><input type="radio" class="vh" name="method" id="pm-'+k+'" value="'+k+'"'+(one?' checked':'')+'>'+
@@ -2003,7 +2012,9 @@ function nextStep(t,r){
         '<button class="btn block" type="submit">我已付款</button></form>';
       return card('付款給替身',body,true);
     }
-    if(r==='worker')return card('等本體付款',autoNote+payBanner(t,r)+'<p class="small">本體已驗收，會付款 NT$ '+money(t.price)+' 給你。'+(hasPay(w)?'':'你沒有提供收款方式，請和本體約定付款方式。')+'</p>',false);
+    if(r==='worker'&&!hasPay(w))return card('設定收款方式',autoNote+'<p class="small">本體已驗收，要付款 NT$ '+money(t.price)+' 給你，但你還沒設定收款方式。設定好之後本體才能付款。</p>'+
+      '<button class="btn block" data-act="setupPay" data-id="'+t.id+'">設定收款方式</button>',true);
+    if(r==='worker')return card('等本體付款',autoNote+payBanner(t,r)+'<p class="small">本體已驗收，會付款 NT$ '+money(t.price)+' 給你。</p>',false);
     return '';
   }
   if(t.status==='paid'){
@@ -2409,14 +2420,16 @@ const A={
   backMe(){return goBack('#me');},
   bankPage(){go('#bank');},
   tagsPage(){go('#tags');},
-  removeBank(){ask('移除銀行轉帳？',me().linepay?'':'移除後沒有任何收款方式，要重新設定才能出價。','移除',()=>{me().bank=null;ui.payOpen=null;save();toast('已移除銀行轉帳');},true);},
-  removeLinePay(){ask('移除 LINE Pay？',me().bank?'':'移除後沒有任何收款方式，要重新設定才能出價。','移除',()=>{me().linepay=null;ui.payOpen=null;save();toast('已移除 LINE Pay');},true);},
+  removeBank(){ask('移除銀行轉帳？',me().linepay?'':lastPayWarn(),'移除',()=>{me().bank=null;ui.payOpen=null;save();toast('已移除銀行轉帳');},true);},
+  removeLinePay(){ask('移除 LINE Pay？',me().bank?'':lastPayWarn(),'移除',()=>{me().linepay=null;ui.payOpen=null;save();toast('已移除 LINE Pay');},true);},
   /* 出價前要先設定收款方式：設定好後自動回到原本的案件 */
   setupPay(d){ui.payReturn=d.id;go('#bank');},
   open(d){go('#task-'+d.id);},
   back(){return goBack(TAB_HASH[ui.tab]||'#browse');},
   seg(d){ui[d.k]=d.v;},
   acceptPrice(d){const t=T(d.id),err=bidProblem(t,me());if(err)return toast(err);placeBid(t,t.budget,'有人接受你的標價');save();toast('已接受本體標價，等本體選人');},
+  withdrawPending(d){const t=T(d.id);if(!t||!offerOf(t,S.me)||t.assignee===S.me)return toast('現在不能撤回出價');
+    ask('撤回出價？','撤回後，案件重新召喚替身時，本體不會再看到你的出價。','撤回',()=>{t.offers=t.offers.filter(o=>o.user!==S.me);save();toast('已撤回出價');},true);},
   withdrawOffer(d){const t=T(d.id);t.offers=t.offers.filter(o=>o.user!==S.me);ui.modal=null;save();toast('已撤回出價');},
   choose(d){const t=T(d.id),o=t.offers.find(x=>x.id===d.oid);if(jobsFull(o.user))return toast('這位替身同時進行的案件已滿 '+MAX_JOBS+' 件，現在不能選');
     ask('選擇'+u(o.user).name+'作為你的替身（NT$ '+money(o.price)+'）？','','選擇',()=>{t.status='pending';t.assignee=o.user;t.price=o.price;t.pendingAt=now();t.matchNote=null;notify(o.user,'本體選了你，請在開工前確認接案',t.id);save();toast('已通知'+u(o.user).name+'確認接案');});},
@@ -2517,8 +2530,10 @@ const F={
   },
   pay(f,d){
     const t=T(d.id);
-    const sel=f.querySelector('input[name=method]:checked');
+    const sel=f.querySelector('input[name=method]:checked'),w=u(t.assignee);
+    if(!hasPay(w))return toast('替身還沒設定收款方式，現在不能付款');
     if(!sel)return ferr(f.querySelector('.pay-acc'),'請選擇付款方式');
+    if(!w[sel.value==='bank'?'bank':'linepay'])return ferr(f.querySelector('.pay-acc'),'替身已經移除這種收款方式，請重新選擇');
     if(sel.value==='bank'){const x=v(f,'last5');if(!/^\d{5}$/.test(x))return ferr(f.elements.last5,'請輸入 5 位數字');t.payment={last5:x,method:'銀行轉帳',at:now()};}
     else t.payment={last5:null,method:'LINE Pay',at:now()};
     t.status='paid';notify(t.assignee,'本體已付款 NT$ '+money(t.price)+'，收到後請按「我已收款」',t.id);save();toast('已通知替身確認收款');
@@ -2566,7 +2581,7 @@ const F={
     if(!code)return ferr(f.elements.code,'請選擇銀行');
     if(!/^\d{10,16}$/.test(acct))return ferr(f.elements.acct,'帳號請輸入 10 到 16 位數字');
     if(bname!==m.name)return ferr(f.elements.bname,'戶名必須和姓名「'+m.name+'」相同');
-    m.bank={code,acct,name:bname};ui.payOpen=null;save();
+    const had=hasPay(m);m.bank={code,acct,name:bname};payReady(had);ui.payOpen=null;save();
     if(ui.payReturn){const id=ui.payReturn;ui.payReturn=null;toast('收款方式已儲存，現在可以出價了');return goBack('#task-'+id);}
     toast('收款方式已儲存');
   },
@@ -2658,7 +2673,7 @@ document.addEventListener('change',async e=>{
   const out=[];let bad=0;
   for(const file of files){try{out.push(await shrink(file));}catch(err){bad++;}}
   /* 打掃證明直接存進案件；留言照片和結束案件的照片先放草稿，按送出才存 */
-  if(kind==='linepay'){if(!out.length)return toast('讀不到這張圖片');me().linepay={qr:out[0],at:now()};ui.payOpen=null;save();
+  if(kind==='linepay'){if(!out.length)return toast('讀不到這張圖片');const had=hasPay(me());me().linepay={qr:out[0],at:now()};payReady(had);ui.payOpen=null;save();
     if(ui.payReturn){const rid=ui.payReturn;ui.payReturn=null;toast('收款方式已儲存，現在可以出價了');goBack('#task-'+rid);render();return;}
     render();toast('已儲存 LINE Pay 收款碼');return;}
   /* 照片張數上限：打掃證明、留言照片每個案件各 12 張，結束案件的照片證明 6 張 */
