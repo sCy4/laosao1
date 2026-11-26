@@ -93,7 +93,7 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
   await p.click('.exit details.trouble summary'); await W();  /* 第九版：使用者要求「退出案件」收進「案件遇到問題？」，先展開 */
   await p.click('[data-act="withdrawAssign"]'); await W(); await okDlg();
   const t3 = (await st()).tasks.find(t => t.id === 't3');
-  ok(t3.status === 'open' && t3.comments.length === 0, '替身退出後，留言清空，新的替身看不到');
+  ok(t3.status === 'cancelled' && t3.cancelKind === 'withdraw' && t3.comments.length === 1, '替身退出後案件取消（第十六版使用者決定，不再回到召喚替身），留言留著只能看');
 
   // D2. 發布前確認；D3. 草稿重新整理不會不見
   await fresh('u3'); await go('#post');
@@ -171,7 +171,7 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
   // 標記：平常是右邊的「標記」按鈕，按了才出現說明和選項；標記後同一顆按鈕寫「可信賴」（使用者要求標記的資訊也放右上角）
   // 第七版：使用者要求按鈕和人物姓名同一排（「本體／替身」是標題，自己一排），所以改成檢查「在右邊、和姓名同一排」
   await js(() => Array.from(document.querySelectorAll('.card.mini .taglink')).pop().click()); await W(200);
-  ok(await js(() => { const m = document.querySelector('.tagline .tagmenu'); return !!m && m.querySelector('.tm-note').textContent.startsWith('只有你看得到') && m.querySelectorAll('[data-act="setTag"]').length === 2; }), '按「標記」才出現說明和選項');
+  ok(await js(() => { const m = document.querySelector('.tagline .tagmenu'); return !!m && m.querySelector('.tm-note').textContent.startsWith('標記只有你看得到') && m.querySelectorAll('[data-act="setTag"]').length === 2; }), '按「標記」才出現說明和選項（第十六版說明改成「標記只有你看得到…」）');
   await js(() => document.querySelector('.tagline .tagmenu [data-act="setTag"][data-type="trust"]').click()); await W(200);
   ok(await js(() => { const c = Array.from(document.querySelectorAll('.card.mini')).pop(), b = c.querySelector('.taglink'), r = c.getBoundingClientRect(), br = b.getBoundingClientRect();
     const n = c.querySelector('.id-name').getBoundingClientRect();

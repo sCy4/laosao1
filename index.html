@@ -1083,7 +1083,7 @@ main>.btn[data-act="logout"]{display:flex;align-items:center;justify-content:fle
 nav.tabs .upd-dot.tab{position:absolute;top:12px;left:calc(50% - 26px);width:10px;height:10px;box-shadow:0 0 0 2px var(--md-surface-container)}
 .grp-h .upd-dot{width:10px;height:10px}
 .seg button .upd-dot{margin-left:-2px}
-:root{--upd:#f0a800}
+:root{--upd:var(--md-primary)}  /* 第十六版：黃點改成 Material 常見的主色藍點 */
 .seg button>.muted{margin-left:-8px}  /* 「我是替身（2）」：全形括號左邊本來就有空白，不再多空 */
 
 /* 系統設定「減少動態效果」時：沒有水波紋和動畫，按下時改成整塊變深 */
@@ -1320,6 +1320,7 @@ function endShort(t,r){
     case 'fail':return r==='worker'?'你無法完成':r==='poster'?'替身無法完成':'';
     case 'notdone':return r==='worker'?'本體表示你未完成':r==='poster'?'替身未完成':'';
     case 'unpaid':return r==='worker'?'沒收到款項':r==='poster'?'替身沒收到款項':'';
+    case 'withdraw':return r==='worker'?'你退出了':'替身退出了';
   }
   return '';
 }
@@ -1332,6 +1333,7 @@ function endReason(t,r){
     case 'fail':return r==='worker'?'你表示無法完成，案件已取消。':r==='poster'?'替身表示無法完成，案件已取消，你不用付款。':'案件已取消。';
     case 'notdone':return r==='worker'?'本體結束了案件，表示你未完成。':r==='poster'?'你結束了案件：替身未完成。':'案件已取消。';
     case 'unpaid':return r==='worker'?'你結束了案件：沒收到款項。':r==='poster'?'替身結束了案件，表示沒收到款項。':'案件已取消。';
+    case 'withdraw':return (r==='worker'?'你在 ':'替身在 ')+at+'退出了案件，案件已取消。';
   }
   return t.cancelReason||'已取消。';
 }
@@ -1873,7 +1875,7 @@ function tagButton(uid){
 /* 資訊卡裡的標記：右上角一顆書籤圖示的按鈕「標記」，按了才出現說明和選項；標記後同一顆按鈕改成標記的內容（實心書籤＋標記顏色） */
 function tagLine(uid,who){
   const g=tagOf(uid),open=ui.tagMenu===uid;
-  const note=who==='本體'?'只有你看得到。之後打開這位本體的案件時會提醒你；標成黑名單的本體，案件在案件大廳會自動隱藏。':'只有你看得到。之後這位替身出價時會提醒你。';
+  const note='標記只有你看得到。之後與這位'+who+'互動時會顯示。';  /* 第十六版使用者的句子（原句「與他」，照用詞規則寫成「這位本體／替身」） */
   return '<div class="tagline"><span class="tagwrap">'+
     '<button class="taglink'+(g?' tagged tg-'+g.type:'')+'" data-act="tagMenu" data-uid="'+uid+'" aria-haspopup="menu" aria-expanded="'+open+'" aria-label="'+(g?'更改標記，目前是「'+esc(tagText(g))+'」':'標記這位'+who)+'">'+
       IC.bookmark+'<span class="tg-lbl">'+(g?'<span class="vh">你的標記：</span>'+esc(tagText(g)):'標記')+'</span></button>'+
@@ -2104,7 +2106,7 @@ function exitArea(t,r){
     /* 本體的「取消案件」也收在「案件遇到問題？」裡（2026-11 使用者要求），正常流程的按鈕比較顯眼 */
     if(r==='poster'&&(s==='open'||s==='pending'||s==='assigned'))return '<div class="exit"><details class="trouble"><summary>案件遇到問題？</summary>'+
       tip(s==='assigned'?'開工前都可以取消案件，替身會收到通知。':'開工前都可以取消案件'+(t.offers.length?'，出價的人會收到通知。':'。'))+q('cancelTask','取消案件')+'</details></div>';
-    if(r==='worker'&&s==='assigned')return '<div class="exit"><details class="trouble"><summary>案件遇到問題？</summary>'+tip('建議先在留言板跟本體說明。開工前都可以退出案件，本體會收到通知。')+q('withdrawAssign','退出案件')+'</details></div>';  /* 2026-11 使用者要求：退出也收起來 */
+    if(r==='worker'&&s==='assigned')return '<div class="exit"><details class="trouble"><summary>案件遇到問題？</summary>'+tip('建議先在留言板跟本體說明。開工前都可以退出案件，退出後案件會取消，本體會收到通知。')+q('withdrawAssign','退出案件')+'</details></div>';  /* 2026-11 使用者要求：退出也收起來 */
     return '';
   }
   /* 開工後（替身收款問題：驗收後）就出現「案件遇到問題？」；還不能結束案件時，只說明什麼時候可以，先引導溝通 */
@@ -2489,7 +2491,9 @@ const A={
   cancelTask(d){const t=T(d.id);if(!canCancel(t))return toast('已經開工，不能取消');
     ask('取消案件？',t.status==='assigned'?'將通知替身。':'將撤銷所有出價並通知出價者。','取消案件',()=>{const who=new Set(t.offers.map(o=>o.user));if(t.assignee)who.add(t.assignee);who.forEach(x=>notify(x,'本體取消了案件',t.id));t.status='cancelled';t.cancelKind='poster';t.cancelAt=now();t.cancelReason='本體在 '+fmtTime(now())+' 取消了案件';save();toast('已取消案件');},true);},
   withdrawAssign(d){const t=T(d.id);if(!canCancel(t))return toast('已經開工，不能退出');
-    ask('退出案件？','案件會重新召喚替身，本體會收到通知。','退出',()=>{notify(t.poster,me().name+'退出了，案件重新召喚替身',t.id);t.status='open';t.assignee=null;t.price=null;t.offers=t.offers.filter(o=>o.user!==S.me);t.photos=[];t.comments=[];t.seen={};save();toast('已退出案件');goBack(TAB_HASH[ui.tab]||'#mine');},true);},
+    /* 第十六版：替身確認接案後退出，案件就取消（不回到召喚替身：其他出價的人可能來不及反應，本體也可能不想發了） */
+    ask('退出案件？','案件會取消，本體會收到通知。','退出',()=>{notify(t.poster,me().name+'退出了，案件已取消',t.id);t.offers.forEach(o=>{if(o.user!==S.me)notify(o.user,'案件已取消',t.id);});
+      t.status='cancelled';t.cancelKind='withdraw';t.cancelAt=now();t.cancelReason='替身退出了案件';save();toast('已退出案件，案件已取消');},true);},
   rmPhoto(d){T(d.id).photos.splice(Number(d.i),1);save();},
   viewPhoto(d){ui.modal={type:'photo',src:T(d.id).photos[Number(d.i)].src};},
   requestPay(d){const t=T(d.id);if(now()<t.start)return toast('開工時間到了才能按「打掃完成」');t.status='done';t.requestedAt=now();notify(t.poster,'替身打掃完成了，請驗收',t.id);save();toast('已通知本體驗收');},
