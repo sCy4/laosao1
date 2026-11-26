@@ -69,7 +69,7 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
   // 4. 發案頁精簡
   await go('#post');
   const post = await js(() => document.querySelector('form[data-form="post"]').innerText + '|' + Array.from(document.querySelectorAll('form[data-form="post"] [placeholder]')).map(e => e.placeholder).join(','));
-  ok(!post.includes('例如') && !post.includes('所有人都看得到') && !post.includes('會顯示在案件卡片上') && !post.includes('開工前都可以取消') && post.includes('不填就由替身自由出價。') && post.includes('替身可以接受你的標價，也可以自行出價，你再從出價裡挑人。'), '發案頁只剩必要說明');
+  ok(!post.includes('例如') && !post.includes('所有人都看得到') && !post.includes('會顯示在案件卡片上') && !post.includes('開工前都可以取消') && post.includes('不填＝替身自由出價') && post.includes('等有人接受你的標價或自行出價後，你再從中選擇你的替身。'), '發案頁只剩必要說明');
   // 5. 其他精簡抽查
   await go('#me'); const mm = await main();
   ok(!mm.includes('也可以在這裡標記合作過的人') && !mm.includes('你收藏的案件'), '我的頁的說明字變短');

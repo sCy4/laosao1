@@ -69,7 +69,7 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
 
   // 介面 2：待辦寫出期限
   const bars = await js(() => Object.fromEntries(Array.from(document.querySelectorAll('.tc-bar.todo')).map(x => [x.closest('.card.task').querySelector('[data-act="open"]').dataset.id, (() => { const g = x.querySelector('.grow').cloneNode(true); g.querySelectorAll('.vh').forEach(v => v.remove()); return g.textContent.trim(); })()])));
-  ok(/^2 人出價，請選替身（還剩 \d+ (分鐘|小時|天)）$/.test(bars.t1 || '') && /^請驗收（\d+ (小時|天)後自動驗收）$/.test(bars.t4 || '') && bars.t8 === '請付款 NT$ 350' && /^本體選了你，請確認（還剩 \d+ (小時|天)）$/.test(bars.t11 || ''), '介面 2：待辦寫期限 ' + JSON.stringify(bars));
+  ok(/^2 人出價，請選替身（距開工 \d+ (分鐘|小時|天)）$/.test(bars.t1 || '') && /^請驗收（\d+ (小時|天)後自動驗收）$/.test(bars.t4 || '') && bars.t8 === '請付款 NT$ 350' && /^本體選了你，請確認（還剩 \d+ (小時|天)）$/.test(bars.t11 || ''), '介面 2：待辦寫期限 ' + JSON.stringify(bars));
   await ff(1440); await go('#mine');
   ok(await js(() => { const g = document.querySelector('[data-act="open"][data-id="t8"]').closest('.card.task').querySelector('.tc-bar .grow').cloneNode(true); g.querySelectorAll('.vh').forEach(v => v.remove()); return g.textContent.trim() === '請付款 NT$ 350（已過 1 天）'; }), '介面 2：驗收超過 1 天還沒付款，寫「（已過 1 天）」');
 
@@ -105,7 +105,7 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
   await fresh('u1'); await go('#task-t1'); await js(() => document.querySelector('[data-act="choose"][data-oid="o1"]').click()); await W(); await okDlg();
   const sp = await js(() => { const s = document.querySelector('.sum-price'), o = s.querySelector('.sum-orig'), pr = s.querySelector('.price'); return { t: s.innerText.replace(/\n/g, ' '), above: !!o && o.getBoundingClientRect().bottom <= pr.getBoundingClientRect().top + 1, small: o ? getComputedStyle(o).fontSize : '' }; });
   ok(/選中的出價/.test(sp.t) && /原標價 NT\$ 400/.test(sp.t) && /NT\$ 420/.test(sp.t) && sp.above && sp.small === '12px', '9、10 等替身確認接案：「選中的出價」，上方小字「原標價 NT$ 400」 → ' + sp.t);
-  ok(await js(() => document.querySelector('.card.next h2').textContent === '等替身確認接案'), '10 卡片標題「等替身確認接案」');
+  ok(await js(() => document.querySelector('.card.next h2').textContent === '待替身確認接案'), '10 卡片標題「待替身確認接案」（第十四版）');
   await act('pick', { id: 'u4' }); await go('#task-t1');
   ok(await js(() => { const s = document.querySelector('.sum-price').innerText; return s.includes('本體標價') && s.includes('400') && !s.includes('420') && !document.querySelector('.sum-orig'); }), '瀏覽的人只看得到本體標價，看不到選中的出價');
   await act('pick', { id: 'u2' }); await go('#task-t1'); await js(() => document.querySelector('[data-act="acceptMatch"]').click()); await W(300);
@@ -130,7 +130,7 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
   ok(!(await notes('u1')).some(x => x.includes('請盡快選替身')), '建議 5：開工前 5 小時以前不提醒');
   await ff(40);
   const r5 = (await notes('u1')).filter(x => x.includes('請盡快選替身'));
-  ok(r5.length === 1 && /^\d+ (小時|分鐘)後開工，請盡快選替身，開工時還沒確定替身，案件會自動取消$/.test(r5[0]), '建議 5：開工前 5 小時提醒本體 → ' + r5[0]);
+  ok(r5.length === 1 && /^距開工 \d+ (小時|分鐘)，請盡快選替身，開工時還沒確定替身，案件會自動取消$/.test(r5[0]), '建議 5：開工前 5 小時提醒本體 → ' + r5[0]);
   ok(!(await notes('u4')).some(x => x.includes('請盡快選替身')), '建議 5：沒人出價的案件不提醒');
   await ff(60);
   ok((await notes('u1')).filter(x => x.includes('請盡快選替身')).length === 1, '建議 5：只提醒一次');

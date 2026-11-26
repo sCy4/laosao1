@@ -40,16 +40,16 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
   const pt = await js(() => document.querySelector('.card.next').innerText);
   // 使用者同意把長句拆開：期限一行（「確認期限 … 前（還剩 …）」），誰要確認、逾時和改選規則放下面小字
   // 第七版：使用者取消「選中後 24 小時沒確認就自動撤銷」，確認期限就是開工前；標題改成「等替身確認接案」，灰框裡的價格叫「出價」（還沒成交）
-  ok(/^等替身確認接案/.test(pt) && /出價\s*NT\$ 420/.test(pt) && !/成交價/.test(pt) && /確認期限\s*開工前（還剩 \d+ (小時|天)）/.test(pt) && /開工時陳怡君還沒確認接案，案件會自動取消。你可以繼續等，或在 1 小時後改選別人（還剩 \d+ (分鐘|小時)）。/.test(pt), 'poster pending: ' + pt.replace(/\n/g, ' | '));
+  ok(/^待替身確認接案/.test(pt) && /NT\$ 420/.test(pt) && !/出價|成交價|確認期限/.test(pt) && /你在 1 小時後可以重新選擇替身（還剩 \d+ (分鐘|小時)）。/.test(pt) && /重新選擇替身$/.test(pt.trim()), 'poster pending: ' + pt.replace(/\n/g, ' | '));
   await act('pick', { id: 'u2' }); await W();
   const wt = await js(() => document.querySelector('.card.next').innerText);
-  ok(/本體選了你！/.test(wt) && /你的出價\s*NT\$ 420/.test(wt) && /確認期限\s*開工前（還剩 \d+ (小時|天)）/.test(wt) && /開工時還沒確認，案件會自動取消。本體 1 小時後可以改選別人（還剩 \d+ (分鐘|小時)）。/.test(wt), 'worker pending: ' + wt.replace(/\n/g, ' | '));
+  ok(/本體選了你！/.test(wt) && /你的出價\s*NT\$ 420/.test(wt) && /確認期限\s*開工前（還剩 \d+ (小時|天)）/.test(wt) && /開工時還沒確認，案件會自動取消。本體 1 小時後可以重新選擇替身（還剩 \d+ (分鐘|小時)）。/.test(wt), 'worker pending: ' + wt.replace(/\n/g, ' | '));
   await act('openDemo'); await act('ff', { v: '60' }); await act('close');
-  ok((await js(() => document.querySelector('.card.next').innerText)).includes('本體現在可以改選別人了。'), 'after 1h: 本體現在可以改選別人了');
+  ok((await js(() => document.querySelector('.card.next').innerText)).includes('本體現在可以重新選擇替身了。'), 'after 1h: 本體現在可以重新選擇替身了');
   await act('pick', { id: 'u1' }); await W();
   await js(() => document.querySelector('[data-act="unchoose"]').click()); await W();
   const un = await js(() => document.querySelector('.sheet').innerText);
-  ok(un.includes('改選別人？') && un.includes('這次選擇會作廢並通知陳怡君，對方的出價仍會保留，你可以重新挑選。'), 'unchoose dialog: ' + un.replace(/\n/g, ' | '));
+  ok(un.includes('重新選擇替身？') && un.includes('這次選擇會作廢並通知陳怡君，對方的出價仍會保留。'), 'unchoose dialog: ' + un.replace(/\n/g, ' | '));
   await act('close');
   // 確認已收款視窗 (u3 is 替身 on t8 confirmed; pay as u1 first)
   await js(() => { location.hash = '#task-t8'; }); await W(200);

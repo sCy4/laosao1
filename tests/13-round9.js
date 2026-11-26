@@ -72,9 +72,9 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
 
     // 3、4. 字體：卡片日期時間一般字體；詳情頁日期比時間大一點、都不粗體
     await go('#browse');
-    ok(await js(() => { const d = getComputedStyle(document.querySelector('.tc-d')), t = getComputedStyle(document.querySelector('.tc-time')); return d.fontWeight === '400' && t.fontWeight === '400'; }), w + 'px 3 卡片的日期和時間是一般字體');
+    ok(await js(() => { const d = getComputedStyle(document.querySelector('.tc-d')), t = getComputedStyle(document.querySelector('.tc-time')); return d.fontWeight === '700' && t.fontWeight === '400'; }), w + 'px 3 卡片的日期粗體、時間一般字體（第十四版）');
     await go('#task-t1');
-    ok(await js(() => { const d = getComputedStyle(document.querySelector('.sum-date')), t = getComputedStyle(document.querySelector('.sum-time')); return parseFloat(d.fontSize) > parseFloat(t.fontSize) && d.fontWeight === '400' && t.fontWeight === '400'; }), w + 'px 4 詳情頁日期比時間大一點、都不粗體');
+    ok(await js(() => { const d = getComputedStyle(document.querySelector('.sum-date')), t = getComputedStyle(document.querySelector('.sum-time')); return parseFloat(d.fontSize) > parseFloat(t.fontSize) && d.fontWeight === '700' && t.fontWeight === '400'; }), w + 'px 4 詳情頁日期比時間大一點、日期粗體（第十四版）');
 
     ok(errs.length === 0, w + 'px no console errors ' + JSON.stringify(errs));
     await p.close();

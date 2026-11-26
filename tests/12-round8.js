@@ -23,7 +23,7 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
     ok(e.bell >= e.card && e.badge >= e.card - 2, w + 'px 1 鈴鐺和紅點都在卡片右邊以內 ' + JSON.stringify(e));
 
     // 4. 卡片的日期和時間：第八版是粗體；第九版使用者覺得太重，改成一般字體
-    ok(await js(() => Array.from(document.querySelectorAll('.card.task')).every(c => getComputedStyle(c.querySelector('.tc-d')).fontWeight === '400' && getComputedStyle(c.querySelector('.tc-time')).fontWeight === '400')), w + 'px 4 卡片的日期和時間都是一般字體（第九版）');
+    ok(await js(() => Array.from(document.querySelectorAll('.card.task')).every(c => getComputedStyle(c.querySelector('.tc-d')).fontWeight === '700' && getComputedStyle(c.querySelector('.tc-time')).fontWeight === '400')), w + 'px 4 卡片的日期粗體、時間一般字體（第十四版）');
 
     // 5. 不是待你處理的橫條：黑字（和日期同色），不是灰字
     await go('#mine');
@@ -33,9 +33,9 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
     for (const id of ['t1', 't11']) {
       await go('#task-' + id);
       const d = await js(() => { const a = getComputedStyle(document.querySelector('.sum-date')), b = getComputedStyle(document.querySelector('.sum-time')), dr = document.querySelector('.sum-date .dw').getBoundingClientRect(), rr = document.querySelector('.sum-role').getBoundingClientRect(), dd = document.querySelector('.sum-date').getBoundingClientRect();
-        return { same: parseFloat(a.fontSize) > parseFloat(b.fontSize) && a.fontWeight === '400' && b.fontWeight === '400', apart: dr.right <= rr.left, one: dd.height <= parseFloat(a.lineHeight) + 1, size: a.fontSize + '／' + b.fontSize }; });
+        return { same: parseFloat(a.fontSize) > parseFloat(b.fontSize) && a.fontWeight === '700' && b.fontWeight === '400', apart: dr.right <= rr.left, one: dd.height <= parseFloat(a.lineHeight) + 1, size: a.fontSize + '／' + b.fontSize }; });
       // 第八版是「同樣大小、都粗體」；第九版使用者要求日期比時間大一點、都不粗體
-      ok(d.same && d.apart && d.one, w + 'px 6 ' + id + ' 詳情頁日期比時間大一點（' + d.size + '）、都不粗體，日期一行、不撞到身分標籤');
+      ok(d.same && d.apart && d.one, w + 'px 6 ' + id + ' 詳情頁日期比時間大一點（' + d.size + '）、日期粗體（第十四版），日期一行、不撞到身分標籤');
     }
 
     // 7. 本體的「取消案件」收在「案件遇到問題？」裡（召喚替身、待替身確認、待開工都一樣）

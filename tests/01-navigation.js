@@ -135,7 +135,7 @@ const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); if (!c) fails++
   await click('nav.tabs [data-v="browse"]'); await click('.fab'); await W(300);
   await p.fill('#p-b', '第一宿舍'); await p.fill('#p-meet', '第一宿舍大廳'); await p.fill('#p-budget', '250');
   await click('form[data-form="post"] button[type="submit"]'); await W(300);
-  ok((await p.$eval('.sheet', e => e.innerText)).includes('發布後不能修改'), 'confirm sheet before posting');
+  ok((await p.$eval('.sheet', e => e.innerText)).includes('確認發布？') && !(await p.$eval('.sheet', e => e.innerText)).includes('發布後不能修改'), 'confirm sheet before posting（第十四版拿掉「發布後不能修改」）');
   await click('.sheet [data-act="postOk"]'); await W(300);
   ok((await hash()).startsWith('#task-t'), 'after posting -> new task detail ' + await hash());
   await click('header [data-act="back"]'); await W(500);
