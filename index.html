@@ -1074,6 +1074,18 @@ main>.btn[data-act="logout"]{display:flex;align-items:center;justify-content:fle
 .pickbox .tagline{margin-top:8px}
 .pickbox .tagline .tagmenu{max-width:none}
 
+/* 第十五版 */
+.tc-tab::before,.sum-role::before{display:none}  /* 身分標籤不放房子和掃具圖示 */
+.tc-tab,.sum-role{padding:0 8px}
+.offer-full{margin-top:6px;font-size:12px;line-height:16px;font-weight:500;letter-spacing:.4px;color:var(--md-on-tertiary-container)}
+/* 狀態有更新：黃點（紅點仍只代表需要你處理或有未讀） */
+.upd-dot{flex:none;display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--upd)}
+nav.tabs .upd-dot.tab{position:absolute;top:12px;left:calc(50% - 26px);width:10px;height:10px;box-shadow:0 0 0 2px var(--md-surface-container)}
+.grp-h .upd-dot{width:10px;height:10px}
+.seg button .upd-dot{margin-left:-2px}
+:root{--upd:#f0a800}
+.seg button>.muted{margin-left:-8px}  /* 「我是替身（2）」：全形括號左邊本來就有空白，不再多空 */
+
 /* 系統設定「減少動態效果」時：沒有水波紋和動畫，按下時改成整塊變深 */
 @media (prefers-reduced-motion:reduce){
   .k-ripple{display:none}
@@ -1122,7 +1134,7 @@ const GENDERS=['不限','限男生','限女生'];
 const BANKS={'004':'臺灣銀行','013':'國泰世華','700':'中華郵政','808':'玉山銀行','812':'台新銀行','822':'中國信託'};
 /* 狀態名稱：全站只用這一套（用詞表見 CLAUDE.md） */
 const ST={open:{label:'召喚替身',cls:'s-open'},pending:{label:'待替身確認',cls:'s-wait'},assigned:{label:'待開工',cls:'s-assigned'},done:{label:'待驗收',cls:'s-wait'},confirmed:{label:'待付款',cls:'s-wait'},paid:{label:'待確認收款',cls:'s-wait'},closed:{label:'已完成',cls:'s-good'},cancelled:{label:'已取消',cls:'s-off'}};
-const STEPS=['召喚替身','打掃','驗收','付款','完成'];
+const STEPS=['召喚替身','進行中','驗收','付款','完成'];
 const SORTS=[['created','desc','刊登時間：新到舊'],['created','asc','刊登時間：舊到新'],['price','desc','標價：高到低'],['price','asc','標價：低到高'],['start','asc','開工時間：近到遠'],['start','desc','開工時間：遠到近']];
 const IDX={open:0,pending:0,assigned:1,done:2,confirmed:3,paid:3,closed:4};
 const YEARS=['大一','大二','大三','大四','大五以上','碩一','碩二','博士班'];
@@ -1281,6 +1293,7 @@ function barText(t,id){
   const r=role(t,id),s=t.status,mine=offerOf(t,id),left=()=>'（還剩 '+span(t.start-now())+'）';  /* 確認期限就是開工時間 */
   if(s==='open'&&r==='poster')return t.offers.length?t.offers.length+' 人出價，請選替身（距開工 '+span(t.start-now())+'）':'還沒有人出價';
   if(s==='open'&&mine)return '已出價 NT$ '+money(mine.price)+'，等本體選人';
+  if(s==='pending'&&r==='poster'&&jobsFull(t.assignee))return '替身已接滿 '+MAX_JOBS+' 件，可以重新選擇替身';
   if(s==='pending'&&r==='poster')return '等'+u(t.assignee).name+'確認（距開工 '+span(t.start-now())+'）';  /* 本體這邊寫距開工多久，不寫「還剩」，以免誤會成本體要做決定的期限 */
   if(s==='pending'&&r==='worker')return '本體選了你，請確認'+left();
   if(s==='pending'&&mine)return '本體已選其他人';
@@ -1354,6 +1367,20 @@ function parseHash(h){
   if(h==='post'||h==='mine'||h==='me')return {view:'list',tab:h,sub:'main'};
   return {view:'list',tab:'browse'};
 }
+/* 狀態有更新（黃點）：每個案件記狀態變了幾次（t.stN），每個人記看過時是第幾次（t.stSeen）。
+   打開案件詳情就算看過；自己正在看的案件變了也算看過。輪到你的案件已經有紅點，不再加黃點 */
+function trackStatus(){
+  let ch=false;
+  S.tasks.forEach(t=>{
+    if(t.lastSt!==t.status){t.stN=(t.stN||0)+(t.lastSt===undefined?0:1);t.lastSt=t.status;ch=true;}
+    const ss=t.stSeen=t.stSeen||{};[t.poster,t.assignee].concat(t.offers.map(o=>o.user)).forEach(x=>{if(x&&ss[x]===undefined){ss[x]=t.stN;ch=true;}});
+  });
+  if(ui.view==='detail'&&S.me){const t=T(ui.detailId),ss=t&&t.stSeen;if(ss&&ss[S.me]!==undefined&&ss[S.me]!==t.stN){ss[S.me]=t.stN;ch=true;}}
+  if(ch)save();
+}
+function ended(t){return t.status==='closed'||t.status==='cancelled';}
+function inMine(t,id){const G=mineGroups(id);return G.work.some(g=>g[1](t))||G.own.some(g=>g[1](t))||(ended(t)&&(t.poster===id||t.assignee===id));}
+function changed(t,id){if(!id||todo(t,id))return false;const s=(t.stSeen||{})[id];return s!==undefined&&s<(t.stN||0)&&inMine(t,id);}
 function markSeen(t){
   if(!t||!S.me)return;
   t.seen=t.seen||{};t.seen[S.me]=now();
@@ -1423,8 +1450,9 @@ function tabsView(){
   const m=me();
   /* 2026-11：「發案」改成右下角的按鈕（fabView），下方分頁剩三個；「接案」改名「案件大廳」 */
   const tabs=[['browse','案件大廳',IC.lobby],['mine','我的案件',IC.clip],['me','我的',IC.user]];
-  const badge=m?{mine:S.tasks.filter(t=>todo(t,m.id)).length}:{};
-  return '<nav class="tabs n3">'+tabs.map(([k,l,ic])=>'<button class="'+(ui.tab===k?'on':'')+'" data-act="tab" data-v="'+k+'"'+(ui.tab===k&&ui.view==='list'?' aria-current="page"':'')+(badge[k]?' aria-label="'+l+'，'+badge[k]+' 件需要你處理"':'')+'>'+ic+'<span>'+l+'</span>'+(badge[k]?'<span class="badge">'+badge[k]+'</span>':'')+'</button>').join('')+'</nav>';
+  const badge=m?{mine:S.tasks.filter(t=>todo(t,m.id)).length}:{},upd=m?{mine:S.tasks.filter(t=>changed(t,m.id)).length}:{};
+  const al=k=>{const a=[];if(badge[k])a.push(badge[k]+' 件需要你處理');if(upd[k])a.push(upd[k]+' 件狀態有更新');return a.length?' aria-label="'+tabs.find(x=>x[0]===k)[1]+'，'+a.join('，')+'"':'';};
+  return '<nav class="tabs n3">'+tabs.map(([k,l,ic])=>'<button class="'+(ui.tab===k?'on':'')+'" data-act="tab" data-v="'+k+'"'+(ui.tab===k&&ui.view==='list'?' aria-current="page"':'')+al(k)+'>'+ic+'<span>'+l+'</span>'+(badge[k]?'<span class="badge">'+badge[k]+'</span>':'')+(upd[k]?'<span class="upd-dot tab" aria-hidden="true"></span>':'')+'</button>').join('')+'</nav>';
 }
 /* 發案畫面打開、關掉時的滑動（M3 full-screen dialog）：把目前的畫面複製一份固定在原地，
    打開時新畫面從下面滑上來蓋住它；關掉時複本（發案畫面）往下滑走，露出底下的頁面。0.3 秒後拿掉複本。手機設定「減少動態效果」時不滑 */
@@ -1463,7 +1491,8 @@ function taskCard(t,opt){
   const price=t.price||t.budget;
   const roleTag=!S.me?'':own?'我是本體':(t.assignee===S.me||!!offerOf(t,S.me))?'我是替身':'';
   let bar='';
-  if(opt.bar||myBid)bar='<div class="tc-bar bottom'+(td?' todo':'')+'">'+(td?'<span class="tc-dot" aria-hidden="true"></span>':'')+'<span class="grow">'+(td?'<span class="vh">需要你處理：</span>':'')+esc(barText(t,S.me)).replace(/（[^（）]*）$/,'<span class="nw">$&</span>')+'</span></div>';  /* 「（還剩 2 天）」不從中間斷行 */
+  const up=!td&&changed(t,S.me);  /* 狀態有更新：橫條前面一個黃點 */
+  if(opt.bar||myBid)bar='<div class="tc-bar bottom'+(td?' todo':'')+(up?' upd':'')+'">'+(td?'<span class="tc-dot" aria-hidden="true"></span>':'')+(up?'<span class="upd-dot" aria-hidden="true"></span>':'')+'<span class="grow">'+(td?'<span class="vh">需要你處理：</span>':'')+(up?'<span class="vh">狀態有更新：</span>':'')+esc(barText(t,S.me)).replace(/（[^（）]*）$/,'<span class="nw">$&</span>')+'</span></div>';  /* 「（還剩 2 天）」不從中間斷行 */
   const rk=own?'is-poster':roleTag?'is-worker':'',boss=t.assignee===S.me&&S.me&&t.status!=='pending'?u(t.poster):null;
   return '<div class="card task'+(rk?' '+rk:'')+'">'+(roleTag?'<span class="tc-tab">'+roleTag+'</span>':'')+
     '<button class="tc-open" data-act="open" data-id="'+t.id+'" aria-label="查看 '+dateLabel(t)+esc(t.building)+' 的案件"></button>'+
@@ -1561,25 +1590,30 @@ function sortSheet(){
 }
 
 /* 我的案件：上方「待你處理」不分身分；下方用「我是替身／我是本體」切換，依狀態分組 */
+/* 剛結束、還沒打開看過的案件，先留在我的案件（打開後只在「我的 → 過去的案件」） */
+function changedEnd(t,id){const s=(t.stSeen||{})[id];return s!==undefined&&s<(t.stN||0);}
 function mineGroups(id){
   return {
     work:[
       ['召喚替身',t=>(t.status==='open'||t.status==='pending')&&t.poster!==id&&!!offerOf(t,id)],
-      ['打掃',t=>t.assignee===id&&t.status==='assigned'],
-      ['驗收與付款',t=>t.assignee===id&&['done','confirmed','paid'].includes(t.status)]
+      ['進行中',t=>t.assignee===id&&t.status==='assigned'],
+      ['驗收與付款',t=>t.assignee===id&&['done','confirmed','paid'].includes(t.status)],
+      ['已完成或取消',t=>t.assignee===id&&ended(t)&&changedEnd(t,id)]
     ],
     own:[
       ['召喚替身',t=>t.poster===id&&(t.status==='open'||t.status==='pending')],
-      ['打掃',t=>t.poster===id&&t.status==='assigned'],
-      ['驗收與付款',t=>t.poster===id&&['done','confirmed','paid'].includes(t.status)]
+      ['進行中',t=>t.poster===id&&t.status==='assigned'],
+      ['驗收與付款',t=>t.poster===id&&['done','confirmed','paid'].includes(t.status)],
+      ['已完成或取消',t=>t.poster===id&&ended(t)&&changedEnd(t,id)]
     ]
   };
 }
 function mineView(){
   const id=S.me,G=mineGroups(id);
   const todos=S.tasks.filter(t=>todo(t,id)).sort((a,b)=>dueAt(a)-dueAt(b));
-  const cnt=k=>S.tasks.filter(t=>G[k].some(g=>g[1](t))).length;
-  if(!ui.mineRole)ui.mineRole=(!cnt('work')&&cnt('own'))?'own':'work';
+  const cnt=k=>S.tasks.filter(t=>G[k].some(g=>g[1](t))).length,updK=k=>S.tasks.some(t=>G[k].some(g=>g[1](t))&&changed(t,id));
+  const dot=on=>on?'<span class="upd-dot" aria-hidden="true"></span><span class="vh">（有狀態更新）</span>':'';
+  if(!ui.mineRole)ui.mineRole=(updK('own')&&!updK('work'))||(!cnt('work')&&cnt('own'))?'own':'work';  /* 有狀態更新的那一邊先打開 */
   const k=ui.mineRole;
   const groups=G[k].map(([title,fn],gi)=>{const list=S.tasks.filter(fn).sort((a,b)=>a.start-b.start);
     return list.length?'<section class="grp"><h3 class="grp-h sub" data-n="0'+(gi+1)+'">'+title+'（'+list.length+'）</h3>'+list.map(t=>taskCard(t,{bar:true})).join('')+'</section>':'';}).join('');
@@ -1588,10 +1622,10 @@ function mineView(){
     :'<div class="empty"><b>你目前沒有當本體的案件</b><span class="small">填好日期、時間和地點就能發案。</span><button class="btn ghost sm" data-act="newPost">發案</button></div>';
   return '<h1 class="vh">我的案件</h1>'+
   (todos.length
-    ?'<section class="grp" aria-label="待你處理"><h2 class="grp-h">待你處理<span class="badge">'+todos.length+'</span></h2>'+todos.map(t=>taskCard(t,{bar:true})).join('')+'</section>'
+    ?'<section class="grp" aria-label="待你處理"><h2 class="grp-h">待你處理（'+todos.length+'）</h2>'+todos.map(t=>taskCard(t,{bar:true})).join('')+'</section>'
     :'<p class="small muted">目前沒有需要你處理的事。</p>')+
-  '<h2 class="grp-h">全部案件</h2>'+
-  '<div class="seg" role="tablist">'+[['work','我是替身'],['own','我是本體']].map(([v,l])=>'<button role="tab" aria-selected="'+(k===v)+'" class="'+(k===v?'on':'')+'" data-act="seg" data-k="mineRole" data-v="'+v+'">'+l+'<span class="muted small">'+cnt(v)+'</span></button>').join('')+'</div>'+
+  '<h2 class="grp-h">全部案件（'+S.tasks.filter(t=>G.work.some(g=>g[1](t))||G.own.some(g=>g[1](t))).length+'）'+dot(updK('work')||updK('own'))+'</h2>'+
+  '<div class="seg" role="tablist">'+[['work','我是替身'],['own','我是本體']].map(([v,l])=>'<button role="tab" aria-selected="'+(k===v)+'" class="'+(k===v?'on':'')+'" data-act="seg" data-k="mineRole" data-v="'+v+'">'+l+'<span class="muted small">（'+cnt(v)+'）</span>'+dot(updK(v))+'</button>').join('')+'</div>'+
   (groups||none);
 }
 
@@ -1883,8 +1917,9 @@ function personCard(title,x,self){
 }
 function offerRow(t,o,i,canChoose){
   const x=u(o.user),full=jobsFull(x.id),g=tagOf(x.id);
-  return '<div class="offer"><div class="row between offer-row"><div class="grow">'+idBlock(x)+(g?'<div class="offer-tag">'+tagChip(g)+'</div>':'')+'</div>'+
-    '<div class="offer-side"><span class="price">'+ntd(o.price)+'</span>'+(!canChoose?'':full?'<span class="pill s-off">已滿 '+MAX_JOBS+' 件，不能選</span>':'<button class="btn sm" data-act="choose" data-id="'+t.id+'" data-oid="'+o.id+'">選這位</button>')+'</div></div></div>';
+  /* 已接滿的替身：左邊標記下面註明，但不擋本體選（替身可能為了這件取消別的案件） */
+  return '<div class="offer"><div class="row between offer-row"><div class="grow">'+idBlock(x)+(g?'<div class="offer-tag">'+tagChip(g)+'</div>':'')+(full?'<div class="offer-full">已達到同時最多接 '+MAX_JOBS+' 件的限制</div>':'')+'</div>'+
+    '<div class="offer-side"><span class="price">'+ntd(o.price)+'</span>'+(canChoose?'<button class="btn sm" data-act="choose" data-id="'+t.id+'" data-oid="'+o.id+'">選這位</button>':'')+'</div></div></div>';
 }
 /* ---------- 案件詳情 ----------
    由上到下：進度條（只有當事人）→ 摘要 → 你的下一步 → 留言板 → 對方資訊 → 取消或退出 */
@@ -1969,7 +2004,7 @@ function nextStep(t,r){
     return card('出價',b,ok&&!mine);
   }
   if(t.status==='pending'){
-    const left=span(t.start-now()),unAt=reselectAt(t),canUn=now()>=unAt;
+    const left=span(t.start-now()),unAt=reselectAt(t),wFull=jobsFull(t.assignee),canUn=now()>=unAt||wFull;  /* 選中的替身已接滿：本體不用等 1 小時 */
     if(r==='worker'){
       const re=canUn?'本體現在可以重新選擇替身了。':'本體 1 小時後可以重新選擇替身（還剩 '+span(unAt-now())+'）。';
       return card('確認接案','<p class="np-lead">本體選了你！</p>'+
@@ -1981,7 +2016,7 @@ function nextStep(t,r){
       const re=canUn?'你現在可以重新選擇替身。':'你在 1 小時後可以重新選擇替身（還剩 '+span(unAt-now())+'）。';
       /* 選中的替身：排法和出價清單一樣（姓名、學號，標記在學號下面；出價在右上角） */
       return card('待替身確認接案','<div class="pickbox"><div class="grow">'+idBlock(w)+tagLine(w.id,'替身')+'</div><b class="price">'+ntd(t.price)+'</b></div>'+
-        '<p class="small muted">'+re+'</p>'+
+        (wFull?'<div class="banner warn">你選擇的替身不能再接案，因為已達到同時最多接 '+MAX_JOBS+' 件的限制，你可以重新選擇替身。</div>':'<p class="small muted">'+re+'</p>')+
         '<button class="btn ghost block" data-act="unchoose" data-id="'+t.id+'"'+(canUn?'':' disabled')+'>重新選擇替身</button>',false);
     }
     const mine=m?offerOf(t,m.id):null;
@@ -2068,7 +2103,7 @@ function exitArea(t,r){
   if(n<t.start){
     /* 本體的「取消案件」也收在「案件遇到問題？」裡（2026-11 使用者要求），正常流程的按鈕比較顯眼 */
     if(r==='poster'&&(s==='open'||s==='pending'||s==='assigned'))return '<div class="exit"><details class="trouble"><summary>案件遇到問題？</summary>'+
-      tip(s==='assigned'?'建議先在留言板跟替身說明。開工前都可以取消案件，替身會收到通知。':'開工前都可以取消案件'+(t.offers.length?'，出價的人會收到通知。':'。'))+q('cancelTask','取消案件')+'</details></div>';
+      tip(s==='assigned'?'開工前都可以取消案件，替身會收到通知。':'開工前都可以取消案件'+(t.offers.length?'，出價的人會收到通知。':'。'))+q('cancelTask','取消案件')+'</details></div>';
     if(r==='worker'&&s==='assigned')return '<div class="exit"><details class="trouble"><summary>案件遇到問題？</summary>'+tip('建議先在留言板跟本體說明。開工前都可以退出案件，本體會收到通知。')+q('withdrawAssign','退出案件')+'</details></div>';  /* 2026-11 使用者要求：退出也收起來 */
     return '';
   }
@@ -2348,6 +2383,7 @@ function render(){
   const app=document.getElementById('app');
   sweep();
   if(S.me&&!u(S.me))S.me=null;
+  trackStatus();
   let body;
   if(ui.view==='detail')body=detailView();
   else if(!S.me&&ui.tab!=='browse')body=gateView(ui.tab);
@@ -2445,13 +2481,13 @@ const A={
   withdrawPending(d){const t=T(d.id);if(!t||!offerOf(t,S.me)||t.assignee===S.me)return toast('現在不能撤回出價');
     ask('撤回出價？','撤回後，案件重新召喚替身時，本體不會再看到你的出價。','撤回',()=>{t.offers=t.offers.filter(o=>o.user!==S.me);save();toast('已撤回出價');},true);},
   withdrawOffer(d){const t=T(d.id);t.offers=t.offers.filter(o=>o.user!==S.me);ui.modal=null;save();toast('已撤回出價');},
-  choose(d){const t=T(d.id),o=t.offers.find(x=>x.id===d.oid);if(jobsFull(o.user))return toast('這位替身同時進行的案件已滿 '+MAX_JOBS+' 件，現在不能選');
-    ask('選擇'+u(o.user).name+'作為你的替身（NT$ '+money(o.price)+'）？','','選擇',()=>{t.status='pending';t.assignee=o.user;t.price=o.price;t.pendingAt=now();t.matchNote=null;notify(o.user,'本體選了你，請在開工前確認接案',t.id);save();toast('已通知'+u(o.user).name+'確認接案');});},
+  choose(d){const t=T(d.id),o=t.offers.find(x=>x.id===d.oid),x=u(o.user),full=jobsFull(o.user);
+    ask(full?'你確定仍要選'+x.name+'嗎？':'選擇'+x.name+'作為你的替身（NT$ '+money(o.price)+'）？',full?'你選擇的替身不能再接案，因為已達到同時最多接 '+MAX_JOBS+' 件的限制。':'',full?'仍要選擇':'選擇',()=>{t.status='pending';t.assignee=o.user;t.price=o.price;t.pendingAt=now();t.matchNote=null;notify(o.user,'本體選了你，請在開工前確認接案',t.id);save();toast('已通知'+u(o.user).name+'確認接案');});},
   acceptMatch(d){const t=T(d.id);if(t.status!=='pending')return toast('這次選擇已經失效');if(jobsFull(S.me))return toast(fullNote('確認接案'));t.status='assigned';t.assignedAt=now();notify(t.poster,me().name+'確認接案了',t.id);save();toast('已確認接案');},
   declineMatch(d){const t=T(d.id);ask('婉拒接案？','你的出價會一起撤回，本體可以改選其他人。','婉拒',()=>{t.offers=t.offers.filter(o=>o.user!==S.me);t.status='open';t.assignee=null;t.price=null;t.matchNote='替身婉拒了，請改選其他出價。';notify(t.poster,me().name+'婉拒了，請改選其他人',t.id);save();toast('已婉拒');goBack(TAB_HASH[ui.tab]||'#mine');},true);},
-  unchoose(d){const t=T(d.id);if(now()<reselectAt(t))return toast('選擇 1 小時後才能重新選擇替身');ask('重新選擇替身？','這次選擇會作廢並通知'+u(t.assignee).name+'，對方的出價仍會保留。','重新選擇',()=>{notify(t.assignee,'本體重新選擇替身了，你的出價仍保留',t.id);t.status='open';t.assignee=null;t.price=null;t.matchNote=null;save();toast('這次選擇已作廢，請重新選擇替身');},true);},
+  unchoose(d){const t=T(d.id);if(now()<reselectAt(t)&&!jobsFull(t.assignee))return toast('選擇 1 小時後才能重新選擇替身');ask('重新選擇替身？','這次選擇會作廢並通知'+u(t.assignee).name+'，對方的出價仍會保留。','重新選擇',()=>{notify(t.assignee,'本體重新選擇替身了，你的出價仍保留',t.id);t.status='open';t.assignee=null;t.price=null;t.matchNote=null;save();toast('這次選擇已作廢，請重新選擇替身');},true);},
   cancelTask(d){const t=T(d.id);if(!canCancel(t))return toast('已經開工，不能取消');
-    ask('取消案件？',t.assignee?'替身會收到通知。':'將撤銷所有出價並通知出價者。','取消案件',()=>{const who=new Set(t.offers.map(o=>o.user));if(t.assignee)who.add(t.assignee);who.forEach(x=>notify(x,'本體取消了案件',t.id));t.status='cancelled';t.cancelKind='poster';t.cancelAt=now();t.cancelReason='本體在 '+fmtTime(now())+' 取消了案件';save();toast('已取消案件');},true);},
+    ask('取消案件？',t.status==='assigned'?'將通知替身。':'將撤銷所有出價並通知出價者。','取消案件',()=>{const who=new Set(t.offers.map(o=>o.user));if(t.assignee)who.add(t.assignee);who.forEach(x=>notify(x,'本體取消了案件',t.id));t.status='cancelled';t.cancelKind='poster';t.cancelAt=now();t.cancelReason='本體在 '+fmtTime(now())+' 取消了案件';save();toast('已取消案件');},true);},
   withdrawAssign(d){const t=T(d.id);if(!canCancel(t))return toast('已經開工，不能退出');
     ask('退出案件？','案件會重新召喚替身，本體會收到通知。','退出',()=>{notify(t.poster,me().name+'退出了，案件重新召喚替身',t.id);t.status='open';t.assignee=null;t.price=null;t.offers=t.offers.filter(o=>o.user!==S.me);t.photos=[];t.comments=[];t.seen={};save();toast('已退出案件');goBack(TAB_HASH[ui.tab]||'#mine');},true);},
   rmPhoto(d){T(d.id).photos.splice(Number(d.i),1);save();},

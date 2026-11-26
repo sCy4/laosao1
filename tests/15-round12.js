@@ -62,7 +62,7 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
   // 本體看出價清單：滿 3 件的替身不能選
   await patch("const t=s.tasks.find(x=>x.id==='t1');t.offers.push({id:'o99',user:'u1',price:300,at:Date.now()});t.poster='u2';");
   await act('pick', { id: 'u2' }); await go('#task-t1');
-  ok(await js(() => { const o = document.querySelector('[data-act="choose"][data-oid="o99"]'), row = Array.from(document.querySelectorAll('.offer')).find(r => r.innerText.includes('王小明')); return !o && row.innerText.includes('已滿 3 件，不能選'); }), '3 本體的出價清單：滿 3 件的替身寫「已滿 3 件，不能選」');
+  ok(await js(() => { const o = document.querySelector('[data-act="choose"][data-oid="o99"]'), row = Array.from(document.querySelectorAll('.offer')).find(r => r.innerText.includes('王小明')); return !!o && row.querySelector('.offer-full').textContent === '已達到同時最多接 3 件的限制'; }), '3 本體的出價清單：滿 3 件的替身左邊註明已達到上限，仍可以選（第十五版）');
   // 打掃完成一件後就空出來
   await patch("s.tasks.find(t=>t.id==='t3').status='done';");
   await act('pick', { id: 'u1' }); await go('#task-t2');

@@ -14,7 +14,9 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
   const act = async (act, extra = {}) => { await js(([a, x]) => { const el = document.createElement('button'); el.dataset.act = a; Object.assign(el.dataset, x); document.body.appendChild(el); el.click(); el.remove(); }, [act, extra]); await W(); };
   const pageText = () => js(() => document.body.innerText + ' ' + Array.from(document.querySelectorAll('[aria-label],[placeholder],title')).map(e => (e.getAttribute('aria-label') || '') + ' ' + (e.getAttribute('placeholder') || '') + ' ' + (e.textContent || '')).join(' '));
   const seen = {};
-  const scan = async where => { const t = await pageText(); for (const w of BANNED) if (t.includes(w)) (seen[w] = seen[w] || []).push(where); };
+  /* 第十五版：使用者把進度和分組的階段名稱「打掃」改成「進行中」，所以「進行中」只准出現在進度條和分組標題（案件狀態仍是待開工／打掃中） */
+  const stageText = () => js(() => Array.from(document.querySelectorAll('.steps, .grp-h.sub, [aria-label="案件進度"]')).map(e => e.innerText + ' ' + (e.hasAttribute('aria-label') ? e.textContent : '')).join(' '));  /* 有 aria-label 的元素，pageText 會再算一次它的字 */
+  const scan = async where => { const t = await pageText(), st = await stageText(); for (const w of BANNED) { const n = t.split(w).length - 1, ok2 = w === '進行中' ? st.split(w).length - 1 : 0; if (n > ok2) (seen[w] = seen[w] || []).push(where); } };
   await p.goto(BASE); await js(() => (localStorage.clear(),localStorage.setItem('swaptime-intro-v1','1'))); await p.goto(BASE); await W(400);
   await scan('guest browse');
   await act('login'); await scan('login modal'); await act('close');
@@ -62,7 +64,7 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
   ok((await js(() => document.querySelector('main').innerText)).includes('案件已完成'), 'after received: 案件已完成');
   // stepper + notifications format
   await js(() => { location.hash = '#task-t3'; }); await act('pick', { id: 'u1' }); await W(200);
-  ok((await js(() => document.querySelector('.steps').innerText.replace(/\n/g, '/'))) === '召喚替身/打掃/驗收/付款/完成', 'stepper = 召喚替身/打掃/驗收/付款/完成');
+  ok((await js(() => document.querySelector('.steps').innerText.replace(/\n/g, '/'))) === '召喚替身/進行中/驗收/付款/完成', 'stepper = 召喚替身/進行中/驗收/付款/完成（第十五版）');
   await act('openNotes');
   const n1 = await js(() => Array.from(document.querySelectorAll('.note')).map(n => n.innerText.replace(/\n/g, ' | ')));
   ok(n1.length > 0 && n1.every(x => x.split(' | ').length === 3), 'notes: text | 案件 | 時間 → ' + n1.slice(0, 3).join(' ;; '));
