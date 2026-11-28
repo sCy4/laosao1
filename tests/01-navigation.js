@@ -71,7 +71,7 @@ const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); if (!c) fails++
 
   // reload on a detail keeps it
   await p.goto(BASE + '#task-t4'); await W(500);
-  ok((await txt()).includes('驗收完成'), 'reload on #task-t4 keeps detail');
+  ok((await txt()).includes('確認打掃完成'), 'reload on #task-t4 keeps detail（第十七版按鈕改名「確認打掃完成」）');
   ok(await visibleInFirstScreen('[data-act="confirmDone"]') === true, '確認完成 visible on first screen: ' + await visibleInFirstScreen('[data-act="confirmDone"]'));
   ok(!(await txt()).includes('發案人\n王小明'), 'own info card removed');
   await shot('05-detail-t4-poster');

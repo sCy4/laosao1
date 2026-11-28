@@ -76,9 +76,9 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
   ok((await js(() => document.querySelector('.sheet').innerText)).includes('也可以把你加入黑名單'), '確認視窗說明後果');
   await okDlg();
   let t6 = await task('t6'); ok(t6.status === 'cancelled' && t6.cancelKind === 'fail', '案件取消（無法完成）');
-  ok((await notes('u2')).some(x => x === '張書瑋無法完成，案件已取消'), '本體收到通知');
+  ok((await notes('u2')).some(x => x === '張書瑋表示打掃未完成，案件已取消'), '本體收到通知（第十七版改名「案件失敗：打掃未完成」）');
   await act('pick', { id: 'u2' }); await W();
-  ok((await main()).includes('替身表示無法完成，案件已取消，你不用付款。'), '本體看到原因');
+  ok((await main()).includes('替身表示打掃未完成，案件已取消，你不用付款。'), '本體看到原因');
   await p.click('[data-act="setTag"][data-uid="u4"]'); await W();
   ok((await st()).tags.u2.u4.type === 'black', '本體一鍵把替身加入黑名單');
 
@@ -88,7 +88,7 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
   ok((await js(() => document.querySelector('details.trouble').innerText)).includes('開工時間結束 24 小時後') && !(await js(() => !!document.querySelector('[data-act="openNotDone"]'))), '結束時間未滿 24 小時：「案件遇到問題？」只有說明，沒有結束按鈕');
   await ff(1440);
   t6 = await task('t6'); ok(t6.status === 'done' && t6.autoDone, '結束 24 小時後替身沒按完成 → 自動算打掃完成');
-  ok((await notes('u2')).some(x => x.includes('已自動算打掃完成，請驗收')), '本體收到自動完成通知');
+  ok((await notes('u2')).some(x => x === '替身打掃完成了，請驗收') && !(await notes('u2')).some(x => x.includes('自動')), '本體收到的通知和替身自己按完成一樣，不提自動（第十七版）');
   await go('#mine'); await go('#task-t6');
   await p.click('details.trouble summary'); await W(); await p.click('[data-act="openNotDone"]'); await W();
   await p.click('form[data-form="notdone"] button[type="submit"]'); await W(100);
@@ -100,7 +100,7 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
   ok(await js(() => document.querySelectorAll('.sheet .ph img').length) === 1 && (await js(() => document.getElementById('nd-text').value)) === '浴室沒有洗，地板也沒拖', '照片加入，原因沒有被清掉');
   await p.click('form[data-form="notdone"] button[type="submit"]'); await W();
   t6 = await task('t6'); ok(t6.status === 'cancelled' && t6.cancelKind === 'notdone' && t6.endNote.photos.length === 1, '案件取消（替身未完成），存下原因和照片');
-  ok((await notes('u4')).some(x => x.includes('本體結束了案件，表示你未完成')), '替身收到通知');
+  ok((await notes('u4')).some(x => x.includes('本體表示打掃未完成，案件已取消')), '替身收到通知');
   await act('pick', { id: 'u4' }); await W();
   const m4 = await main();
   ok(m4.includes('本體寫的原因') && m4.includes('浴室沒有洗') && (await js(() => document.querySelectorAll('.endnote-photos img').length)) === 1, '替身看得到原因和照片');
@@ -109,7 +109,7 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
 
   // G. 自動驗收（t4：王小明是本體，陳怡君是替身，替身 2 小時前按完成）
   await fresh('u1'); await go('#task-t4');
-  ok((await main()).includes('會自動驗收完成（還剩'), '驗收卡片顯示自動驗收時間');
+  ok((await main()).includes('後將自動確認打掃完成'), '驗收卡片顯示多久後自動確認打掃完成（第十七版）');
   await ff(2880);
   ok((await notes('u1')).some(x => x === '1 天後會自動驗收完成，請盡快驗收'), '自動驗收前 1 天提醒本體');
   ok((await task('t4')).status === 'done', '還沒滿 3 天，仍是待驗收');

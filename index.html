@@ -1123,7 +1123,7 @@ const PROFILE_LOCK=30*D;            /* 姓名、性別多久只能改一次 */
 const POST_LEAD=H, POST_AHEAD=60*D; /* 開工時間至少在多久以後、最多選到多久以後 */
 const RESELECT_WAIT=H;              /* 本體選人後，要等多久才能重新選擇替身 */
 const REMIND_BEFORE=5*H;            /* 開工前多久還沒選替身（有人出價），提醒本體一次 */
-const AUTO_DONE_AFTER=24*H;         /* 開工時間結束多久後自動算打掃完成；本體也從這時起才能「結束案件：替身未完成」 */
+const AUTO_DONE_AFTER=24*H;         /* 開工時間結束多久後自動算打掃完成；本體也從這時起才能「案件失敗：打掃未完成」 */
 const CHECK_REMIND_AFTER=2*D;       /* 打掃完成多久後提醒本體驗收 */
 const AUTO_CHECK_AFTER=3*D;         /* 打掃完成多久後自動驗收完成 */
 const PAY_REMIND_AFTER=D;           /* 驗收完成多久後提醒雙方付款 */
@@ -1317,8 +1317,8 @@ function endShort(t,r){
     case 'poster':return r==='poster'?'你取消了':'本體取消了';
     case 'expired':return '沒有確定替身';
     case 'noconfirm':return r==='worker'?'你沒確認':'替身沒確認';
-    case 'fail':return r==='worker'?'你無法完成':r==='poster'?'替身無法完成':'';
-    case 'notdone':return r==='worker'?'本體表示你未完成':r==='poster'?'替身未完成':'';
+    case 'fail':return r==='worker'?'你表示打掃未完成':r==='poster'?'替身表示打掃未完成':'';
+    case 'notdone':return r==='worker'?'本體表示打掃未完成':r==='poster'?'你表示打掃未完成':'';
     case 'unpaid':return r==='worker'?'沒收到款項':r==='poster'?'替身沒收到款項':'';
     case 'withdraw':return r==='worker'?'你退出了':'替身退出了';
   }
@@ -1330,8 +1330,8 @@ function endReason(t,r){
     case 'poster':return (r==='poster'?'你在 ':'本體在 ')+at+'取消了案件。';
     case 'expired':return '開工時間到了還沒有確定替身，案件已自動取消。';
     case 'noconfirm':return r==='worker'?'你沒有在開工前確認，案件已自動取消。':'替身沒有在開工前確認，案件已自動取消。';
-    case 'fail':return r==='worker'?'你表示無法完成，案件已取消。':r==='poster'?'替身表示無法完成，案件已取消，你不用付款。':'案件已取消。';
-    case 'notdone':return r==='worker'?'本體結束了案件，表示你未完成。':r==='poster'?'你結束了案件：替身未完成。':'案件已取消。';
+    case 'fail':return r==='worker'?'你表示打掃未完成，案件已取消。':r==='poster'?'替身表示打掃未完成，案件已取消，你不用付款。':'案件已取消。';
+    case 'notdone':return r==='worker'?'本體表示打掃未完成，案件已取消。':r==='poster'?'你表示打掃未完成，案件已取消，你不用付款。':'案件已取消。';
     case 'unpaid':return r==='worker'?'你結束了案件：沒收到款項。':r==='poster'?'替身結束了案件，表示沒收到款項。':'案件已取消。';
     case 'withdraw':return (r==='worker'?'你在 ':'替身在 ')+at+'退出了案件，案件已取消。';
   }
@@ -1339,12 +1339,12 @@ function endReason(t,r){
 }
 /* 各種期限的時間點（常數在最上面） */
 function reselectAt(t){return t.pendingAt+RESELECT_WAIT;}    /* 本體可以重新選擇替身 */
-function autoDoneAt(t){return t.end+AUTO_DONE_AFTER;}         /* 自動算打掃完成；本體可以結束案件：替身未完成 */
+function autoDoneAt(t){return t.end+AUTO_DONE_AFTER;}         /* 自動算打掃完成；本體可以選「案件失敗：打掃未完成」 */
 function autoCheckAt(t){return t.requestedAt+AUTO_CHECK_AFTER;}  /* 自動驗收完成 */
 function payRemindAt(t){return t.confirmedAt+PAY_REMIND_AFTER;}  /* 提醒付款 */
 function unpaidAt(t){return t.confirmedAt+UNPAID_AFTER;}      /* 替身可以結束案件：沒收到款項 */
 function endedAt(t){return t.status==='closed'?t.closedAt:t.status==='cancelled'?t.cancelAt:0;}  /* 完成或取消的時間（還沒結束是 0） */
-function canEndNotDone(t){return (t.status==='assigned'||t.status==='done')&&now()>=autoDoneAt(t);}  /* 本體可以「結束案件：替身未完成」 */
+function canEndNotDone(t){return (t.status==='assigned'||t.status==='done')&&now()>=autoDoneAt(t);}  /* 本體可以「案件失敗：打掃未完成」 */
 function photosGoneAt(t){return endedAt(t)+PHOTO_KEEP;}      /* 照片自動刪除 */
 /* 待辦的截止時間，用來排序「待你處理」 */
 function dueAt(t){
@@ -1825,7 +1825,7 @@ function sweep(){
     /* 開工時間結束 24 小時後，替身還沒按「打掃完成」→ 自動算打掃完成 */
     if(t.status==='assigned'&&now()>=autoDoneAt(t)){
       ch=true;t.status='done';t.requestedAt=autoDoneAt(t);t.autoDone=true;
-      notify(t.poster,'替身沒有按打掃完成，已自動算打掃完成，請驗收',t.id);notify(t.assignee,'你沒有按打掃完成，已自動算打掃完成',t.id);
+      notify(t.poster,'替身打掃完成了，請驗收',t.id);notify(t.assignee,'你沒有按打掃完成，已自動算打掃完成',t.id);  /* 自動算完成是防替身忘記按；本體看到的和替身自己按的一樣 */
     }
     /* 自動驗收前 1 天提醒本體 */
     if(t.status==='done'&&!t.autoWarned&&t.requestedAt&&now()>=t.requestedAt+CHECK_REMIND_AFTER&&now()<autoCheckAt(t)){
@@ -1875,7 +1875,7 @@ function tagButton(uid){
 /* 資訊卡裡的標記：右上角一顆書籤圖示的按鈕「標記」，按了才出現說明和選項；標記後同一顆按鈕改成標記的內容（實心書籤＋標記顏色） */
 function tagLine(uid,who){
   const g=tagOf(uid),open=ui.tagMenu===uid;
-  const note='標記只有你看得到。之後與這位'+who+'互動時會顯示。';  /* 第十六版使用者的句子（原句「與他」，照用詞規則寫成「這位本體／替身」） */
+  const note='標記只有你看得到。之後與他互動時會顯示。';  /* 第十七版使用者決定保留「他」：被標記的人之後可能是替身也可能是本體 */
   return '<div class="tagline"><span class="tagwrap">'+
     '<button class="taglink'+(g?' tagged tg-'+g.type:'')+'" data-act="tagMenu" data-uid="'+uid+'" aria-haspopup="menu" aria-expanded="'+open+'" aria-label="'+(g?'更改標記，目前是「'+esc(tagText(g))+'」':'標記這位'+who)+'">'+
       IC.bookmark+'<span class="tg-lbl">'+(g?'<span class="vh">你的標記：</span>'+esc(tagText(g)):'標記')+'</span></button>'+
@@ -1928,12 +1928,12 @@ function offerRow(t,o,i,canChoose){
 function photoBlock(t,editable){
   const ph=t.photos||[];
   if(!editable&&!ph.length)return t.photosGone?'<p class="small muted">打掃證明已在案件'+endWord(t)+' 7 天後自動刪除。</p>':'';
-  const del=endedAt(t)?'照片會在 '+fmtTime(photosGoneAt(t))+' 自動刪除，需要的話請點開照片下載。':'照片只有你們兩人看得到。';
+  const del=endedAt(t)?'照片會在 '+fmtTime(photosGoneAt(t))+' 自動刪除，需要的話請點開照片下載。':'';
   return '<div class="stack-s"><div class="row between"><b class="small">打掃證明</b><span class="small muted">'+(editable?'選填・'+ph.length+'／'+PH_MAX+' 張':ph.length+' 張')+'</span></div><div class="photos">'+
   ph.map((p,i)=>'<div class="ph"><img src="'+p.src+'" alt="打掃證明 '+(i+1)+'" data-act="viewPhoto" data-id="'+t.id+'" data-i="'+i+'"><span class="ph-time">'+fmtShort(p.at)+'</span>'+
     (editable?'<button class="ph-x" data-act="rmPhoto" data-id="'+t.id+'" data-i="'+i+'" aria-label="刪除這張">×</button>':'')+'</div>').join('')+
   (editable&&ph.length<PH_MAX?'<label class="ph add" for="f-ph">＋ 加照片<input class="vh" id="f-ph" type="file" accept="image/*" multiple data-upload="photos" data-id="'+t.id+'"></label>':'')+'</div>'+
-  '<p class="small muted">'+del+'</p></div>';
+  (del?'<p class="small muted">'+del+'</p>':'')+'</div>';
 }
 /* 你當替身、而且同一段時間已經確定（或等你確認）的其他案件：出價和確認接案時提醒一句 */
 function clashes(t,uid){return S.tasks.filter(x=>x.id!==t.id&&x.assignee===uid&&(x.status==='pending'||x.status==='assigned')&&x.start<t.end&&t.start<x.end);}
@@ -2031,13 +2031,13 @@ function nextStep(t,r){
     if(r==='worker')return card('打掃完成後',photoBlock(t,true)+
       '<button class="btn block" data-act="requestPay" data-id="'+t.id+'"'+(begun?'':' disabled')+'>打掃完成</button>'+
       '<p class="small muted">'+(!begun?'開工時間 '+fmtTime(t.start)+' 到了才能按（'+when(t)+'）。':over?'已過結束時間。沒有按的話，'+autoAt+' 會自動算打掃完成。':'按下後會通知本體驗收。提早完成也可以直接按。')+'</p>',begun);
-    if(r==='poster')return card(begun?'打掃中':'待開工','<p class="small muted">'+(over?'已過結束時間，替身還沒按「打掃完成」。'+autoAt+' 會自動算打掃完成。':'替身完成後會通知你驗收。')+'</p>',false);
+    if(r==='poster')return card(begun?'打掃中':'待開工','<p class="small muted">'+(over?'已過結束時間，替身還沒按「打掃完成」。':'替身完成後會通知你驗收。')+'</p>',false);
     return '';
   }
   if(t.status==='done'){
     const autoAt=autoCheckAt(t),auto=fmtTime(autoAt)+' 會自動驗收完成（還剩 '+span(autoAt-now())+'）。';
-    if(r==='poster')return card('驗收',(t.autoDone?'<p class="small muted">替身沒有按打掃完成，已在結束時間 24 小時後自動算打掃完成。</p>':'')+photoBlock(t,false)+
-      '<p class="small muted">驗收完成後會顯示替身的收款方式。沒有驗收的話，'+auto+'</p><button class="btn block" data-act="confirmDone" data-id="'+t.id+'">驗收完成</button>',true);
+    if(r==='poster')return card('驗收','<p class="np-lead">確認打掃完成？</p>'+photoBlock(t,false)+
+      '<button class="btn block" data-act="confirmDone" data-id="'+t.id+'">確認打掃完成</button><p class="small muted">'+span(autoAt-now())+'後將自動確認打掃完成</p>',true);
     if(r==='worker')return card('等本體驗收','<p class="small muted">'+(t.autoDone?'你沒有按打掃完成，已自動算打掃完成。':'已通知本體驗收。')+'本體沒有驗收的話，'+auto+'</p>'+photoBlock(t,false),false);
     return '';
   }
@@ -2111,12 +2111,12 @@ function exitArea(t,r){
   }
   /* 開工後（替身收款問題：驗收後）就出現「案件遇到問題？」；還不能結束案件時，只說明什麼時候可以，先引導溝通 */
   let trouble='';
-  if(r==='worker'&&s==='assigned')
-    trouble=tip('建議先在留言板跟本體說明。如果真的無法完成，可以結束案件，案件會直接取消。')+q('failTask','結束案件：無法完成');
+  if(r==='worker'&&(s==='assigned'||s==='done'))  /* 按了打掃完成（或自動算完成）後、驗收前也可以 */
+    trouble=tip('建議先在留言板跟本體說明。如果真的沒辦法完成打掃，可以選擇「案件失敗：打掃未完成」，案件會直接取消。')+q('failTask','案件失敗：打掃未完成');
   else if(r==='poster'&&(s==='assigned'||s==='done')){
     const at=autoDoneAt(t);
-    trouble=n>=at?tip('建議先在留言板跟替身確認。如果替身真的沒有完成，可以結束案件，需要寫原因並附上照片。')+q('openNotDone','結束案件：替身未完成')
-      :tip('有疑慮請先在留言板跟替身溝通。開工時間結束 24 小時後，也就是 '+fmtTime(at)+' 之後，如果替身真的沒有完成，才能選擇「結束案件：替身未完成」。');
+    trouble=n>=at?tip('建議先在留言板跟替身確認。如果替身真的沒有完成，可以選擇「案件失敗：打掃未完成」，需要寫原因並附上照片。')+q('openNotDone','案件失敗：打掃未完成')
+      :tip('有疑慮請先在留言板跟替身溝通。開工時間結束 24 小時後，也就是 '+fmtTime(at)+' 之後，如果替身真的沒有完成，才能選擇「案件失敗：打掃未完成」。');
   }else if(r==='worker'&&(s==='confirmed'||s==='paid')&&t.confirmedAt){
     const at=unpaidAt(t);
     trouble=n>=at?tip('建議先在留言板跟本體確認。如果一直沒收到款項，可以結束案件。')+q('unpaid','結束案件：沒收到款項')
@@ -2334,7 +2334,7 @@ function modalView(){
   }
   if(md.type==='notdone'){
     const t=T(md.id),w=u(t.assignee),dr=ui.endDraft||{text:'',photos:[]};
-    inner='<h2>結束案件：替身未完成</h2><p class="small">結束後案件會移到「已取消」，你不用付款。'+esc(w.name)+'會收到通知，看得到你寫的原因和照片，也可以把你加入黑名單。</p>'+
+    inner='<h2>案件失敗：打掃未完成</h2><p class="small">結束後案件會移到「已取消」，你不用付款。'+esc(w.name)+'會收到通知，看得到你寫的原因和照片，也可以把你加入黑名單。</p>'+
       '<form data-form="notdone" data-id="'+t.id+'" class="stack" novalidate><div class="field"><label for="nd-text">原因</label><textarea id="nd-text" name="text" rows="3" maxlength="200">'+esc(dr.text)+'</textarea></div>'+
       '<div class="field"><span class="lbl">照片證明（至少 1 張）</span><div class="photos">'+dr.photos.map((src,i)=>'<div class="ph"><img src="'+src+'" alt="照片證明 '+(i+1)+'"><button type="button" class="ph-x" data-act="rmEndPh" data-i="'+i+'" aria-label="移除這張">×</button></div>').join('')+
       (dr.photos.length>=END_MAX?'':'<label class="ph add" for="nd-f">＋ 加照片<input class="vh" id="nd-f" type="file" accept="image/*" multiple data-upload="endnote" data-id="'+t.id+'"></label>')+'</div></div>'+
@@ -2492,12 +2492,12 @@ const A={
     ask('取消案件？',t.status==='assigned'?'將通知替身。':'將撤銷所有出價並通知出價者。','取消案件',()=>{const who=new Set(t.offers.map(o=>o.user));if(t.assignee)who.add(t.assignee);who.forEach(x=>notify(x,'本體取消了案件',t.id));t.status='cancelled';t.cancelKind='poster';t.cancelAt=now();t.cancelReason='本體在 '+fmtTime(now())+' 取消了案件';save();toast('已取消案件');},true);},
   withdrawAssign(d){const t=T(d.id);if(!canCancel(t))return toast('已經開工，不能退出');
     /* 第十六版：替身確認接案後退出，案件就取消（不回到召喚替身：其他出價的人可能來不及反應，本體也可能不想發了） */
-    ask('退出案件？','案件會取消，本體會收到通知。','退出',()=>{notify(t.poster,me().name+'退出了，案件已取消',t.id);t.offers.forEach(o=>{if(o.user!==S.me)notify(o.user,'案件已取消',t.id);});
+    ask('退出案件？','案件會取消，本體會收到通知。','退出',()=>{notify(t.poster,me().name+'退出了，案件已取消',t.id);  /* 其他出價的人在替身確認接案時就已經落選，不再通知 */
       t.status='cancelled';t.cancelKind='withdraw';t.cancelAt=now();t.cancelReason='替身退出了案件';save();toast('已退出案件，案件已取消');},true);},
   rmPhoto(d){T(d.id).photos.splice(Number(d.i),1);save();},
   viewPhoto(d){ui.modal={type:'photo',src:T(d.id).photos[Number(d.i)].src};},
   requestPay(d){const t=T(d.id);if(now()<t.start)return toast('開工時間到了才能按「打掃完成」');t.status='done';t.requestedAt=now();notify(t.poster,'替身打掃完成了，請驗收',t.id);save();toast('已通知本體驗收');},
-  confirmDone(d){const t=T(d.id);ask('驗收完成？','確認後會顯示替身的收款方式，請盡快付款 NT$ '+money(t.price)+'。','驗收完成',()=>{t.status='confirmed';t.confirmedAt=now();notify(t.assignee,'本體驗收完成，接下來會付款 NT$ '+money(t.price),t.id);save();});},
+  confirmDone(d){const t=T(d.id);ask('確認打掃完成？','確認後會顯示替身的收款方式，請盡快付款 NT$ '+money(t.price)+'。','確認打掃完成',()=>{t.status='confirmed';t.confirmedAt=now();notify(t.assignee,'本體驗收完成，接下來會付款 NT$ '+money(t.price),t.id);save();});},
   received(d){const t=T(d.id);ask('確認已收款？','確認後案件就完成了。','確認',()=>{t.status='closed';t.closedAt=now();notify(t.poster,'替身已確認收款，案件完成',t.id);save();toast('案件完成了');});},
   tagMenu(d){ui.tagMenu=ui.tagMenu===d.uid?null:d.uid;ui.tagCustom=false;ui.tagScroll=!!ui.tagMenu;},
   tagCustom(){ui.tagCustom=true;},
@@ -2527,10 +2527,10 @@ const A={
     else if(ui.fd)ui.fd[g.target]=v;
     ui.dlg=null;},
   /* 以下三種「結束案件」都是不鼓勵使用的流程：只在條件到了才出現，按下去先說明後果 */
-  failTask(d){const t=T(d.id),p=u(t.poster);if(t.status!=='assigned'||now()<t.start)return toast('現在不能結束案件');
-    ask('結束案件：無法完成？','案件會直接取消，本體不用付款。'+p.name+'會收到通知，也可以把你加入黑名單。','結束案件',()=>{
-      t.status='cancelled';t.cancelKind='fail';t.cancelAt=now();t.cancelReason='替身無法完成，案件已取消';
-      notify(t.poster,me().name+'無法完成，案件已取消',t.id);save();toast('已結束案件');},true);},
+  failTask(d){const t=T(d.id),p=u(t.poster);if(!((t.status==='assigned'&&now()>=t.start)||t.status==='done'))return toast('現在不能結束案件');
+    ask('案件失敗：打掃未完成？','案件會直接取消，本體不用付款。'+p.name+'會收到通知，也可以把你加入黑名單。','結束案件',()=>{
+      t.status='cancelled';t.cancelKind='fail';t.cancelAt=now();t.cancelReason='替身表示打掃未完成，案件已取消';
+      notify(t.poster,me().name+'表示打掃未完成，案件已取消',t.id);save();toast('已結束案件');},true);},
   openNotDone(d){const t=T(d.id);if(!canEndNotDone(t))return toast('現在不能結束案件');
     ui.endDraft={text:'',photos:[]};ui.modal={type:'notdone',id:t.id};},
   rmEndPh(d){if(ui.endDraft)ui.endDraft.photos.splice(Number(d.i),1);renderModal();return false;},
@@ -2659,15 +2659,15 @@ const F={
     notifyCmt(S.me===t.poster?t.assignee:t.poster,t,me(),text,imgs.length);
     t.seen=t.seen||{};t.seen[S.me]=now();ui.cdraft[t.id]='';ui.cimg[t.id]=[];save();
   },
-  /* 本體結束案件：替身未完成（必須寫原因、附至少 1 張照片） */
+  /* 本體選「案件失敗：打掃未完成」（必須寫原因、附至少 1 張照片） */
   notdone(f,d){
     const t=T(d.id),dr=ui.endDraft||{text:'',photos:[]},text=v(f,'text');
     if(!canEndNotDone(t))return toast('現在不能結束案件');
     if(!text)return ferr(f.elements.text,'請寫下原因');
     if(!dr.photos.length)return ferr(f.querySelector('#nd-f'),'請至少附上 1 張照片');
-    t.status='cancelled';t.cancelKind='notdone';t.cancelAt=now();t.cancelReason='本體結束了案件：替身未完成';
+    t.status='cancelled';t.cancelKind='notdone';t.cancelAt=now();t.cancelReason='本體表示打掃未完成，案件已取消';
     t.endNote={text,photos:dr.photos.slice(),at:now()};
-    notify(t.assignee,'本體結束了案件，表示你未完成，請到案件裡查看原因',t.id);
+    notify(t.assignee,'本體表示打掃未完成，案件已取消，請到案件裡查看原因',t.id);
     ui.modal=null;ui.endDraft=null;save();toast('已結束案件');
   },
   tag(f,d){

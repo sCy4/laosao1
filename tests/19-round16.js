@@ -24,9 +24,9 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
 
   // 3. 標記的說明
   await go('#task-t11'); await p.click('.card.mini .taglink'); await W();
-  ok((await txt('.tagmenu .tm-note')) === '標記只有你看得到。之後與這位替身互動時會顯示。', '3 標記替身的說明');
+  ok((await txt('.tagmenu .tm-note')) === '標記只有你看得到。之後與他互動時會顯示。', '3 標記替身的說明（第十七版使用者決定保留「他」）');
   await act('pick', { id: 'u1' }); await go('#task-t11'); await p.click('.card.mini .taglink'); await W();
-  ok((await txt('.tagmenu .tm-note')) === '標記只有你看得到。之後與這位本體互動時會顯示。', '3 標記本體的說明');
+  ok((await txt('.tagmenu .tm-note')) === '標記只有你看得到。之後與他互動時會顯示。', '3 標記本體的說明');
 
   // 4. 替身確認接案後退出：案件取消
   await fresh('u1'); await go('#task-t11'); await act('acceptMatch', { id: 't11' });
@@ -37,7 +37,7 @@ let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); 
   await p.click('.sheet [data-act="ok"]'); await W();
   const s = await st(), t = s.tasks.find(x => x.id === 't11');
   ok(t.status === 'cancelled' && t.cancelKind === 'withdraw', '4 案件變成已取消');
-  ok(s.notes.some(n => n.to === 'u2' && n.taskId === 't11' && n.text === '王小明退出了，案件已取消') && s.notes.some(n => n.to === 'u3' && n.taskId === 't11' && n.text === '案件已取消'), '4 本體、其他出價的人都收到通知');
+  ok(s.notes.some(n => n.to === 'u2' && n.taskId === 't11' && n.text === '王小明退出了，案件已取消') && !s.notes.some(n => n.to === 'u3' && n.taskId === 't11' && n.text === '案件已取消'), '4 本體收到通知，其他出價的人不通知（第十七版）');
   ok(/^你在 .+ 退出了案件，案件已取消。$/.test(await txt('.banner')), '4 替身看到的原因：' + await txt('.banner'));
   await go('#browse'); await act('pick', { id: 'u2' }); await go('#past'); await act('seg', { k: 'pastKind', v: 'cancelled' });
   ok(await js(() => Array.from(document.querySelectorAll('.card.task')).some(c => c.innerText.includes('已取消・替身退出了'))), '4 本體的已取消清單寫「已取消・替身退出了」');
